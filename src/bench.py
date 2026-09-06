@@ -13,8 +13,10 @@ import sys
 import time
 from pathlib import Path
 
+import torch
+
 from src.config import load_params
-from src.model import generate, load_model
+from src.model import generate, load_model, set_seed
 
 
 def peak_rss_mb() -> float:
@@ -26,27 +28,42 @@ def peak_rss_mb() -> float:
     return peak / (1024 ** 2) if sys.platform == "darwin" else peak / 1024
 
 
+def synchronize(device: str) -> None:
+    """Дождаться завершения асинхронных операций ускорителя."""
+    if device.startswith("cuda"):
+        torch.cuda.synchronize()
+    elif device.startswith("mps"):
+        torch.mps.synchronize()
+
+
 def main() -> None:
     params = load_params()
     prompt = params["bench"]["prompt"]
+    set_seed(params["generate"]["seed"])
 
-    # TODO: разделить замеры. Сейчас в одном таймере и загрузка, и генерация.
     t0 = time.perf_counter()
     tokenizer, model = load_model(params)
+    device = str(model.device)
+    synchronize(device)
+    load_time = time.perf_counter() - t0
 
-    # TODO: добавить прогрев перед измерением.
+    for _ in range(params["bench"]["warmup_runs"]):
+        generate(tokenizer, model, params, prompt)
+        synchronize(device)
+
     speeds = []
     for _ in range(params["bench"]["measure_runs"]):
+        synchronize(device)
+        t0 = time.perf_counter()
         _, n_tokens = generate(tokenizer, model, params, prompt)
+        synchronize(device)
         elapsed = time.perf_counter() - t0
         speeds.append(n_tokens / elapsed)
 
-    load_time = 0.0
-
     # Медиана устойчивее среднего к одиночному выбросу.
     report = {
-        "model": "Qwen/Qwen3-0.6B",
-        "device": str(model.device),
+        "model": params["model"]["name"],
+        "device": device,
         "dtype": params["model"]["dtype"],
         "load_time_sec": round(load_time, 2),
         "tokens_per_sec": round(statistics.median(speeds), 2),
