@@ -391,7 +391,7 @@ wheels = [
 ]
 
 [[package]]
-name = "mlops-hw1"
+name = "mlops-hw2"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
@@ -407,14 +407,14 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "accelerate", specifier = ">=1.14.0" },
+    { name = "accelerate", specifier = ">=1.1" },
     { name = "matplotlib", specifier = ">=3.9" },
-    { name = "numpy", specifier = ">=2.5.3" },
+    { name = "numpy", specifier = ">=2.1" },
     { name = "peft", specifier = ">=0.14" },
-    { name = "psutil", specifier = ">=7.2.2" },
-    { name = "pyyaml", specifier = ">=6.0.3" },
-    { name = "torch", specifier = ">=2.14.0" },
-    { name = "transformers", specifier = ">=5.16.1" },
+    { name = "psutil", specifier = ">=5.9" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "torch", specifier = ">=2.5" },
+    { name = "transformers", specifier = ">=4.51" },
 ]
 
 [[package]]
