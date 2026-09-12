@@ -10,4 +10,6 @@ dependencies = [
     "numpy>=2.5.3",
     "pyyaml>=6.0.3",
     "psutil>=7.2.2",
+    "peft>=0.14",
+    "matplotlib>=3.9",
 ]

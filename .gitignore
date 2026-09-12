@@ -6,3 +6,6 @@ out2.txt
 params.yaml.bak
 params.yaml.orig
 PLAN.md
+PLAN-track.md
+.DS_Store
+*.bak
