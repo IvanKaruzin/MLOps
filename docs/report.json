@@ -3,7 +3,7 @@
   "dtype": "bfloat16",
   "device": "mps",
   "environment": {
-    "measured_at": "2026-09-12T11:25:53.955404+00:00",
+    "measured_at": "2026-09-12T13:11:23.372401+00:00",
     "platform": "macOS-26.6.2-arm64-arm-64bit",
     "macos": "26.6.2",
     "processor": "Apple M4 Pro",
@@ -265,13 +265,13 @@
     {
       "peak_mb": 4907.7,
       "peak_device_mb": 4907.7,
-      "peak_rss_mb": 4469.0,
+      "peak_rss_mb": 4466.8,
       "metric": "аллокатор mps",
       "metric_source": "torch.mps.driver_allocated_memory",
       "rss_source": "ru_maxrss",
       "sample_interval_ms": 10.0,
       "mode": "inference",
-      "pid": 12782,
+      "pid": 17450,
       "weights_mb": 3281.7,
       "device": "mps",
       "seq_len": 256,
@@ -280,7 +280,7 @@
       "loss": null,
       "repeats": 1,
       "pids": [
-        12782
+        17450
       ],
       "peak_mb_runs": [
         4907.7
@@ -289,22 +289,22 @@
     {
       "peak_mb": 15028.5,
       "peak_device_mb": 15028.5,
-      "peak_rss_mb": 4467.0,
+      "peak_rss_mb": 4468.9,
       "metric": "аллокатор mps",
       "metric_source": "torch.mps.driver_allocated_memory",
       "rss_source": "ru_maxrss",
       "sample_interval_ms": 10.0,
       "mode": "full_ft",
-      "pid": 12784,
+      "pid": 17458,
       "weights_mb": 3281.7,
       "device": "mps",
       "seq_len": 256,
       "batch_size": 1,
-      "seconds": 3.6,
+      "seconds": 3.7,
       "loss": 13.4852,
       "repeats": 1,
       "pids": [
-        12784
+        17458
       ],
       "peak_mb_runs": [
         15028.5
@@ -313,22 +313,22 @@
     {
       "peak_mb": 5652.5,
       "peak_device_mb": 5652.5,
-      "peak_rss_mb": 4467.9,
+      "peak_rss_mb": 4466.6,
       "metric": "аллокатор mps",
       "metric_source": "torch.mps.driver_allocated_memory",
       "rss_source": "ru_maxrss",
       "sample_interval_ms": 10.0,
       "mode": "lora",
-      "pid": 12786,
+      "pid": 17461,
       "weights_mb": 3281.7,
       "device": "mps",
       "seq_len": 256,
       "batch_size": 1,
-      "seconds": 3.1,
+      "seconds": 3.2,
       "loss": 13.4852,
       "repeats": 1,
       "pids": [
-        12786
+        17461
       ],
       "peak_mb_runs": [
         5652.5
