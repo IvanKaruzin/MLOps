@@ -42,10 +42,20 @@ make check-hw1    # пять проверок ДЗ-1
 make check-all    # последовательно ДЗ-1 и ДЗ-2
 ```
 
-На этапе переноса учебные дефекты ещё не исправлены: проверки ДЗ-2
-пока не обязаны проходить. Нужно проверить учёт tied embeddings,
-снятие forward-hooks и измерение пика памяти в отдельных процессах
-с метрикой выбранного устройства.
+Четыре учебных дефекта исправлены. Параметры считаются по уникальным
+тензорам, hooks снимаются в finally, каждый замер памяти запускается в
+отдельном процессе. Для MPS используется максимум driver_allocated_memory,
+а RSS сохраняется отдельно. Подробности и результаты — в [отчёте](docs/anatomy.md).
+
+Быстрые проверки:
+
+```bash
+uv run python -m src.inspect_model --params-only
+uv run python -m src.inspect_model --hooks-only
+uv run python -m unittest discover -s tests -p 'test_*.py'
+```
+
+[Сценарий скринкаста](docs/screencast.md) содержит порядок демонстрации.
 
 Результаты ДЗ-2: `docs/anatomy.md` с условиями замера и разбором четырёх
 дефектов, `docs/activations.png`, заполненный `docs/anatomy-worksheet.xlsx`,

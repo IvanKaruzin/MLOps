@@ -3,37 +3,17 @@
 Три числа меряются РАЗДЕЛЬНО — смешивать их бессмысленно:
   * время загрузки модели  — разовая стоимость старта;
   * tokens/sec             — скорость генерации, только после прогрева;
-  * пиковая RSS            — максимум за процесс, а не снимок в конце.
+  * пик памяти устройства и RSS — отдельные метрики с именами источников.
 """
 
 import json
-import resource
 import statistics
-import sys
 import time
 from pathlib import Path
 
-import torch
-
 from src.config import load_params
+from src.memory import PeakMemory, resolve_device, synchronize
 from src.model import generate, load_model, set_seed
-
-
-def peak_rss_mb() -> float:
-    """Пиковая резидентная память процесса.
-
-    ru_maxrss на macOS в байтах, на Linux в килобайтах.
-    """
-    peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    return peak / (1024 ** 2) if sys.platform == "darwin" else peak / 1024
-
-
-def synchronize(device: str) -> None:
-    """Дождаться завершения асинхронных операций ускорителя."""
-    if device.startswith("cuda"):
-        torch.cuda.synchronize()
-    elif device.startswith("mps"):
-        torch.mps.synchronize()
 
 
 def main() -> None:
@@ -41,39 +21,44 @@ def main() -> None:
     prompt = params["bench"]["prompt"]
     set_seed(params["generate"]["seed"])
 
-    t0 = time.perf_counter()
-    tokenizer, model = load_model(params)
-    device = str(model.device)
-    synchronize(device)
-    load_time = time.perf_counter() - t0
-
-    for _ in range(params["bench"]["warmup_runs"]):
-        generate(tokenizer, model, params, prompt)
-        synchronize(device)
-
-    speeds = []
-    for _ in range(params["bench"]["measure_runs"]):
-        synchronize(device)
+    device = resolve_device(params)
+    params["model"]["device"] = str(device)
+    with PeakMemory(device) as peak:
         t0 = time.perf_counter()
-        _, n_tokens = generate(tokenizer, model, params, prompt)
+        tokenizer, model = load_model(params)
         synchronize(device)
-        elapsed = time.perf_counter() - t0
-        speeds.append(n_tokens / elapsed)
+        load_time = time.perf_counter() - t0
+
+        for _ in range(params["bench"]["warmup_runs"]):
+            generate(tokenizer, model, params, prompt)
+            synchronize(device)
+
+        speeds = []
+        for _ in range(params["bench"]["measure_runs"]):
+            synchronize(device)
+            t0 = time.perf_counter()
+            _, n_tokens = generate(tokenizer, model, params, prompt)
+            synchronize(device)
+            elapsed = time.perf_counter() - t0
+            speeds.append(n_tokens / elapsed)
 
     # Медиана устойчивее среднего к одиночному выбросу.
     report = {
         "model": params["model"]["name"],
-        "device": device,
+        "device": str(device),
         "dtype": params["model"]["dtype"],
         "load_time_sec": round(load_time, 2),
         "tokens_per_sec": round(statistics.median(speeds), 2),
         "tokens_per_sec_all": [round(s, 2) for s in speeds],
-        "peak_rss_mb": round(peak_rss_mb(), 1),
+        **peak.result(),
+        "weights_mb": round(sum(p.numel() * p.element_size() for p in model.parameters()) / 1024 ** 2, 1),
     }
+
+    assert report["peak_mb"] >= report["weights_mb"]
 
     Path("docs").mkdir(exist_ok=True)
     Path("docs/bench.json").write_text(
-        json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
 
     print(json.dumps(report, ensure_ascii=False, indent=2))

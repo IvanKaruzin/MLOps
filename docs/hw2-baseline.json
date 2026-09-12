@@ -1,0 +1,34 @@
+{
+  "model": {
+    "name": "Qwen/Qwen3-1.7B",
+    "dtype": "bfloat16",
+    "device": "mps"
+  },
+  "memory_config": {
+    "seq_len": 256,
+    "batch_size": 1,
+    "lr": 1e-05,
+    "repeats": 1
+  },
+  "broken_full_ft": {
+    "peak_mb": 4466.3,
+    "peak_device_mb": 4466.3,
+    "peak_rss_mb": 4466.3,
+    "metric": "аллокатор mps",
+    "metric_source": "ru_maxrss",
+    "rss_source": "ru_maxrss",
+    "mode": "full_ft",
+    "device": "mps",
+    "seq_len": 256,
+    "batch_size": 1,
+    "seconds": 3.8,
+    "loss": 13.4852
+  },
+  "broken_params_total": 2031739904,
+  "params_direct": 1720574976,
+  "broken_hook_counts": [
+    0,
+    3,
+    6
+  ]
+}

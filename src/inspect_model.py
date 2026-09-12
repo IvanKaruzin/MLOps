@@ -14,7 +14,10 @@ import json
 import os
 import platform
 import sys
+import subprocess
 import time
+from contextlib import contextmanager
+from datetime import datetime, timezone
 from pathlib import Path
 
 import peft
@@ -25,19 +28,7 @@ from peft import LoraConfig, get_peft_model
 from src.config import load_params
 from src.model import build_prompt, load_model, set_seed
 
-# Пик RSS снимается разными механизмами на разных ОС, поэтому оба импорта
-# необязательные: resource есть на macOS и Linux, но его нет на Windows;
-# psutil нужен на Windows, где peak_wset — единственный high-water mark,
-# который отдаёт система. Код, написанный под одну ОС, у соседа не запустится.
-try:
-    import resource
-except ImportError:
-    resource = None
-
-try:
-    import psutil
-except ImportError:
-    psutil = None
+from src.memory import PeakMemory, resolve_device
 
 # transformers читает safetensors в несколько потоков, и на связке
 # pyo3 OnceLock + GIL загрузка иногда встаёт намертво: на этой машине
@@ -64,23 +55,6 @@ GROUPS = (
 )
 
 
-def resolve_device(params: dict) -> torch.device:
-    """Развернуть device: auto в конкретное устройство — ровно один раз.
-
-    Строка «auto» уходит в device_map и включает диспетчер accelerate,
-    который для шага обучения только мешает. Решаем здесь и передаём дальше
-    уже конкретное имя.
-    """
-    name = params["model"]["device"]
-    if name != "auto":
-        return torch.device(name)
-    if torch.cuda.is_available():
-        return torch.device("cuda")
-    if torch.backends.mps.is_available():
-        return torch.device("mps")
-    return torch.device("cpu")
-
-
 # --------------------------------------------------------------------------
 # 1. Параметры по типам модулей
 # --------------------------------------------------------------------------
@@ -99,13 +73,15 @@ def parameter_rows(model) -> list[dict]:
     remove_duplicate=False — иначе в таблицу не попадёт lm_head.
     """
     rows = []
+    seen = set()
     for name, param in model.named_parameters(remove_duplicate=False):
         rows.append({
             "name": name,
             "shape": tuple(param.shape),
             "numel": param.numel(),
-            "tied": False,
+            "tied": id(param) in seen,
         })
+        seen.add(id(param))
     return rows
 
 
@@ -156,19 +132,28 @@ def hook_targets(model) -> dict[str, int]:
     return {"первый": 0, "средний": n_layers // 2, "последний": n_layers - 1}
 
 
-def forward_hooks(modules: dict) -> dict:
-    """Навесить forward-hooks на модули и вернуть словарь, куда они пишут."""
+@contextmanager
+def forward_hooks(modules: dict):
+    """Собирать нормы и гарантированно снять только собственные hooks."""
     store: dict[str, list[float]] = {}
+    handles = []
 
     def make_hook(label: str):
         def hook(module, args, output):
             hidden = output[0] if isinstance(output, tuple) else output
-            store[label] = hidden[0].float().norm(dim=-1).detach().cpu().tolist()
+            norms = hidden[0].detach().float().norm(dim=-1)
+            if hidden.device.type == "mps":
+                torch.mps.synchronize()
+            store[label] = norms.cpu().tolist()
         return hook
 
-    for label, module in modules.items():
-        module.register_forward_hook(make_hook(label))
-    return store
+    try:
+        for label, module in modules.items():
+            handles.append(module.register_forward_hook(make_hook(label)))
+        yield store
+    finally:
+        for handle in handles:
+            handle.remove()
 
 
 def activation_norms(tokenizer, model, params: dict) -> dict:
@@ -178,8 +163,7 @@ def activation_norms(tokenizer, model, params: dict) -> dict:
     prompt = build_prompt(tokenizer, params, params["hooks"]["prompt"])
     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
-    store = forward_hooks({label: layers[i] for label, i in targets.items()})
-    with torch.inference_mode():
+    with forward_hooks({label: layers[i] for label, i in targets.items()}) as store, torch.inference_mode():
         model(**inputs)
 
     return {
@@ -192,6 +176,23 @@ def activation_norms(tokenizer, model, params: dict) -> dict:
 # --------------------------------------------------------------------------
 # 3. Сколько параметров добавляет LoRA
 # --------------------------------------------------------------------------
+
+def verify_activations(tokenizer, model, params: dict) -> dict:
+    before = sum(len(m._forward_hooks) for m in model.modules())
+    first = activation_norms(tokenizer, model, params)
+    after_first = sum(len(m._forward_hooks) for m in model.modules())
+    second = activation_norms(tokenizer, model, params)
+    after_second = sum(len(m._forward_hooks) for m in model.modules())
+    assert before == after_first == after_second
+    difference = 0.0
+    for label in first["norms"]:
+        a, b = torch.tensor(first["norms"][label]), torch.tensor(second["norms"][label])
+        torch.testing.assert_close(a, b)
+        difference = max(difference, (a - b).abs().max().item())
+    first["hook_counts"] = [before, after_first, after_second]
+    first["max_repeat_difference"] = difference
+    return first
+
 
 def lora_config(params: dict, cfg: dict) -> LoraConfig:
     """LoraConfig из params.yaml — ни r, ни target_modules в коде не зашиты."""
@@ -252,80 +253,6 @@ def lora_report(model, params: dict) -> list[dict]:
 # 4. Память в трёх режимах
 # --------------------------------------------------------------------------
 
-def device_allocated_bytes(device: torch.device) -> int:
-    """Сколько памяти занято прямо сейчас."""
-    used, _ = peak_rss()
-    return used
-
-
-def device_metric_source(device: torch.device) -> str:
-    """Имя функции, которой снята память."""
-    _, source = peak_rss()
-    return source
-
-
-def peak_rss() -> tuple[int, str]:
-    """Пик RSS процесса в байтах И метка источника метрики.
-
-    Метка возвращается не для красоты: «пик 1001 МБ» без указания, чем это
-    снято, — не результат, а повод для спора. Тем более что RSS и память
-    ускорителя — разные величины (см. PeakMemory ниже).
-
-    Три ОС меряют по-разному:
-
-    * macOS и Linux — `resource.getrusage(RUSAGE_SELF).ru_maxrss`, high-water
-      mark процесса; на macOS он в байтах, на Linux в килобайтах;
-    * Windows — `psutil.Process().memory_info().peak_wset`: модуля `resource`
-      там нет вовсе. Обратное тоже верно — поля `peak_wset` нет на macOS и
-      Linux, и код, написанный только под него, у соседа падает.
-
-    Если недоступно ничего — исключение. Тихий ноль хуже отсутствия числа:
-    ноль попадает в отчёт и его выдают за результат.
-    """
-    if resource is not None:
-        peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-        return (peak if sys.platform == "darwin" else peak * 1024), "ru_maxrss"
-    if psutil is not None and hasattr(psutil.Process().memory_info(), "peak_wset"):
-        return int(psutil.Process().memory_info().peak_wset), "peak_wset"
-    raise RuntimeError(
-        f"нечем снять пик RSS на платформе {sys.platform}: модуля resource нет, "
-        "а psutil не установлен либо не отдаёт peak_wset. Выполните uv sync."
-    )
-
-
-class PeakMemory:
-    """Сколько памяти занято к концу прогона."""
-
-    def __init__(self, device: torch.device, interval: float = 0.01):
-        self.device = device
-        self.used = 0
-
-    def __enter__(self) -> "PeakMemory":
-        return self
-
-    def __exit__(self, *exc) -> bool:
-        # TODO: это расход режима — или то, что осталось занято после него,
-        # когда всё уже посчитано и мусор собран?
-        gc.collect()
-        self.used = device_allocated_bytes(self.device)
-        return False
-
-    def result(self) -> dict:
-        """Числа замера вместе с именем метрики, которой они сняты."""
-        rss, rss_source = peak_rss()
-        accelerator = self.device.type in ("mps", "cuda")
-        return {
-            "peak_mb": round((self.used if accelerator else rss) / 1024 ** 2, 1),
-            "peak_device_mb": round(self.used / 1024 ** 2, 1),
-            "peak_rss_mb": round(rss / 1024 ** 2, 1),
-            "metric": (f"аллокатор {self.device.type}" if accelerator
-                       else "RSS процесса"),
-            "metric_source": (device_metric_source(self.device) if accelerator
-                              else rss_source),
-            "rss_source": rss_source,
-        }
-
-
 def measure_mode(mode: str, params: dict) -> dict:
     """Один режим: инференс / full fine-tune / LoRA.
 
@@ -339,9 +266,10 @@ def measure_mode(mode: str, params: dict) -> dict:
     started = time.perf_counter()
     loss = None
 
-    _, model = load_model(params)
-
     with PeakMemory(device) as peak:
+        _, model = load_model(params)
+        weights_bytes = sum(p.numel() * p.element_size() for p in model.parameters())
+        peak.checkpoint()
         ids = torch.randint(
             0, model.config.vocab_size,
             (params["memory"]["batch_size"], params["memory"]["seq_len"]),
@@ -350,7 +278,7 @@ def measure_mode(mode: str, params: dict) -> dict:
         if mode == "inference":
             model.eval()
             with torch.inference_mode():
-                model(input_ids=ids)
+                model(input_ids=ids, use_cache=False)
         else:
             if mode == "lora":
                 model = get_peft_model(model, lora_config(params, params["lora"]["configs"][0]))
@@ -359,15 +287,20 @@ def measure_mode(mode: str, params: dict) -> dict:
                 [p for p in model.parameters() if p.requires_grad],
                 lr=float(params["memory"]["lr"]),
             )
-            output = model(input_ids=ids, labels=ids)
+            output = model(input_ids=ids, labels=ids, use_cache=False)
+            peak.checkpoint()
             output.loss.backward()
+            peak.checkpoint()
             optimizer.step()
+            peak.checkpoint()
             optimizer.zero_grad(set_to_none=True)
             loss = round(output.loss.detach().item(), 4)
 
     result = peak.result()
     result.update(
         mode=mode,
+        pid=os.getpid(),
+        weights_mb=round(weights_bytes / 1024 ** 2, 1),
         device=str(device),
         seq_len=params["memory"]["seq_len"],
         batch_size=params["memory"]["batch_size"],
@@ -385,9 +318,17 @@ def memory_profile(params: dict) -> list[dict]:
     repeats = max(1, int(params["memory"].get("repeats", 1)))
     results = []
     for mode in MODES:
-        runs = [measure_mode(mode, params) for _ in range(repeats)]
+        runs = []
+        for _ in range(repeats):
+            completed = subprocess.run(
+                [sys.executable, "-m", "src.inspect_model", "--probe", mode, "--params-stdin"],
+                input=json.dumps(params), text=True, capture_output=True, check=True,
+                cwd=Path(__file__).resolve().parent.parent, timeout=600,
+            )
+            runs.append(json.loads(completed.stdout.strip().splitlines()[-1]))
         worst = max(runs, key=lambda item: item["peak_mb"])
         worst["repeats"] = repeats
+        worst["pids"] = [item["pid"] for item in runs]
         worst["peak_mb_runs"] = [item["peak_mb"] for item in runs]
         results.append(worst)
         gc.collect()
@@ -411,7 +352,13 @@ def environment(params: dict, memory: list[dict]) -> dict:
         return ", ".join(value for value in values if value)
 
     return {
+        "measured_at": datetime.now(timezone.utc).isoformat(),
         "platform": platform.platform(),
+        "macos": platform.mac_ver()[0],
+        "processor": (subprocess.check_output(["sysctl", "-n", "machdep.cpu.brand_string"], text=True).strip()
+                      if sys.platform == "darwin" else platform.processor()),
+        "ram_gib": (int(subprocess.check_output(["sysctl", "-n", "hw.memsize"], text=True)) / 1024 ** 3
+                    if sys.platform == "darwin" else None),
         "system": f"{platform.system()} {platform.release()}",
         "machine": platform.machine(),
         "python": platform.python_version(),
@@ -433,9 +380,12 @@ def environment(params: dict, memory: list[dict]) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Разбор модели: параметры, активации, память")
     parser.add_argument("--probe", choices=MODES, help="служебный режим: замерить память и выйти")
+    parser.add_argument("--params-only", action="store_true", help="проверить только параметры")
+    parser.add_argument("--hooks-only", action="store_true", help="два прогона hooks и график")
+    parser.add_argument("--params-stdin", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
 
-    params = load_params()
+    params = json.load(sys.stdin) if args.params_stdin else load_params()
     set_seed(params["generate"]["seed"])
     params["model"]["device"] = str(resolve_device(params))
 
@@ -443,15 +393,35 @@ def main() -> None:
         print(json.dumps(measure_mode(args.probe, params), ensure_ascii=False))
         return
 
+    if args.params_only:
+        _, model = load_model(params)
+        table = group_table(parameter_rows(model))
+        total = sum(item["params"] for item in table)
+        direct = sum(p.numel() for p in model.parameters())
+        assert total == direct, (total, direct)
+        print(json.dumps({"params_total": total, "params_direct": direct,
+                          "params_by_group": table}, ensure_ascii=False, indent=2))
+        return
+
+    if args.hooks_only:
+        from src.report import plot_activations
+
+        tokenizer, model = load_model(params)
+        result = verify_activations(tokenizer, model, params)
+        plot_activations(result, params["hooks"]["plot"])
+        print(json.dumps(result, ensure_ascii=False))
+        return
+
     # Импорт здесь, а не наверху: matplotlib не нужен в служебных --probe
     # процессах, а тянется он заметно дольше остального.
     from src.report import write_report
 
+    memory = memory_profile(params)
     tokenizer, model = load_model(params)
     rows = parameter_rows(model)
     table = group_table(rows)
     total = sum(item["params"] for item in table)
-    memory = memory_profile(params)
+    assert total == sum(p.numel() for p in model.parameters())
 
     report = {
         "model": params["model"]["name"],
@@ -467,14 +437,18 @@ def main() -> None:
         "params_total": total,
         "params_direct": sum(p.numel() for p in model.parameters()),
         "params_by_group": table,
-        "activations": activation_norms(tokenizer, model, params),
+        "activations": verify_activations(tokenizer, model, params),
         "lora": lora_report(model, params),
         "memory": memory,
     }
 
+    peaks = {item["mode"]: item["peak_mb"] for item in memory}
+    assert peaks["full_ft"] > peaks["lora"] > peaks["inference"], peaks
+    assert all(item["peak_mb"] >= item["weights_mb"] for item in memory)
+    assert all(item["match"] for item in report["lora"])
     Path(params["report"]["json"]).parent.mkdir(exist_ok=True)
     Path(params["report"]["json"]).write_text(
-        json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     write_report(report, params)
 

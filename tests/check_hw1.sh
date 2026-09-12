@@ -39,12 +39,13 @@ mv params.yaml.orig params.yaml && rm -f params.yaml.bak
 
 echo
 echo "3. Генерация воспроизводима при temperature = 0"
-make generate > out1.txt 2>/dev/null
-make generate > out2.txt 2>/dev/null
-if diff -q out1.txt out2.txt > /dev/null 2>&1; then
+if uv run python -m src.generate > out1.txt 2>/dev/null &&
+   uv run python -m src.generate > out2.txt 2>/dev/null &&
+   [ -s out1.txt ] && [ -s out2.txt ] &&
+   diff -q out1.txt out2.txt > /dev/null 2>&1; then
   ok "два прогона дали идентичный вывод"
 else
-  fail "прогоны отличаются — не зафиксирован seed либо включён сэмплинг"
+  fail "генерация упала, вернула пустой вывод либо прогоны отличаются"
   diff out1.txt out2.txt | head -5 | sed 's/^/      /'
 fi
 rm -f out1.txt out2.txt
