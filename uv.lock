@@ -391,7 +391,7 @@ wheels = [
 ]
 
 [[package]]
-name = "mlops-hw2"
+name = "mlops"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
