@@ -3,7 +3,7 @@
   "dtype": "bfloat16",
   "device": "mps",
   "environment": {
-    "measured_at": "2026-09-12T13:11:23.372401+00:00",
+    "measured_at": "2026-09-12T14:09:18.923346+00:00",
     "platform": "macOS-26.6.2-arm64-arm-64bit",
     "macos": "26.6.2",
     "processor": "Apple M4 Pro",
@@ -265,22 +265,22 @@
     {
       "peak_mb": 4907.7,
       "peak_device_mb": 4907.7,
-      "peak_rss_mb": 4466.8,
+      "peak_rss_mb": 4469.2,
       "metric": "аллокатор mps",
       "metric_source": "torch.mps.driver_allocated_memory",
       "rss_source": "ru_maxrss",
       "sample_interval_ms": 10.0,
       "mode": "inference",
-      "pid": 17450,
+      "pid": 20574,
       "weights_mb": 3281.7,
       "device": "mps",
       "seq_len": 256,
       "batch_size": 1,
-      "seconds": 2.8,
+      "seconds": 3.1,
       "loss": null,
       "repeats": 1,
       "pids": [
-        17450
+        20574
       ],
       "peak_mb_runs": [
         4907.7
@@ -289,22 +289,22 @@
     {
       "peak_mb": 15028.5,
       "peak_device_mb": 15028.5,
-      "peak_rss_mb": 4468.9,
+      "peak_rss_mb": 4466.9,
       "metric": "аллокатор mps",
       "metric_source": "torch.mps.driver_allocated_memory",
       "rss_source": "ru_maxrss",
       "sample_interval_ms": 10.0,
       "mode": "full_ft",
-      "pid": 17458,
+      "pid": 20576,
       "weights_mb": 3281.7,
       "device": "mps",
       "seq_len": 256,
       "batch_size": 1,
-      "seconds": 3.7,
+      "seconds": 3.8,
       "loss": 13.4852,
       "repeats": 1,
       "pids": [
-        17458
+        20576
       ],
       "peak_mb_runs": [
         15028.5
@@ -313,13 +313,13 @@
     {
       "peak_mb": 5652.5,
       "peak_device_mb": 5652.5,
-      "peak_rss_mb": 4466.6,
+      "peak_rss_mb": 4467.2,
       "metric": "аллокатор mps",
       "metric_source": "torch.mps.driver_allocated_memory",
       "rss_source": "ru_maxrss",
       "sample_interval_ms": 10.0,
       "mode": "lora",
-      "pid": 17461,
+      "pid": 20578,
       "weights_mb": 3281.7,
       "device": "mps",
       "seq_len": 256,
@@ -328,7 +328,7 @@
       "loss": 13.4852,
       "repeats": 1,
       "pids": [
-        17461
+        20578
       ],
       "peak_mb_runs": [
         5652.5

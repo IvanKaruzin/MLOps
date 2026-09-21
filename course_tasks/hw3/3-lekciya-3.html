@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Лекция 3 — Данные для дообучения: сбор, качество, версионирование</title>
+  <style>
+/* ============================================
+   YABD-26 Course — Glassmorphism Apple Style
+   White + Purple palette, parallax
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --purple-50:  #faf5ff;
+  --purple-100: #f3e8ff;
+  --purple-200: #e9d5ff;
+  --purple-300: #d8b4fe;
+  --purple-400: #c084fc;
+  --purple-500: #a855f7;
+  --purple-600: #9333ea;
+  --purple-700: #7e22ce;
+  --purple-800: #6b21a8;
+  --purple-900: #581c87;
+
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px rgba(88, 28, 135, 0.12);
+  --glass-blur: 20px;
+
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a6a;
+  --text-muted: #8888aa;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #f5f0ff 0%, #ede4ff 25%, #f8f4ff 50%, #e8deff 75%, #f0eaff 100%);
+  color: var(--text-primary);
+  height: 100%;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------- Parallax Background Orbs ---------- */
+.parallax-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  will-change: transform;
+  transition: transform 0.3s ease-out;
+}
+
+.orb-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, var(--purple-300), transparent 70%);
+  top: -10%;
+  right: -5%;
+}
+
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--purple-200), transparent 70%);
+  bottom: -15%;
+  left: -10%;
+}
+
+.orb-3 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--purple-400), transparent 70%);
+  top: 40%;
+  left: 50%;
+  opacity: 0.3;
+}
+
+.orb-4 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, #fff, transparent 70%);
+  top: 20%;
+  left: 20%;
+  opacity: 0.6;
+}
+
+/* ---------- Slide Container ---------- */
+.slides-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(30px);
+  padding: 60px 40px 100px;
+}
+
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* ---------- Glass Card ---------- */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  padding: 48px 56px;
+  max-width: 960px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.glass-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.glass-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.glass-card::-webkit-scrollbar-thumb {
+  background: var(--purple-300);
+  border-radius: 3px;
+}
+
+/* ---------- Home Page ---------- */
+.home-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.home-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  padding: 48px 56px;
+  max-width: 1100px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.home-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.home-card::-webkit-scrollbar-thumb {
+  background: var(--purple-300);
+  border-radius: 3px;
+}
+
+.course-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--purple-700), var(--purple-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.course-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+  font-weight: 400;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.schedule-item {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  padding: 24px 28px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+.schedule-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 16px 16px 0 0;
+}
+
+.schedule-item.lecture::before {
+  background: linear-gradient(90deg, var(--purple-500), var(--purple-700));
+}
+
+.schedule-item.seminar::before {
+  background: linear-gradient(90deg, var(--purple-300), var(--purple-500));
+}
+
+.schedule-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(88, 28, 135, 0.18);
+  border-color: var(--purple-300);
+}
+
+.schedule-item .badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.schedule-item.lecture .badge {
+  background: var(--purple-600);
+  color: #fff;
+}
+
+.schedule-item.seminar .badge {
+  background: var(--purple-200);
+  color: var(--purple-800);
+}
+
+.schedule-item .date {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.schedule-item .title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.schedule-item .desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* ---------- Slide Typography ---------- */
+.slide-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 5px 14px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.slide-badge.lecture {
+  background: var(--purple-600);
+  color: #fff;
+}
+
+.slide-badge.seminar {
+  background: var(--purple-200);
+  color: var(--purple-800);
+}
+
+.slide-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+}
+
+.slide-content h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--purple-700);
+  margin: 20px 0 10px;
+}
+
+.slide-content p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.slide-content ul, .slide-content ol {
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.slide-content li {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.slide-content li strong {
+  color: var(--text-primary);
+}
+
+/* ---------- Code Blocks ---------- */
+.code-block {
+  background: rgba(30, 20, 50, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  overflow-x: auto;
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.code-block code,
+.code-block pre {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: #e8deff;
+  white-space: pre;
+  margin: 0;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+/* Комментарии внутри блока — приглушённые, но читаемые на тёмном */
+.code-block pre { tab-size: 2; }
+
+.code-block .comment { color: #8888aa; }
+.code-block .keyword { color: #c084fc; }
+.code-block .string  { color: #a78bfa; }
+.code-block .type    { color: #d8b4fe; }
+.code-block .annotation { color: #f0abfc; }
+
+.code-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--purple-400);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* ---------- Comparison Table ---------- */
+.comparison-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 16px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.comparison-table th {
+  background: rgba(147, 51, 234, 0.15);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--purple-800);
+}
+
+.comparison-table td {
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.comparison-table tr:hover td {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* ---------- Task Box ---------- */
+.task-box {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.08), rgba(168, 85, 247, 0.12));
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin: 20px 0;
+}
+
+.task-box h3 {
+  color: var(--purple-700) !important;
+  margin-top: 0 !important;
+  font-size: 1.1rem !important;
+}
+
+.task-box .task-steps {
+  counter-reset: step;
+  list-style: none;
+  padding-left: 0;
+}
+
+.task-box .task-steps li {
+  counter-increment: step;
+  padding-left: 32px;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.task-box .task-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 22px;
+  height: 22px;
+  background: var(--purple-500);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- Bottom Navigation Bar ---------- */
+.nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 40px;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: var(--purple-700);
+  font-size: 1.1rem;
+  text-decoration: none;
+}
+
+.nav-btn:hover {
+  background: var(--purple-100);
+  border-color: var(--purple-300);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(88, 28, 135, 0.15);
+}
+
+.nav-btn:active {
+  transform: translateY(0);
+}
+
+.nav-btn.disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+.nav-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.page-indicator {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 60px;
+  text-align: center;
+  user-select: none;
+}
+
+.nav-home {
+  font-size: 0.8rem;
+  font-weight: 600;
+  width: auto;
+  padding: 0 16px;
+  gap: 6px;
+}
+
+.nav-home svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Diagram / Architecture Blocks ---------- */
+.arch-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.arch-box {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 14px 20px;
+  text-align: center;
+  min-width: 120px;
+}
+
+.arch-box .arch-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.arch-box .arch-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--purple-700);
+}
+
+.arch-arrow {
+  font-size: 1.4rem;
+  color: var(--purple-400);
+}
+
+.arch-box.highlight {
+  background: rgba(147, 51, 234, 0.12);
+  border-color: var(--purple-300);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .glass-card, .home-card {
+    padding: 28px 24px;
+    border-radius: 18px;
+  }
+
+  .course-title {
+    font-size: 1.8rem;
+  }
+
+  .slide-title {
+    font-size: 1.5rem;
+  }
+
+  .schedule-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .slide {
+    padding: 40px 20px 100px;
+  }
+
+  .nav-bar {
+    padding: 12px 20px;
+  }
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.schedule-item {
+  animation: fadeInUp 0.5s ease backwards;
+}
+
+.schedule-item:nth-child(1)  { animation-delay: 0.05s; }
+.schedule-item:nth-child(2)  { animation-delay: 0.1s; }
+.schedule-item:nth-child(3)  { animation-delay: 0.15s; }
+.schedule-item:nth-child(4)  { animation-delay: 0.2s; }
+.schedule-item:nth-child(5)  { animation-delay: 0.25s; }
+.schedule-item:nth-child(6)  { animation-delay: 0.3s; }
+.schedule-item:nth-child(7)  { animation-delay: 0.35s; }
+.schedule-item:nth-child(8)  { animation-delay: 0.4s; }
+.schedule-item:nth-child(9)  { animation-delay: 0.45s; }
+.schedule-item:nth-child(10) { animation-delay: 0.5s; }
+.schedule-item:nth-child(11) { animation-delay: 0.55s; }
+.schedule-item:nth-child(12) { animation-delay: 0.6s; }
+.schedule-item:nth-child(13) { animation-delay: 0.65s; }
+.schedule-item:nth-child(14) { animation-delay: 0.7s; }
+.schedule-item:nth-child(15) { animation-delay: 0.75s; }
+.schedule-item:nth-child(16) { animation-delay: 0.8s; }
+
+/* ---------- Section Divider ---------- */
+.section-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--purple-400);
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+/* ---------- Highlight Chip ---------- */
+.chip {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: rgba(147, 51, 234, 0.1);
+  color: var(--purple-700);
+  margin: 2px 4px 2px 0;
+}
+
+/* ---------- Two Column Layout ---------- */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 16px 0;
+}
+
+@media (max-width: 768px) {
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.col-card {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.col-card h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--purple-700);
+  margin-bottom: 10px;
+}
+.schedule-item.homework::before{background:linear-gradient(90deg,var(--purple-300),var(--purple-500));}
+.schedule-item.homework .badge{background:var(--purple-200);color:var(--purple-800);}
+
+/* ---------- Speech pages ---------- */
+.speech-columns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 8px; }
+@media (max-width: 1000px) { .speech-columns { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 680px) { .speech-columns { grid-template-columns: 1fr; } }
+.speech-block { background: rgba(255,255,255,0.35); border: 1px solid var(--glass-border); border-radius: 14px; padding: 18px 20px; }
+.speech-block h4 { font-size: 0.8rem; font-weight: 600; color: var(--purple-700); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(147,51,234,0.15); }
+.speech-block p { font-size: 0.88rem; line-height: 1.65; color: var(--text-secondary); margin-bottom: 8px; }
+.speech-block p:last-child { margin-bottom: 0; }
+.speech-hint { font-size: 0.78rem; color: var(--purple-500); font-style: italic; margin-top: 6px; }
+.slide-badge.homework { background: var(--purple-200); color: var(--purple-800); }
+
+/* ---------- Тезисный конспект лектора (speech) ---------- */
+.cue-card { max-width: 1120px; padding: 34px 44px; }
+
+.cue-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 4px; }
+.cue-time {
+  font-size: .8rem; font-weight: 600; color: var(--purple-700);
+  background: rgba(255,255,255,.55); border: 1px solid var(--glass-border);
+  border-radius: 999px; padding: 5px 15px; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.cue-title { font-size: 2rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.12; margin: 8px 0 22px; }
+
+.cue-list { list-style: none; padding: 0; margin: 0 0 20px; display: flex; flex-direction: column; gap: 12px; }
+.cue-list.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 34px; }
+@media (max-width: 900px) { .cue-list.two { grid-template-columns: 1fr; } }
+.cue-list li { position: relative; padding-left: 28px; font-size: 1.15rem; line-height: 1.42; color: var(--text-primary); }
+.cue-list li::before {
+  content: ""; position: absolute; left: 5px; top: .52em;
+  width: 9px; height: 9px; border-radius: 50%; background: var(--purple-400);
+}
+.cue-list li.key::before { background: var(--purple-700); box-shadow: 0 0 0 4px rgba(147,51,234,.18); }
+.cue-list li.warn::before { background: #d97706; box-shadow: 0 0 0 4px rgba(217,119,6,.18); }
+.cue-list li strong { color: var(--purple-800); font-weight: 700; }
+.cue-list li span { display: block; margin-top: 3px; font-size: .92rem; color: var(--text-muted); }
+
+.cue-say {
+  background: rgba(255,255,255,.55); border-left: 4px solid var(--purple-600);
+  border-radius: 0 14px 14px 0; padding: 15px 22px; margin: 0 0 18px;
+}
+.cue-say .cue-lbl {
+  display: block; font-size: .68rem; font-weight: 700; letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--purple-700); margin-bottom: 7px;
+}
+.cue-say p { font-size: 1.1rem; line-height: 1.48; margin: 0 0 8px; color: var(--text-primary); }
+.cue-say p:last-child { margin-bottom: 0; }
+
+.cue-next {
+  display: flex; align-items: center; gap: 8px; font-size: .88rem; color: var(--text-muted);
+  border-top: 1px solid rgba(147,51,234,.15); padding-top: 13px;
+}
+.cue-next b { color: var(--purple-700); font-weight: 600; }
+
+/* ---------- Inline code (не затрагивает .code-block) ---------- */
+.cue-list code, .cue-say code, .cue-next code,
+.slide-content p > code, .slide-content li > code, .slide-content td > code {
+  font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+  font-size: .88em;
+  background: rgba(147, 51, 234, .10);
+  color: var(--purple-800);
+  padding: .08em .36em;
+  border-radius: 5px;
+}
+
+/* ---------- Навигация: крупные кнопки и счётчик ---------- */
+.slides-wrapper { height: 100dvh; }
+.slide { height: 100dvh; }
+
+.nav-bar {
+  gap: 20px;
+  padding: 14px 24px calc(14px + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.55);
+  border-top: 1px solid rgba(147, 51, 234, .18);
+}
+
+.nav-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.75);
+  border-color: var(--purple-200);
+  box-shadow: 0 2px 10px rgba(88, 28, 135, .08);
+}
+.nav-btn svg { width: 26px; height: 26px; stroke-width: 2.4; }
+.nav-btn.disabled { opacity: .22; }
+
+.page-indicator {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--purple-800);
+  min-width: 92px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .01em;
+  background: rgba(255, 255, 255, .7);
+  border: 1px solid var(--purple-200);
+  border-radius: 12px;
+  padding: 12px 8px;
+}
+
+/* Телефон: кнопки разнесены по краям — под большой палец */
+@media (max-width: 768px) {
+  .nav-bar { justify-content: space-between; gap: 10px; padding-left: 14px; padding-right: 14px; }
+  .nav-btn { width: 62px; height: 58px; }
+  .nav-btn svg { width: 30px; height: 30px; }
+  .page-indicator { font-size: 1.2rem; min-width: 0; flex: 1; max-width: 130px; }
+  .slide { padding: 32px 16px 110px; }
+}
+
+/* Плавная прокрутка содержимого карточки на мобильных */
+.glass-card { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+@media (max-width: 768px) { .glass-card { max-height: calc(100dvh - 150px); } }
+
+/* Карточка ещё не готового занятия */
+.schedule-item.pending { opacity: .42; cursor: default; pointer-events: none; }
+.schedule-item.pending::after {
+  content: "скоро"; position: absolute; top: 14px; right: 16px;
+  font-size: .68rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-muted); background: rgba(255,255,255,.6);
+  border: 1px solid var(--glass-border); border-radius: 6px; padding: 3px 8px;
+}
+
+/* ---------- Слайд в две колонки: текст слева, схема справа ---------- */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 26px;
+  align-items: start;
+}
+.split-text > :first-child { margin-top: 0; }
+.split-text p,
+.split-text li { font-size: 0.92rem; line-height: 1.62; }
+.split-text h3 { margin-top: 18px; }
+.split .code-block pre { font-size: 0.72rem; line-height: 1.55; }
+.split .code-block { padding: 14px 16px; margin: 12px 0; }
+
+.split-fig {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 16px;
+  padding: 16px 16px 12px;
+  box-shadow: 0 6px 24px rgba(88, 28, 135, 0.07);
+}
+.split-fig + .split-fig { margin-top: 16px; }
+.split-fig svg { width: 100%; height: auto; display: block; }
+.split-fig figcaption {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(168, 85, 247, 0.16);
+  font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+  font-size: 0.72rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  overflow-x: auto;
+}
+.split-fig figcaption b { color: var(--purple-700); font-weight: 600; }
+
+@media (max-width: 900px) {
+  .split { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .split-fig { padding: 14px 12px 10px; }
+}
+
+/* ---------- Плашки-определения ---------- */
+.defs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0 4px;
+}
+.def {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.def.hi { background: rgba(243, 232, 255, 0.85); border-color: var(--purple-400); }
+.def b {
+  display: block;
+  font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--purple-700);
+  margin-bottom: 5px;
+}
+.def span { display: block; font-size: 0.8rem; line-height: 1.5; color: var(--text-secondary); }
+.def i {
+  display: block;
+  margin-top: 7px;
+  font-style: normal;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+@media (max-width: 900px) { .defs { grid-template-columns: minmax(0, 1fr); } }
+
+/* В двухколоночной раскладке таблицы и заголовки чуть компактнее */
+.split .comparison-table { font-size: 0.84rem; }
+.split .comparison-table th,
+.split .comparison-table td { padding: 8px 10px; }
+.split h3 { font-size: 1rem; margin-top: 16px; }
+.def code { font-size: 0.76em; word-break: break-word; }
+
+/* ---------- Слайд-схема: картинка крупно, текста мало ---------- */
+.figure-wide {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 18px;
+  padding: 18px 20px 14px;
+  margin: 4px 0 18px;
+  box-shadow: 0 6px 24px rgba(88, 28, 135, 0.07);
+}
+.figure-wide svg { width: 100%; height: auto; display: block; }
+.figure-wide figcaption {
+  margin-top: 12px; padding-top: 10px;
+  border-top: 1px solid rgba(168, 85, 247, 0.16);
+  font-size: 0.82rem; line-height: 1.6; color: var(--text-secondary);
+}
+.figure-wide figcaption b { color: var(--purple-700); }
+
+/* Крупные цифры под схемой */
+.numbers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0; }
+.numbers.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.numbers.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.num {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 14px; padding: 14px 16px; text-align: center;
+}
+.num.hi { background: rgba(243, 232, 255, 0.9); border-color: var(--purple-400); }
+.num b { display: block; font-size: 1.75rem; font-weight: 700; color: var(--purple-700); line-height: 1.1; }
+.num.hi b { color: var(--purple-800); }
+.num span { display: block; margin-top: 6px; font-size: 0.78rem; line-height: 1.45; color: var(--text-secondary); }
+@media (max-width: 900px) {
+  .numbers, .numbers.two, .numbers.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+</style>
+</head>
+<body>
+  <div class="parallax-bg">
+    <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div><div class="orb orb-4"></div>
+  </div>
+  <div class="slides-wrapper">
+
+    <!-- ==================== SLIDE 1 ==================== -->
+    <div class="slide active">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 3 &middot; Слайд 1/11</span>
+        <h1 class="slide-title">Данные: сбор, качество, версионирование</h1>
+        <div class="slide-content">
+          <figure class="figure-wide">
+            <svg viewBox="0 0 900 150" role="img" aria-label="Пайплайн данных от источника до версии">
+      <defs>
+  <marker id="ar_pipeline" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/>
+  </marker>
+  <marker id="arr_pipeline" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#dc2626"/>
+  </marker>
+  <style>
+    .bx{fill:#fff;stroke:rgba(147,51,234,.35);stroke-width:1.4}
+    .bxo{fill:none;stroke:#9333ea;stroke-width:1.6}
+    .bxh{fill:#f3e8ff;stroke:#9333ea;stroke-width:1.8}
+    .bxr{fill:#fef2f2;stroke:#dc2626;stroke-width:1.6}
+    .bxg{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.6}
+    .w{fill:none;stroke:#c084fc;stroke-width:2}
+    .wr{fill:none;stroke:#dc2626;stroke-width:1.8}
+    .wd{fill:none;stroke:#a855f7;stroke-width:1.8;stroke-dasharray:5 4}
+    .t{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e;text-anchor:middle}
+    .ts{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa;text-anchor:middle}
+    .tl{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa}
+    .m{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:11px;fill:#6b21a8}
+    .ms{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:9.5px;fill:#8888aa}
+    .big{font-family:Inter,sans-serif;font-size:15px;font-weight:600;fill:#6b21a8;text-anchor:middle}
+    .red{fill:#dc2626}
+    .grn{fill:#16a34a}
+  </style>
+</defs>
+      <rect class="bx" x="20" y="44" width="160" height="62" rx="10"/>
+      <text class="t" x="100.0" y="73.0">источники</text>
+      <text class="ts" x="100.0" y="89.0">откуда берём</text>
+      <path class="w" d="M184,75.0 L189,75.0" marker-end="url(#ar_pipeline)"/>
+      <rect class="bx" x="195" y="44" width="160" height="62" rx="10"/>
+      <text class="t" x="275.0" y="73.0">схема</text>
+      <text class="ts" x="275.0" y="89.0">ворота на входе</text>
+      <path class="w" d="M359,75.0 L364,75.0" marker-end="url(#ar_pipeline)"/>
+      <rect class="bx" x="370" y="44" width="160" height="62" rx="10"/>
+      <text class="t" x="450.0" y="73.0">чистка</text>
+      <text class="ts" x="450.0" y="89.0">дубли, PII, длины</text>
+      <path class="w" d="M534,75.0 L539,75.0" marker-end="url(#ar_pipeline)"/>
+      <rect class="bxh" x="545" y="44" width="160" height="62" rx="10"/>
+      <text class="t" x="625.0" y="73.0">сплит</text>
+      <text class="ts" x="625.0" y="89.0">без утечки</text>
+      <path class="w" d="M709,75.0 L714,75.0" marker-end="url(#ar_pipeline)"/>
+      <rect class="bx" x="720" y="44" width="160" height="62" rx="10"/>
+      <text class="t" x="800.0" y="73.0">версия</text>
+      <text class="ts" x="800.0" y="89.0">DVC + datasheet</text>
+      <text class="ts" x="625.0" y="126">здесь ломается чаще всего</text>
+      <text class="tl" x="20" y="26">путь одного примера от источника до обучения</text>
+    </svg>
+          </figure>
+          <ul>
+            <li>Модель вы уже разобрали. Дальше всё решает то, <strong>что вы в неё зальёте</strong></li>
+            <li>Лекция идёт по этой схеме слева направо. Кульминация &mdash; сплит: там ошибка не видна и портит все метрики разом</li>
+            <li>Все числа сегодня &mdash; замеры на реальном датасете из ДЗ 3, а не из статьи</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- ==================== SLIDE 2 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 3 &middot; Слайд 2/11</span>
+        <h1 class="slide-title">Что такое один пример</h1>
+        <div class="slide-content">
+          <figure class="figure-wide">
+            <svg viewBox="0 0 760 300" role="img" aria-label="Структура одного примера">
+      <defs>
+  <marker id="ar_example" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/>
+  </marker>
+  <marker id="arr_example" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#dc2626"/>
+  </marker>
+  <style>
+    .bx{fill:#fff;stroke:rgba(147,51,234,.35);stroke-width:1.4}
+    .bxo{fill:none;stroke:#9333ea;stroke-width:1.6}
+    .bxh{fill:#f3e8ff;stroke:#9333ea;stroke-width:1.8}
+    .bxr{fill:#fef2f2;stroke:#dc2626;stroke-width:1.6}
+    .bxg{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.6}
+    .w{fill:none;stroke:#c084fc;stroke-width:2}
+    .wr{fill:none;stroke:#dc2626;stroke-width:1.8}
+    .wd{fill:none;stroke:#a855f7;stroke-width:1.8;stroke-dasharray:5 4}
+    .t{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e;text-anchor:middle}
+    .ts{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa;text-anchor:middle}
+    .tl{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa}
+    .m{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:11px;fill:#6b21a8}
+    .ms{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:9.5px;fill:#8888aa}
+    .big{font-family:Inter,sans-serif;font-size:15px;font-weight:600;fill:#6b21a8;text-anchor:middle}
+    .red{fill:#dc2626}
+    .grn{fill:#16a34a}
+  </style>
+</defs>
+      <text class="tl" x="20" y="22">одна строка JSONL = один обучающий пример</text>
+      <rect class="bx" x="20" y="42" width="440" height="62" rx="10"/>
+      <text class="m" x="38" y="66">"role": "system"</text>
+      <text class="tl" x="38" y="86">правила игры: кто ты и в каком формате отвечаешь</text>
+      <rect class="bx" x="20" y="118" width="440" height="62" rx="10"/>
+      <text class="m" x="38" y="142">"role": "user"</text>
+      <text class="tl" x="38" y="162">вопрос — то, что придёт от пользователя</text>
+      <rect class="bxh" x="20" y="194" width="440" height="62" rx="10"/>
+      <text class="m" x="38" y="218">"role": "assistant"</text>
+      <text class="tl" x="38" y="238">ответ — единственное, чему учим модель</text>
+      <rect class="bxg" x="490" y="194" width="250" height="62" rx="10"/>
+      <text class="t" x="615" y="218">лосс считается</text>
+      <text class="t" x="615" y="238">только здесь</text>
+      <path class="w" d="M486,225 L466,225" marker-end="url(#ar_example)"/>
+      <text class="ts" x="615" y="176">подробнее — лекция 4</text>
+    </svg>
+            <figcaption>Одна строка JSONL. Ролей ровно три, порядок фиксирован, <b>assistant обязателен</b> — иначе учить нечему.</figcaption>
+          </figure>
+          <ul>
+            <li><code>system</code> одинаков у всего датасета? Тогда модель его просто игнорирует. Несколько разных системных промптов &mdash; требование ДЗ 3</li>
+            <li>Один пример &mdash; один вопрос и один ответ. Диалог из пяти реплик &mdash; это <em>один</em> пример, а не пять</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- ==================== SLIDE 3 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 3 &middot; Слайд 3/11</span>
+        <h1 class="slide-title">Объём против качества</h1>
+        <div class="slide-content">
+          <figure class="figure-wide">
+            <svg viewBox="0 0 880 344" role="img" aria-label="Распределение повторов вопросов">
+      <defs>
+  <marker id="arepeatsh1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/>
+  </marker>
+  <style>
+    .t{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e}
+    .tc{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e;text-anchor:middle}
+    .s{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa}
+    .sc{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa;text-anchor:middle}
+    .n{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:12px;fill:#6b21a8;font-weight:600}
+    .nc{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:12px;fill:#6b21a8;font-weight:600;text-anchor:middle}
+    .ns{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:9.5px;fill:#8888aa;text-anchor:middle}
+    .ax{stroke:#d8b4fe;stroke-width:1}
+    .w{fill:none;stroke:#c084fc;stroke-width:2}
+  </style>
+</defs>
+      <text class="s" x="30" y="22">сколько вопросов встречается столько-то раз — шкала логарифмическая</text>
+      <rect x="60" y="52" width="60" height="190" rx="3" fill="#9333ea"/>
+      <text class="ns" x="90" y="45">78 767</text>
+      <text class="nc" x="90" y="262">1</text>
+      <rect x="134" y="90" width="60" height="152" rx="3" fill="#c084fc"/>
+      <text class="ns" x="164" y="83">8 379</text>
+      <text class="nc" x="164" y="262">2</text>
+      <rect x="208" y="129" width="60" height="113" rx="3" fill="#c084fc"/>
+      <text class="ns" x="238" y="122">831</text>
+      <text class="nc" x="238" y="262">3</text>
+      <rect x="282" y="149" width="60" height="93" rx="3" fill="#c084fc"/>
+      <text class="ns" x="312" y="142">250</text>
+      <text class="nc" x="312" y="262">4</text>
+      <rect x="356" y="169" width="60" height="73" rx="3" fill="#c084fc"/>
+      <text class="ns" x="386" y="162">74</text>
+      <text class="nc" x="386" y="262">5</text>
+      <rect x="430" y="178" width="60" height="64" rx="3" fill="#c084fc"/>
+      <text class="ns" x="460" y="171">44</text>
+      <text class="nc" x="460" y="262">6</text>
+      <rect x="504" y="198" width="60" height="44" rx="3" fill="#c084fc"/>
+      <text class="ns" x="534" y="191">13</text>
+      <text class="nc" x="534" y="262">7</text>
+      <rect x="578" y="209" width="60" height="33" rx="3" fill="#c084fc"/>
+      <text class="ns" x="608" y="202">6</text>
+      <text class="nc" x="608" y="262">8</text>
+      <rect x="652" y="219" width="60" height="23" rx="3" fill="#c084fc"/>
+      <text class="ns" x="682" y="212">3</text>
+      <text class="nc" x="682" y="262">9</text>
+      <rect x="726" y="207" width="60" height="35" rx="3" fill="#c084fc"/>
+      <text class="ns" x="756" y="200">7</text>
+      <text class="nc" x="756" y="262">10+</text>
+      <line class="ax" x1="52" y1="242" x2="794" y2="242"/>
+      <text class="sc" x="423" y="284">сколько раз повторяется один и тот же вопрос</text>
+      <text class="s" x="60" y="318">78 767 вопросов встречаются ровно один раз — это 78,8% датасета.</text>
+      <text class="s" x="60" y="336">Остальные 21,2% примеров приходятся на вопросы, которые уже где-то были. Рекордсмен — 112 раз.</text>
+    </svg>
+            <figcaption>Хвост тянется до <b>112</b>. Модель не усредняет данные — она выучивает то, что видит чаще.</figcaption>
+          </figure>
+          <div class="split">
+            <div class="split-text">
+              <h3>Пять измерений, по которым датасет либо годен, либо нет</h3>
+              <div class="defs">
+                <div class="def"><b>полнота</b><span>все обязательные поля на месте</span></div>
+                <div class="def"><b>валидность</b><span>значения тех типов и в тех границах, что заявлены</span></div>
+                <div class="def"><b>консистентность</b><span>одинаковые вопросы не получают разные ответы</span></div>
+                <div class="def hi"><b>уникальность</b><span>нет дублей и почти-дублей</span></div>
+              </div>
+            </div>
+            <div>
+              <h3 style="margin-top:0">Почему тысяча бьёт пятьдесят тысяч</h3>
+              <p>Обучившись на этом как есть, вы получите модель, которая уверенно отвечает на популярные формулировки и рассыпается на остальных. Выкинуть 11 626 повторов — потерять 11% объёма и ничего по сути.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 4 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 3 &middot; Слайд 4/11</span>
+        <h1 class="slide-title">Дедупликация: точная и почти</h1>
+        <div class="slide-content">
+          <figure class="figure-wide">
+            <svg viewBox="0 0 880 290" role="img" aria-label="Точная дедупликация против дедупликации по смыслу">
+      <defs>
+  <marker id="ar_dedup" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/>
+  </marker>
+  <marker id="arr_dedup" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#dc2626"/>
+  </marker>
+  <style>
+    .bx{fill:#fff;stroke:rgba(147,51,234,.35);stroke-width:1.4}
+    .bxo{fill:none;stroke:#9333ea;stroke-width:1.6}
+    .bxh{fill:#f3e8ff;stroke:#9333ea;stroke-width:1.8}
+    .bxr{fill:#fef2f2;stroke:#dc2626;stroke-width:1.6}
+    .bxg{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.6}
+    .w{fill:none;stroke:#c084fc;stroke-width:2}
+    .wr{fill:none;stroke:#dc2626;stroke-width:1.8}
+    .wd{fill:none;stroke:#a855f7;stroke-width:1.8;stroke-dasharray:5 4}
+    .t{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e;text-anchor:middle}
+    .ts{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa;text-anchor:middle}
+    .tl{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa}
+    .m{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:11px;fill:#6b21a8}
+    .ms{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:9.5px;fill:#8888aa}
+    .big{font-family:Inter,sans-serif;font-size:15px;font-weight:600;fill:#6b21a8;text-anchor:middle}
+    .red{fill:#dc2626}
+    .grn{fill:#16a34a}
+  </style>
+</defs>
+      <text class="tl" x="20" y="22">один и тот же вопрос, разные варианты ответа</text>
+      <rect class="bx" x="20" y="40" width="380" height="74" rx="10"/>
+      <text class="m" x="38" y="66">Вопрос: «Blend sign» — это</text>
+      <text class="ms" x="38" y="86">варианты: A B C D</text>
+      <text class="ms" x="38" y="104">md5 всего примера: hash 3f91…</text>
+      <rect class="bx" x="20" y="132" width="380" height="74" rx="10"/>
+      <text class="m" x="38" y="158">Вопрос: «Blend sign» — это</text>
+      <text class="ms" x="38" y="178">варианты: B D A C</text>
+      <text class="ms" x="38" y="196">md5 всего примера: hash 7c02…</text>
+      <path class="w" d="M404,77 L470,77" marker-end="url(#ar_dedup)"/>
+      <path class="w" d="M404,169 L470,169" marker-end="url(#ar_dedup)"/>
+      <rect class="bxr" x="476" y="46" width="180" height="62" rx="10"/>
+      <text class="t" x="566.0" y="75.0">точный хэш</text>
+      <text class="ts" x="566.0" y="91.0">совпадений 0</text>
+      <rect class="bxg" x="476" y="138" width="180" height="62" rx="10"/>
+      <text class="t" x="566.0" y="167.0">хэш вопроса</text>
+      <text class="ts" x="566.0" y="183.0">совпадение есть</text>
+      <text class="tl" x="676" y="72">ловит только побайтово</text>
+      <text class="tl" x="676" y="88">одинаковые строки</text>
+      <text class="tl" x="676" y="164">нормализуй и сравнивай</text>
+      <text class="tl" x="676" y="180">то, что делает пример</text>
+      <text class="tl" x="676" y="196">уникальным</text>
+      <text class="ts" x="440" y="264">порядок вариантов ответа переставлен — для md5 это два разных примера</text>
+    </svg>
+          </figure>
+          <div class="numbers">
+            <div class="num"><b>0</b><span>точных дублей по всему примеру</span></div>
+            <div class="num hi"><b>11 626</b><span>повторов вопроса после нормализации</span></div>
+            <div class="num"><b>10 509</b><span>близких пар внутри тем, Jaccard ≥ 0,8</span></div>
+          </div>
+          <ul>
+            <li><strong>Точный хэш нашёл ноль.</strong> Формально датасет чистый. По сути &mdash; каждый девятый пример повторяет чужой вопрос</li>
+            <li>Нормализация перед сравнением: регистр, пунктуация, лишние пробелы. Дальше &mdash; MinHash или shingles, если нужны неточные совпадения</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- ==================== SLIDE 5 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 3 &middot; Слайд 5/11</span>
+        <h1 class="slide-title">Контаминация: где ломается всё</h1>
+        <div class="slide-content">
+          <figure class="figure-wide">
+            <svg viewBox="0 0 880 330" role="img" aria-label="Утечка между train и test при разных сплитах">
+      <defs>
+  <marker id="ar_leak" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/>
+  </marker>
+  <marker id="arr_leak" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#dc2626"/>
+  </marker>
+  <style>
+    .bx{fill:#fff;stroke:rgba(147,51,234,.35);stroke-width:1.4}
+    .bxo{fill:none;stroke:#9333ea;stroke-width:1.6}
+    .bxh{fill:#f3e8ff;stroke:#9333ea;stroke-width:1.8}
+    .bxr{fill:#fef2f2;stroke:#dc2626;stroke-width:1.6}
+    .bxg{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.6}
+    .w{fill:none;stroke:#c084fc;stroke-width:2}
+    .wr{fill:none;stroke:#dc2626;stroke-width:1.8}
+    .wd{fill:none;stroke:#a855f7;stroke-width:1.8;stroke-dasharray:5 4}
+    .t{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e;text-anchor:middle}
+    .ts{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa;text-anchor:middle}
+    .tl{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa}
+    .m{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:11px;fill:#6b21a8}
+    .ms{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:9.5px;fill:#8888aa}
+    .big{font-family:Inter,sans-serif;font-size:15px;font-weight:600;fill:#6b21a8;text-anchor:middle}
+    .red{fill:#dc2626}
+    .grn{fill:#16a34a}
+  </style>
+</defs>
+      <text class="tl" x="20" y="22">100 000 примеров, сплит 90 / 10. Красное — вопросы из test, дословно лежащие в train</text>
+      <text class="tl" x="20" y="80">случайный сплит</text>
+      <rect x="215" y="56" width="392.4" height="34" rx="7" fill="#ede9fe" stroke="none"/>
+      <rect x="607.4" y="56" width="152.60000000000002" height="34" fill="#ddd6fe" stroke="none"/>
+      <rect x="607.4" y="56" width="148.8" height="34" fill="#f87171" stroke="none"/>
+      <text class="ts" style="fill:#7f1d1d;text-anchor:start" x="613.4" y="78">19.5%</text>
+      <rect class="bxo" x="215" y="56" width="545" height="34" rx="7"/>
+      <line x1="607.4" y1="56" x2="607.4" y2="90" stroke="#9333ea" stroke-width="1.6"/>
+      <text class="red" style="font-family:Inter,sans-serif;font-size:12.5px;font-weight:600" x="770" y="78">1951 из 10 000</text>
+      <text class="tl" x="20" y="142">сплит по темам</text>
+      <rect x="215" y="118" width="392.4" height="34" rx="7" fill="#ede9fe" stroke="none"/>
+      <rect x="607.4" y="118" width="152.60000000000002" height="34" fill="#ddd6fe" stroke="none"/>
+      <rect x="607.4" y="118" width="93.8" height="34" fill="#f87171" stroke="none"/>
+      <text class="ts" style="fill:#7f1d1d;text-anchor:start" x="613.4" y="140">12.3%</text>
+      <rect class="bxo" x="215" y="118" width="545" height="34" rx="7"/>
+      <line x1="607.4" y1="118" x2="607.4" y2="152" stroke="#9333ea" stroke-width="1.6"/>
+      <text class="red" style="font-family:Inter,sans-serif;font-size:12.5px;font-weight:600" x="770" y="140">1232 из 10 022</text>
+      <text class="tl" x="20" y="204">дедуп → сплит по вопросам</text>
+      <rect x="215" y="180" width="392.4" height="34" rx="7" fill="#ede9fe" stroke="none"/>
+      <rect x="607.4" y="180" width="152.60000000000002" height="34" fill="#ddd6fe" stroke="none"/>
+      <text class="ts" style="fill:#166534;text-anchor:start" x="613.4" y="202">чисто</text>
+      <rect class="bxo" x="215" y="180" width="545" height="34" rx="7"/>
+      <line x1="607.4" y1="180" x2="607.4" y2="214" stroke="#9333ea" stroke-width="1.6"/>
+      <text class="grn" style="font-family:Inter,sans-serif;font-size:12.5px;font-weight:600" x="770" y="202">0 из 8 838</text>
+      <text class="ts" x="411.2" y="48">train — 90% примеров</text>
+      <text class="ts" x="683.7" y="48">test — 10%, показан крупнее</text>
+      <text class="tl" x="20" y="260">Сплит по темам не спасает: один и тот же вопрос кочует между темами.</text>
+      <text class="tl" x="20" y="280">Группировать надо по тому, что делает пример одинаковым, — по самому вопросу.</text>
+    </svg>
+          </figure>
+          <ul>
+            <li>Утечка не роняет пайплайн и не видна в логах. Она видна только как <strong>подозрительно хорошая метрика</strong> на тесте</li>
+            <li>Случайный сплит дал <strong>19,5% утечки</strong>. Сплит по темам &mdash; всё ещё 12,3%: одна и та же формулировка встречается в разных темах</li>
+            <li>Ноль получается только после дедупликации: сначала схлопнуть одинаковое, потом резать по группам</li>
+            <li>Проверка контаминации &mdash; отдельная стадия пайплайна, а не разовый скрипт «посмотреть глазами»</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- ==================== SLIDE 6 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 3 &middot; Слайд 6/11</span>
+        <h1 class="slide-title">Валидация схемы как ворота</h1>
+        <div class="slide-content">
+          <figure class="figure-wide">
+            <svg viewBox="0 0 880 230" role="img" aria-label="Валидация схемы как ворота пайплайна">
+      <defs>
+  <marker id="ar_gate" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/>
+  </marker>
+  <marker id="arr_gate" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#dc2626"/>
+  </marker>
+  <style>
+    .bx{fill:#fff;stroke:rgba(147,51,234,.35);stroke-width:1.4}
+    .bxo{fill:none;stroke:#9333ea;stroke-width:1.6}
+    .bxh{fill:#f3e8ff;stroke:#9333ea;stroke-width:1.8}
+    .bxr{fill:#fef2f2;stroke:#dc2626;stroke-width:1.6}
+    .bxg{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.6}
+    .w{fill:none;stroke:#c084fc;stroke-width:2}
+    .wr{fill:none;stroke:#dc2626;stroke-width:1.8}
+    .wd{fill:none;stroke:#a855f7;stroke-width:1.8;stroke-dasharray:5 4}
+    .t{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e;text-anchor:middle}
+    .ts{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa;text-anchor:middle}
+    .tl{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa}
+    .m{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:11px;fill:#6b21a8}
+    .ms{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:9.5px;fill:#8888aa}
+    .big{font-family:Inter,sans-serif;font-size:15px;font-weight:600;fill:#6b21a8;text-anchor:middle}
+    .red{fill:#dc2626}
+    .grn{fill:#16a34a}
+  </style>
+</defs>
+      <text class="tl" x="20" y="22">битый пример должен уронить пайплайн, а не доехать до обучения</text>
+      <rect class="bx" x="20" y="60" width="150" height="62" rx="10"/>
+      <text class="t" x="95.0" y="89.0">сырые данные</text>
+      <text class="ts" x="95.0" y="105.0">100 000 строк</text>
+      <path class="w" d="M174,91 L214,91" marker-end="url(#ar_gate)"/>
+      <rect class="bxh" x="220" y="48" width="150" height="86" rx="10"/>
+      <text class="t" x="295" y="80">валидация</text>
+      <text class="t" x="295" y="100">схемы</text>
+      <text class="ts" x="295" y="120">ворота</text>
+      <path class="w" d="M374,91 L414,91" marker-end="url(#ar_gate)"/>
+      <rect class="bxg" x="420" y="60" width="150" height="62" rx="10"/>
+      <text class="t" x="495.0" y="89.0">чистка</text>
+      <text class="ts" x="495.0" y="105.0">дальше по конвейеру</text>
+      <path class="wr" d="M295,138 L295,180" marker-end="url(#arr_gate)"/>
+      <rect class="bxr" x="200" y="184" width="190" height="34" rx="8"/>
+      <text class="t" x="295" y="206">stop — разбирайся</text>
+      <text class="tl" x="600" y="70">нет роли assistant</text>
+      <text class="tl" x="600" y="90">пустой content</text>
+      <text class="tl" x="600" y="110">роли не по порядку</text>
+      <text class="tl" x="600" y="130">не JSON</text>
+      <text class="ts" x="600" y="152" style="text-anchor:start">одна такая строка из ста тысяч —</text>
+      <text class="ts" x="600" y="168" style="text-anchor:start">и обучение молча съедет</text>
+    </svg>
+          </figure>
+          <ul>
+            <li>Схема описывается один раз (pydantic, pandera) и применяется <strong>до</strong> любой обработки</li>
+            <li>Гейт не «чинит» данные молча. Битая строка &mdash; это сигнал, что источник или парсер сломался</li>
+            <li>В ДЗ 3 подложенный битый JSONL обязан уронить пайплайн с внятной ошибкой, а не быть тихо пропущенным</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- ==================== SLIDE 7 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 3 &middot; Слайд 7/11</span>
+        <h1 class="slide-title">Почему git не годится для данных</h1>
+        <div class="slide-content">
+          <figure class="figure-wide">
+            <svg viewBox="0 0 880 332" role="img" aria-label="Рост репозитория: git против DVC">
+      <defs>
+  <marker id="arepogrowthg1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/>
+  </marker>
+  <style>
+    .t{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e}
+    .tc{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e;text-anchor:middle}
+    .s{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa}
+    .sc{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa;text-anchor:middle}
+    .n{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:12px;fill:#6b21a8;font-weight:600}
+    .nc{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:12px;fill:#6b21a8;font-weight:600;text-anchor:middle}
+    .ns{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:9.5px;fill:#8888aa;text-anchor:middle}
+    .ax{stroke:#d8b4fe;stroke-width:1}
+    .w{fill:none;stroke:#c084fc;stroke-width:2}
+  </style>
+</defs>
+      <text class="s" x="30" y="20">размер репозитория после N правок датасета на 50 МБ</text>
+      <line class="ax" x1="70" y1="228" x2="770" y2="228" stroke-opacity=".35"/>
+      <text class="ns" style="text-anchor:end" x="60" y="232">0</text>
+      <line class="ax" x1="70" y1="192" x2="770" y2="192" stroke-opacity=".35"/>
+      <text class="ns" style="text-anchor:end" x="60" y="196">100</text>
+      <line class="ax" x1="70" y1="156" x2="770" y2="156" stroke-opacity=".35"/>
+      <text class="ns" style="text-anchor:end" x="60" y="160">200</text>
+      <line class="ax" x1="70" y1="120" x2="770" y2="120" stroke-opacity=".35"/>
+      <text class="ns" style="text-anchor:end" x="60" y="124">300</text>
+      <line class="ax" x1="70" y1="84" x2="770" y2="84" stroke-opacity=".35"/>
+      <text class="ns" style="text-anchor:end" x="60" y="88">400</text>
+      <line class="ax" x1="70" y1="48" x2="770" y2="48" stroke-opacity=".35"/>
+      <text class="ns" style="text-anchor:end" x="60" y="52">500</text>
+      <text class="ns" style="text-anchor:end" x="60" y="40">МБ</text>
+      <polyline points="70.0,228.0 140.0,210.0 210.0,192.0 280.0,174.0 350.0,156.0 420.0,138.0 490.0,120.0 560.0,102.0 630.0,84.0 700.0,66.0 770.0,48.0" fill="none" stroke="#a8231f" stroke-width="2.4"/>
+      <polyline points="70.0,228.0 140.0,228.0 210.0,228.0 280.0,228.0 350.0,228.0 420.0,228.0 490.0,228.0 560.0,228.0 630.0,228.0 700.0,228.0 770.0,228.0" fill="none" stroke="#166534" stroke-width="2.4"/>
+      <circle cx="770" cy="48" r="4" fill="#a8231f"/>
+      <text class="n" style="fill:#a8231f" x="610" y="42">git — 500 МБ в истории</text>
+      <circle cx="770" cy="228" r="4" fill="#166534"/>
+      <text class="n" style="fill:#166534" x="520" y="218">DVC — десять текстовых файлов по сотне байт</text>
+      <text class="ns" x="70" y="246">0</text>
+      <text class="ns" x="210" y="246">2</text>
+      <text class="ns" x="350" y="246">4</text>
+      <text class="ns" x="490" y="246">6</text>
+      <text class="ns" x="630" y="246">8</text>
+      <text class="ns" x="770" y="246">10</text>
+      <text class="sc" x="420" y="268">правок датасета</text>
+      <text class="s" x="70" y="300">В git ни одна из этих версий не удаляется: clone тянет всё. В DVC в репозиторий уезжают только хэши,</text>
+      <text class="s" x="70" y="318">а данные лежат в кэше и подтягиваются той версией, которая записана в текущем коммите.</text>
+    </svg>
+            <figcaption>Механику — что именно уезжает в git, а что в кэш — разбираем на следующем слайде.</figcaption>
+          </figure>
+          <ul>
+            <li>Git хранит <strong>каждую версию целиком</strong>. Три правки датасета на 50 МБ &mdash; это 150 МБ, которые останутся в истории навсегда</li>
+            <li>Diff по бинарнику бесполезен, merge невозможен, clone растёт линейно</li>
+            <li>Git LFS решает половину: файлы уезжают из истории, но версионирование остаётся ручным и не связано с кодом, который их произвёл</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- ==================== SLIDE 8 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 3 &middot; Слайд 8/11</span>
+        <h1 class="slide-title">DVC: где на самом деле лежат данные</h1>
+        <div class="slide-content">
+          <figure class="figure-wide">
+            <svg viewBox="0 0 880 260" role="img" aria-label="Устройство DVC: рабочая папка, кэш, remote">
+      <defs>
+  <marker id="ar_dvcinside" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/>
+  </marker>
+  <marker id="arr_dvcinside" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#dc2626"/>
+  </marker>
+  <style>
+    .bx{fill:#fff;stroke:rgba(147,51,234,.35);stroke-width:1.4}
+    .bxo{fill:none;stroke:#9333ea;stroke-width:1.6}
+    .bxh{fill:#f3e8ff;stroke:#9333ea;stroke-width:1.8}
+    .bxr{fill:#fef2f2;stroke:#dc2626;stroke-width:1.6}
+    .bxg{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.6}
+    .w{fill:none;stroke:#c084fc;stroke-width:2}
+    .wr{fill:none;stroke:#dc2626;stroke-width:1.8}
+    .wd{fill:none;stroke:#a855f7;stroke-width:1.8;stroke-dasharray:5 4}
+    .t{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e;text-anchor:middle}
+    .ts{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa;text-anchor:middle}
+    .tl{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa}
+    .m{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:11px;fill:#6b21a8}
+    .ms{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:9.5px;fill:#8888aa}
+    .big{font-family:Inter,sans-serif;font-size:15px;font-weight:600;fill:#6b21a8;text-anchor:middle}
+    .red{fill:#dc2626}
+    .grn{fill:#16a34a}
+  </style>
+</defs>
+      <text class="tl" x="20" y="22">где на самом деле лежат данные</text>
+      <rect class="bx" x="20" y="44" width="250" height="180" rx="12"/>
+      <text class="ts" x="145" y="66">рабочая папка</text>
+      <rect class="bxh" x="44" y="82" width="202" height="40" rx="8"/>
+      <text class="m" x="60" y="107">data/clean.jsonl</text>
+      <rect class="bx" x="44" y="136" width="202" height="40" rx="8"/>
+      <text class="m" x="60" y="161">clean.jsonl.dvc</text>
+      <text class="ms" x="60" y="196">в git — только этот</text>
+      <path class="wd" d="M274,104 L320,104" marker-end="url(#ar_dvcinside)"/>
+      <text class="ts" x="297" y="94">ссылка</text>
+      <rect class="bx" x="326" y="44" width="250" height="180" rx="12"/>
+      <text class="ts" x="451" y="66">кэш .dvc/cache</text>
+      <rect class="bx" x="350" y="82" width="202" height="34" rx="8"/>
+      <text class="m" x="366" y="104">a3/f91c8…</text>
+      <rect class="bx" x="350" y="126" width="202" height="34" rx="8"/>
+      <text class="m" x="366" y="148">7c/02b4d…</text>
+      <rect class="bx" x="350" y="170" width="202" height="34" rx="8"/>
+      <text class="m" x="366" y="192">b1/8e55a…</text>
+      <path class="wd" d="M580,134 L626,134" marker-end="url(#ar_dvcinside)"/>
+      <text class="ts" x="603" y="124">push</text>
+      <text class="ts" x="603" y="152">pull</text>
+      <rect class="bx" x="632" y="44" width="228" height="180" rx="12"/>
+      <text class="ts" x="746" y="66">remote</text>
+      <text class="t" x="746" y="120">папка, S3, MinIO,</text>
+      <text class="t" x="746" y="142">сетевой диск</text>
+      <text class="ts" x="746" y="178">то, что переживёт</text>
+      <text class="ts" x="746" y="194">ваш ноутбук</text>
+    </svg>
+          </figure>
+          <div class="split">
+          <div class="split-text">
+          <ul>
+            <li>В git попадает только <code>.dvc</code>-файл &mdash; сотня байт с хэшем и размером</li>
+            <li>Хранилище <strong>content-addressable</strong>: имя файла в кэше &mdash; это его хэш. Одинаковое содержимое лежит один раз, даже если в проекте оно под пятью именами</li>
+            <li><code>dvc push</code> отправляет кэш в remote, <code>dvc pull</code> забирает. <code>dvc checkout</code> подставляет в рабочую папку ту версию, которая записана в текущем коммите</li>
+            <li class="chip-li">Отсюда главное свойство: <strong>коммит однозначно определяет данные</strong>. Переключились на коммит месячной давности &mdash; получили тот датасет</li>
+          </ul>
+          </div>
+
+          <div>
+            <div class="defs" style="grid-template-columns:minmax(0,1fr);margin-top:0">
+              <div class="def hi">
+                <b>DVC &mdash; Data Version Control</b>
+                <span><strong>Обычная программа на Python, а не сеть и не блокчейн.</strong> Ставится пакетом, работает локально, сама никуда ничего не отправляет. Хэш нужен ровно для того же, для чего в git: адресовать файл по содержимому. Ни майнинга, ни токенов, ни распределённого реестра. Remote &mdash; тоже просто место: папка, сетевой диск, S3. В ДЗ 3 это папка <code>dvc_remote/</code> рядом с проектом.</span>
+              </div>
+            </div>
+
+            <div class="code-block"><pre><span class="comment"># ставится обычной зависимостью проекта</span>
+uv add dvc            <span class="comment"># или pip install dvc</span>
+dvc init              <span class="comment"># завести .dvc/ в репозитории</span>
+dvc repro             <span class="comment"># пересчитать пайплайн</span>
+dvc push / dvc pull   <span class="comment"># в remote и обратно</span>
+dvc checkout          <span class="comment"># разложить версию из коммита</span></pre></div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ==================== SLIDE 9 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 3 &middot; Слайд 9/11</span>
+        <h1 class="slide-title">Пайплайн: dvc.yaml</h1>
+        <div class="slide-content">
+          <figure class="figure-wide">
+            <svg viewBox="0 0 880 270" role="img" aria-label="Граф стадий dvc.yaml">
+      <defs>
+  <marker id="ar_dag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/>
+  </marker>
+  <marker id="arr_dag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#dc2626"/>
+  </marker>
+  <style>
+    .bx{fill:#fff;stroke:rgba(147,51,234,.35);stroke-width:1.4}
+    .bxo{fill:none;stroke:#9333ea;stroke-width:1.6}
+    .bxh{fill:#f3e8ff;stroke:#9333ea;stroke-width:1.8}
+    .bxr{fill:#fef2f2;stroke:#dc2626;stroke-width:1.6}
+    .bxg{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.6}
+    .w{fill:none;stroke:#c084fc;stroke-width:2}
+    .wr{fill:none;stroke:#dc2626;stroke-width:1.8}
+    .wd{fill:none;stroke:#a855f7;stroke-width:1.8;stroke-dasharray:5 4}
+    .t{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e;text-anchor:middle}
+    .ts{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa;text-anchor:middle}
+    .tl{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa}
+    .m{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:11px;fill:#6b21a8}
+    .ms{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:9.5px;fill:#8888aa}
+    .big{font-family:Inter,sans-serif;font-size:15px;font-weight:600;fill:#6b21a8;text-anchor:middle}
+    .red{fill:#dc2626}
+    .grn{fill:#16a34a}
+  </style>
+</defs>
+      <text class="tl" x="20" y="22">dvc.yaml описывает граф, а не последовательность команд</text>
+      <rect class="bxh" x="30" y="86" width="200" height="74" rx="10"/>
+      <text class="t" x="130" y="116">collect</text>
+      <text class="ms" x="130" y="138" style="text-anchor:middle">data/raw.jsonl</text>
+      <text class="ms" x="130" y="76" style="text-anchor:middle">src/collect.py</text>
+      <path class="w" d="M234,123 L284,123" marker-end="url(#ar_dag)"/>
+      <rect class="bxh" x="320" y="86" width="200" height="74" rx="10"/>
+      <text class="t" x="420" y="116">clean</text>
+      <text class="ms" x="420" y="138" style="text-anchor:middle">data/clean.jsonl</text>
+      <text class="ms" x="420" y="76" style="text-anchor:middle">src/clean.py</text>
+      <path class="w" d="M524,123 L574,123" marker-end="url(#ar_dag)"/>
+      <rect class="bxh" x="610" y="86" width="200" height="74" rx="10"/>
+      <text class="t" x="710" y="116">split</text>
+      <text class="ms" x="710" y="138" style="text-anchor:middle">data/train,val,test</text>
+      <text class="ms" x="710" y="76" style="text-anchor:middle">src/split.py</text>
+      <text class="tl" x="30" y="196">deps — данные И код стадии</text>
+      <text class="tl" x="320" y="196">params — секции params.yaml</text>
+      <text class="tl" x="610" y="196">outs — что стадия произвела</text>
+      <text class="ts" x="440" y="232">меняется что-то из deps или params — DVC пересчитывает эту стадию и всё, что ниже по графу</text>
+      <text class="ts" x="440" y="250">не меняется — берёт готовое из кэша, ничего не запуская</text>
+    </svg>
+          </figure>
+          <ul>
+            <li>Стадия пересчитывается, когда изменились <code>deps</code> или <code>params</code>. Забыли указать код в <code>deps</code> &mdash; правите скрипт, а DVC говорит «всё свежо»</li>
+            <li><code>dvc repro</code> проходит граф, <code>dvc dag</code> его рисует, <code>dvc metrics diff</code> показывает, что изменилось между версиями</li>
+            <li>Provenance целиком: <strong>коммит &rarr; версия данных &rarr; метрики &rarr; артефакт</strong>. Это и есть ответ на вопрос «а на чём обучалась та модель, что сейчас в проде»</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- ==================== SLIDE 10 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 3 &middot; Слайд 10/11</span>
+        <h1 class="slide-title">Право, лицензии, datasheet</h1>
+        <div class="slide-content">
+          <figure class="figure-wide">
+            <svg viewBox="0 0 880 330" role="img" aria-label="Паспорт датасета">
+      <defs>
+  <marker id="adatasheetd1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/>
+  </marker>
+  <style>
+    .t{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e}
+    .tc{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e;text-anchor:middle}
+    .s{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa}
+    .sc{font-family:Inter,sans-serif;font-size:10.5px;fill:#8888aa;text-anchor:middle}
+    .n{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:12px;fill:#6b21a8;font-weight:600}
+    .nc{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:12px;fill:#6b21a8;font-weight:600;text-anchor:middle}
+    .ns{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:9.5px;fill:#8888aa;text-anchor:middle}
+    .ax{stroke:#d8b4fe;stroke-width:1}
+    .w{fill:none;stroke:#c084fc;stroke-width:2}
+  </style>
+</defs>
+      <rect x="30" y="20" width="560" height="290" rx="8" fill="#fff" stroke="#9333ea" stroke-width="1.4"/>
+      <text class="t" style="font-weight:600" x="52" y="50">datasheet.md</text>
+      <text class="s" x="52" y="68">паспорт датасета — одна страница, пишется один раз</text>
+      <line class="ax" x1="52" y1="82" x2="568" y2="82"/>
+      <text class="s" x="52" y="104">источник</text>
+      <text class="t" style="font-size:11.5px" x="262" y="104">drkolesnikov/russian-nmo-medical-mcq, HuggingFace</text>
+      <text class="s" x="52" y="129">лицензия</text>
+      <text class="t" style="font-size:11.5px" x="262" y="129">CC-BY-4.0 — указывать автора обязательно</text>
+      <text class="s" x="52" y="154">что взято</text>
+      <text class="t" style="font-size:11.5px" x="262" y="154">срез sft_single, train ×2 файла</text>
+      <text class="s" x="52" y="179">сделано руками</text>
+      <text class="t" style="font-size:11.5px" x="262" y="179">дедупликация по вопросу, сплит по группам</text>
+      <text class="s" x="52" y="204">объём</text>
+      <text class="t" style="font-size:11.5px" x="262" y="204">100 000 → 88 374 после чистки</text>
+      <text class="s" x="52" y="229">сплит</text>
+      <text class="t" style="font-size:11.5px" x="262" y="229">по нормализованному вопросу, пересечений 0</text>
+      <text class="s" x="52" y="254">не покрывает</text>
+      <text class="t" style="font-size:11.5px" x="262" y="254">только НМО-тесты, только русский, 2025 год</text>
+      <text class="s" x="52" y="279">перекосы</text>
+      <text class="t" style="font-size:11.5px" x="262" y="279">11 576 тем, распределение неравномерное</text>
+      <rect x="620" y="20" width="230" height="290" rx="8" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1.2"/>
+      <text class="t" style="font-weight:600" x="642" y="50">зачем</text>
+      <text class="s" style="font-size:11.5px" x="642" y="76">Через полгода вы сами</text>
+      <text class="s" style="font-size:11.5px" x="642" y="97">не вспомните, откуда</text>
+      <text class="s" style="font-size:11.5px" x="642" y="118">половина примеров</text>
+      <text class="s" style="font-size:11.5px" x="642" y="139">и почему сплит устроен</text>
+      <text class="s" style="font-size:11.5px" x="642" y="160">именно так.</text>
+      <text class="s" style="font-size:11.5px" x="642" y="181"></text>
+      <text class="s" style="font-size:11.5px" x="642" y="202">Паспорт пишется</text>
+      <text class="s" style="font-size:11.5px" x="642" y="223">не для проверяющего,</text>
+      <text class="s" style="font-size:11.5px" x="642" y="244">а для вас же —</text>
+      <text class="s" style="font-size:11.5px" x="642" y="265">и для того, кто</text>
+      <text class="s" style="font-size:11.5px" x="642" y="286">придёт после вас.</text>
+    </svg>
+            <figcaption>Поля — реальные, это паспорт того самого датасета, что лежит в ДЗ 3.</figcaption>
+          </figure>
+          <h3>Прежде чем качать</h3>
+          <div class="defs" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+            <div class="def"><b>лицензия источника</b><span>CC-BY требует указать автора, CC-BY-NC запрещает коммерческое использование. «Выложено в интернете» лицензией не является. У датасета в ДЗ 3 — CC-BY-4.0, и это записано в <code>SOURCE.md</code></span></div>
+            <div class="def hi"><b>персональные данные</b><span>ФИО, телефоны, адреса, номера документов. Удалять на стадии чистки, а не «потом посмотрим»: модель запоминает и воспроизводит их дословно</span></div>
+            <div class="def"><b>условия использования сайта</b><span>Отдельно от лицензии на контент. Запрет на автоматический сбор — это запрет, даже если технически всё получается</span></div>
+          </div>
+          <p class="chip">Практика пошла от статьи «Datasheets for Datasets», 2018. В ДЗ 3 паспорт обязателен.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 11 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 3 &middot; Слайд 11/11</span>
+        <h1 class="slide-title">Итоги и домашняя работа 3</h1>
+        <div class="slide-content">
+          <div class="split">
+          <div class="split-text">
+          <h3 style="margin-top:0">Что забрать с лекции</h3>
+          <ul>
+            <li>Хороший датасет &mdash; не большой, а <strong>разнообразный и честно разрезанный</strong></li>
+            <li>Точная дедупликация ничего не находит там, где проблема есть: сравнивать надо нормализованную суть примера</li>
+            <li>Случайный сплит &mdash; <strong>19,5% утечки</strong>. Сплит по неверному ключу &mdash; 12,3%. Ноль бывает только после дедупликации</li>
+            <li>Git хранит каждую версию целиком; DVC кладёт в git хэш, а данные &mdash; в кэш по содержимому</li>
+            <li>Стадия пересчитывается по <code>deps</code> и <code>params</code>. Код тоже зависимость</li>
+          </ul>
+
+          </div>
+
+          <div>
+          <div class="task-box">
+            <h3 style="margin-top:0">Домашняя работа 3</h3>
+            <ul>
+              <li>Свой датасет по <strong>согласованной теме</strong>: ≥ 1000 примеров в формате chat, JSONL</li>
+              <li>Пайплайн <code>collect &rarr; clean &rarr; split</code> в <code>dvc.yaml</code>, локальный remote</li>
+              <li>Чистка: дедупликация точная и неточная, фильтр длин, удаление PII, валидация схемы</li>
+              <li>Честный сплит и <strong>отдельная проверка контаминации</strong> с нулём пересечений</li>
+              <li>Две версии датасета и разница между ними через <code>dvc metrics diff</code></li>
+              <li><code>docs/datasheet.md</code> и <strong>пороги разнообразия</strong>, которые проверяются машинально</li>
+            </ul>
+          </div>
+          <p class="chip">Готовый чужой набор &mdash; только как источник. Скачать и сдать нельзя: фильтр, переразметка, обогащение или сужение до своей задачи &mdash; и всё это описано в datasheet.</p>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="nav-bar">
+    <button class="nav-btn" id="btn-prev" title="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="page-indicator" id="page-indicator">1 / 11</span>
+    <button class="nav-btn" id="btn-next" title="Далее"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+  </div>
+
+  <script>
+/* ============================================
+   YABD-26 Course — Navigation & Parallax
+   ============================================ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  let currentSlide = 0;
+
+  const pageIndicator = document.getElementById('page-indicator');
+  const prevBtn = document.getElementById('btn-prev');
+  const nextBtn = document.getElementById('btn-next');
+  const orbs = document.querySelectorAll('.orb');
+
+  // --- Initialize ---
+  function init() {
+    if (totalSlides === 0) return;
+    updateSlide();
+    setupKeyboard();
+    setupButtons();
+    setupParallax();
+  }
+
+  // --- Update Active Slide ---
+  function updateSlide() {
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === currentSlide);
+    });
+
+    if (pageIndicator) {
+      pageIndicator.textContent = `${currentSlide + 1} / ${totalSlides}`;
+    }
+
+    if (prevBtn) {
+      prevBtn.classList.toggle('disabled', currentSlide === 0);
+    }
+    if (nextBtn) {
+      nextBtn.classList.toggle('disabled', currentSlide === totalSlides - 1);
+    }
+  }
+
+  // --- Navigate ---
+  function goNext() {
+    if (currentSlide < totalSlides - 1) {
+      currentSlide++;
+      updateSlide();
+    }
+  }
+
+  function goPrev() {
+    if (currentSlide > 0) {
+      currentSlide--;
+      updateSlide();
+    }
+  }
+
+  // --- Keyboard Navigation ---
+  function setupKeyboard() {
+    document.addEventListener('keydown', (e) => {
+      switch (e.code) {
+        case 'Space':
+        case 'ArrowRight':
+        case 'ArrowDown':
+          e.preventDefault();
+          goNext();
+          break;
+        case 'ArrowLeft':
+        case 'ArrowUp':
+          e.preventDefault();
+          goPrev();
+          break;
+        case 'Home':
+          e.preventDefault();
+          currentSlide = 0;
+          updateSlide();
+          break;
+        case 'End':
+          e.preventDefault();
+          currentSlide = totalSlides - 1;
+          updateSlide();
+          break;
+      }
+    });
+  }
+
+  // --- Button Navigation ---
+  function setupButtons() {
+    if (prevBtn) prevBtn.addEventListener('click', goPrev);
+    if (nextBtn) nextBtn.addEventListener('click', goNext);
+  }
+
+  // --- Parallax Effect on Mouse Move ---
+  function setupParallax() {
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+      orbs.forEach((orb, i) => {
+        const speed = (i + 1) * 12;
+        const tx = x * speed;
+        const ty = y * speed;
+        orb.style.transform = `translate(${tx}px, ${ty}px)`;
+      });
+    });
+  }
+
+  // --- Touch support ---
+  // Вертикальное движение — это чтение (прокрутка карточки), а не навигация.
+  // Листаем только осознанным горизонтальным свайпом.
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchStartT = 0;
+
+  const SWIPE_MIN_X = 70;   // минимальный горизонтальный путь, px
+  const SWIPE_RATIO = 1.6;  // насколько горизонталь должна превышать вертикаль
+  const SWIPE_MAX_MS = 800; // медленное перетаскивание свайпом не считаем
+
+  document.addEventListener('touchstart', (e) => {
+    const t = e.changedTouches[0];
+    touchStartX = t.screenX;
+    touchStartY = t.screenY;
+    touchStartT = Date.now();
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    const t = e.changedTouches[0];
+    const dx = t.screenX - touchStartX;
+    const dy = t.screenY - touchStartY;
+
+    if (Date.now() - touchStartT > SWIPE_MAX_MS) return;
+    if (Math.abs(dx) < SWIPE_MIN_X) return;
+    if (Math.abs(dx) < Math.abs(dy) * SWIPE_RATIO) return;
+
+    if (dx < 0) goNext();
+    else goPrev();
+  }, { passive: true });
+
+  init();
+});
+
+</script>
+</body>
+</html>

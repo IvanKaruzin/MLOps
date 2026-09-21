@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ДЗ 3 — начни отсюда</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  :root{--p:#9333ea;--p7:#7e22ce;--p8:#6b21a8;--ink:#1a1a2e;--ink2:#4a4a6a;--mute:#8888aa}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);
+       background:linear-gradient(135deg,#f5f0ff,#ede4ff 25%,#f8f4ff 50%,#e8deff 75%,#f0eaff);
+       min-height:100vh;padding:40px 20px;-webkit-font-smoothing:antialiased}
+  .card{max-width:820px;margin:0 auto;background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.7);
+        border-radius:24px;box-shadow:0 8px 32px rgba(88,28,135,.12);padding:44px 48px}
+  h1{font-size:1.9rem;letter-spacing:-.02em;margin-bottom:6px}
+  .sub{color:var(--mute);font-size:.9rem;margin-bottom:30px}
+  h2{font-size:1.05rem;color:var(--p7);margin:30px 0 12px}
+  p,li{line-height:1.65;color:var(--ink2);font-size:.95rem}
+  ul,ol{padding-left:22px} li{margin-bottom:8px}
+  li strong,p strong{color:var(--ink)}
+  code{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:.86em;
+       background:rgba(147,51,234,.10);color:var(--p8);padding:.1em .38em;border-radius:5px}
+  pre{background:rgba(30,20,50,.9);color:#e8deff;border-radius:12px;padding:16px 20px;margin:12px 0;
+      overflow-x:auto;font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:.82rem;line-height:1.6}
+  .files{display:grid;gap:10px;margin:14px 0}
+  .f{background:rgba(255,255,255,.6);border:1px solid rgba(168,85,247,.22);border-radius:12px;padding:12px 16px}
+  .f b{display:block;font-size:.92rem;color:var(--ink);margin-bottom:3px}
+  .f span{font-size:.86rem;color:var(--ink2);line-height:1.5}
+  .warn{background:rgba(147,51,234,.09);border-left:3px solid var(--p);border-radius:0 10px 10px 0;
+        padding:14px 18px;margin:16px 0}
+  .warn b{color:var(--p8)}
+  footer{margin-top:34px;padding-top:18px;border-top:1px solid rgba(168,85,247,.2);
+         color:var(--mute);font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Домашняя работа 3</h1>
+  <p class="sub">Свой датасет, DVC, валидация схемы и честный сплит</p>
+
+  <h2>Что в архиве</h2>
+  <div class="files">
+    <div class="f"><b>2-zadanie-dz3.html</b><span>Полное условие: что сделать, что сдавать, как оценивается. Семь слайдов, читается с телефона.</span></div>
+    <div class="f"><b>3-lekciya-3.html</b><span>Лекция про данные. Все числа, на которые опирается работа, замерены на реальном датасете.</span></div>
+    <div class="f"><b>hw3-broken/</b><span>Рабочий пайплайн с <code>TODO</code> и <strong>пятью</strong> намеренными дефектами. Симптомы в <code>README.md</code> внутри папки, конкретные строки — нет.</span></div>
+  </div>
+
+  <h2>С чего начать</h2>
+  <ol>
+    <li><strong>Согласовать тему датасета.</strong> Она закрепляется за одним человеком: двух одинаковых в потоке не будет. Если темы нет — это первое дело, а не последнее.</li>
+    <li>Прочитать <strong>2-zadanie-dz3.html</strong> целиком, включая критерии приёмки.</li>
+    <li>Создать <strong>свой</strong> репозиторий и положить туда содержимое <code>hw3-broken/</code>.</li>
+    <li>Поднять окружение и посмотреть, что говорит проверка:</li>
+  </ol>
+<pre>cd hw3-broken
+git init              # DVC работает только внутри git-репозитория
+uv sync
+make check            # покажет, что сейчас не проходит</pre>
+
+  <div class="warn">
+    <p><b>Первый <code>dvc repro</code> упадёт — и это правильно.</b> Пакет приходит настроенным на курсовой датасет, которого у вас нет. Стадия <code>collect</code> скажет об этом словами и подскажет, что делать: переписать её под свой источник и указать пути в <code>params.yaml</code>. Всё, что ниже по графу, работает с контрактом <code>raw.jsonl</code> и правок не требует.</p>
+  </div>
+
+  <h2>Что сдавать</h2>
+  <ul>
+    <li>Ссылка на репозиторий и <strong>видео</strong> с прогоном <code>make check</code> — все восемь проверок зелёные, финальная строка в кадре.</li>
+    <li><code>docs/datasheet.md</code> — источник, лицензия, объём, распределение длин, как устроен сплит, чего датасет не покрывает.</li>
+    <li><code>docs/defects.md</code> — разбор каждого из пяти дефектов: в чём был, как проявлялся, как исправлен, каким числом подтверждается.</li>
+    <li>Две версии датасета и разница между ними через <code>dvc metrics diff</code>.</li>
+    <li><code>uv.lock</code> в репозитории. Данных в репозитории быть не должно.</li>
+  </ul>
+
+  <h2>Три числа с лекции, которые здесь работают</h2>
+  <ul>
+    <li>Точная дедупликация на курсовом датасете нашла <strong>ноль</strong> дублей. Сравнение нормализованных вопросов — <strong>11 626</strong> повторов.</li>
+    <li>Случайный сплит дал <strong>19,5%</strong> утечки в test. Сплит по темам — всё ещё 12,3%. Ноль получился только после дедупликации.</li>
+    <li>Утечка не роняет пайплайн и ничего не пишет в лог. Её единственный симптом — метрика, которая вас приятно удивила.</li>
+  </ul>
+
+  <h2>Если что-то не запускается</h2>
+  <ul>
+    <li><strong>«is not a git repository».</strong> DVC живёт внутри git. Сделайте <code>git init</code> до <code>dvc repro</code>.</li>
+    <li><strong>Нет доступа к remote.</strong> Он локальный — обычная папка рядом с проектом. Ничего настраивать не нужно.</li>
+    <li><strong>Совсем встали.</strong> Пишите в чат курса, но с конкретикой: что запускали, что вывело, какая ОС.</li>
+  </ul>
+
+  <footer>MLOPS-26 · ИУ6-74Б, ИУ6-75Б · домашняя работа 3</footer>
+</div>
+</body>
+</html>
