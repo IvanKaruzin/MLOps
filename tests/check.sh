@@ -10,8 +10,19 @@ fail() { printf '  \033[31m✗\033[0m %s\n' "$1"; fails=$((fails+1)); }
 
 RUN="uv run"
 SANDBOX="data/_check"
+STATE_BACKUP="data/_check_state"
 restore_params() { [ -f params.yaml.orig ] && mv params.yaml.orig params.yaml; rm -f params.yaml.bak; }
-trap 'restore_params; rm -rf "$SANDBOX"' EXIT
+restore_pipeline_state() {
+  [ -f "$STATE_BACKUP/dvc.lock" ] && cp "$STATE_BACKUP/dvc.lock" dvc.lock
+  if [ -d "$STATE_BACKUP/metrics" ]; then
+    cp "$STATE_BACKUP"/metrics/*.json metrics/
+  fi
+}
+rm -rf "$STATE_BACKUP"
+mkdir -p "$STATE_BACKUP/metrics"
+cp dvc.lock "$STATE_BACKUP/dvc.lock"
+cp metrics/*.json "$STATE_BACKUP/metrics/"
+trap 'restore_params; restore_pipeline_state; rm -rf "$SANDBOX" "$STATE_BACKUP"' EXIT
 
 echo
 echo "1. Данные не в git и под управлением DVC"
