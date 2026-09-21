@@ -1,0 +1,20 @@
+{
+  "version": "v1",
+  "train_rows": 2397,
+  "test_rows": 301,
+  "threshold": 0.85,
+  "shingle_words": 4,
+  "num_perm": 64,
+  "id_overlap": 0,
+  "text_overlap": 0,
+  "group_overlap": 0,
+  "near_dup_pairs": 0,
+  "examples": {
+    "id": [],
+    "text": [],
+    "group": [],
+    "near_dup": []
+  },
+  "passed": true,
+  "seconds": 0.64
+}

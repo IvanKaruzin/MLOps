@@ -48,3 +48,156 @@ lora:
 report:
   json: "docs/report.json"
   markdown: "docs/anatomy.md"
+
+# ДЗ-3: сбор датасета описаний фильмов для многометочной классификации.
+# Секретов здесь нет: fallback Hugging Face является публичным snapshot.
+collect:
+  # Версия переключается только здесь; v1 строится как префикс стабильного
+  # SHA-256-ранжирования v2, поэтому идентификаторы общих строк не меняются.
+  version: "v1"             # v1 | v2
+  sources:
+    v1:
+      - "sources/movies-dataset/9000plus.csv"
+    v2:
+      - "sources/movies-dataset/9000plus.csv"
+  source:
+    kind: "huggingface_snapshot"
+    dataset_id: "Pablinho/movies-dataset"
+    revision: "97da8cd79f0c0ee06c2f45dd30a878967d6d87a4"
+    file: "9000plus.csv"
+    sha256: "1d7636cc8ff75be70c0c00daaf5371242913dd29d17ac96417cf64ed4f581a6f"
+    url: "https://huggingface.co/datasets/Pablinho/movies-dataset/resolve/97da8cd79f0c0ee06c2f45dd30a878967d6d87a4/9000plus.csv"
+    license: "CC0-1.0"
+    license_url: "https://creativecommons.org/publicdomain/zero/1.0/"
+    metadata_retrieved_at: "2026-09-21"
+
+  # Лимиты применяются после обязательных фильтров и стабильной сортировки.
+  # Полный snapshot (9837 строк по карточке) даёт запас на очистку. Если первый
+  # прогон не достигает target_clean_rows, сдаваемая версия не публикуется.
+  target_clean_rows:
+    v1: 3000
+    v2: 6000
+  transforms:
+    required_columns:
+      - "Release_Date"
+      - "Title"
+      - "Overview"
+      - "Original_Language"
+      - "Genre"
+    title_column: "Title"
+    description_column: "Overview"
+    genres_column: "Genre"
+    release_date_column: "Release_Date"
+    language_column: "Original_Language"
+    require_nonempty_description: true
+    require_nonempty_genres: true
+    title_type: "movie"
+    title_type_strategy: "dataset_scope"
+    excluded_source_labels:
+      - "TV Movie"
+    # Stable ids discovered by the reproducible 50-row manual audit. Both are
+    # shorts/specials rather than feature films, so the complete records are
+    # removed instead of silently changing source labels.
+    excluded_source_ids:
+      - "movie_34870477f31439c7c704739177d501ae9a7d635cf11727880daf030e1e591622"
+      - "movie_8a6848fd219210debe1b13cd9604040c6399eb41d1e6d32c760f2e43f618b8f4"
+    min_genre_count: 25
+    genre_separator: ","
+    genre_aliases:
+      Action: "боевик"
+      Adventure: "приключения"
+      Animation: "анимация"
+      Comedy: "комедия"
+      Crime: "криминал"
+      Documentary: "документальный"
+      Drama: "драма"
+      Family: "семейный"
+      Fantasy: "фэнтези"
+      History: "история"
+      Horror: "ужасы"
+      Music: "музыка"
+      Mystery: "детектив"
+      Romance: "мелодрама"
+      Science Fiction: "фантастика"
+      Thriller: "триллер"
+      War: "военный"
+      Western: "вестерн"
+    id:
+      algorithm: "sha256"
+      fields: ["Title", "Release_Date", "Original_Language"]
+      separator: "\u001f"
+      prefix: "movie_"
+    topic:
+      template: "release_year:{release_year}"
+    version_order:
+      algorithm: "sha256_source_id"
+      v1_is_prefix_of_v2: true
+    system_prompt_selection:
+      algorithm: "sha256_mod"
+      key: "source_id"
+
+  system_prompts:
+    - "Определи жанры фильма по его описанию. Ответь только списком жанров через запятую."
+    - "Классифицируй фильм по описанию: перечисли подходящие жанры через запятую без пояснений."
+    - "По приведённому описанию назови жанры фильма. Выведи только жанровые метки через запятую."
+    - "Определи один или несколько жанров этого фильма по тексту. Никаких пояснений, только метки через запятую."
+    - "Прочитай описание фильма и укажи его жанры через запятую. Ответ должен содержать только жанры."
+
+clean:
+  # Фильтр длин: слишком короткое описание — обрезок, слишком длинное — выброс.
+  min_user_chars: 30
+  max_user_chars: 4000
+  min_assistant_chars: 2
+  near_dup:
+    enabled: true
+    shingle_words: 4
+    num_perm: 64
+    threshold: 0.85
+  pii:
+    enabled: true
+
+diversity:
+  # Пороговые значения относятся к очищенному датасету. Ответ — короткий
+  # набор меток из конечного словаря, поэтому повторы допустимы, но компенсированы
+  # строгими гейтами по описаниям, числу жанров и балансу меток.
+  min_examples: 1000
+  min_system_prompts: 3
+  min_groups: 50
+  max_group_share: 0.10
+  min_answer_len_ratio: 1.6
+  max_same_length_share: 0.25
+  max_duplicate_answer_share: 0.90
+  min_genres: 15
+  max_genre_share: 0.50
+  min_multilabel_share: 0.60
+  min_description_len_ratio: 2.5
+
+split:
+  group_key: "topic"
+  ratios:
+    train: 0.8
+    val: 0.1
+    test: 0.1
+  seed: 42
+  # Несколько детерминированных назначений целых годов позволяют одновременно
+  # приблизить доли по строкам и выровнять жанровое распределение.
+  search_attempts: 512
+  max_genre_total_variation: 0.10
+
+contamination:
+  # Этот порог обязан совпадать с clean.near_dup.threshold; load_params()
+  # проверяет инвариант до запуска любой стадии.
+  threshold: 0.85
+
+paths:
+  raw: "data/raw.jsonl"
+  clean: "data/clean.jsonl"
+  train: "data/train.jsonl"
+  val: "data/val.jsonl"
+  test: "data/test.jsonl"
+  metrics_collect: "metrics/collect.json"
+  metrics_clean: "metrics/clean.json"
+  metrics_diversity: "metrics/diversity.json"
+  metrics_split: "metrics/split.json"
+  metrics_contamination: "metrics/contamination.json"
+  datasheet: "docs/datasheet.md"

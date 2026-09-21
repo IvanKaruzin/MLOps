@@ -1,0 +1,351 @@
+schema: '2.0'
+stages:
+  collect:
+    cmd: uv run python -m src.collect
+    deps:
+    - path: sources/movies-dataset/9000plus.csv
+      hash: md5
+      md5: c635621b48f91f3bf5d2c848d8423abf
+      size: 4208091
+    - path: src/collect.py
+      hash: md5
+      md5: 49bf9f547c827c24dec3ec3ed58af37e
+      size: 14613
+    - path: src/config.py
+      hash: md5
+      md5: 10f851b9d905cdba48a0159191240b52
+      size: 2099
+    - path: src/schema.py
+      hash: md5
+      md5: 2108fffa5e358e5b5b1b4a181e3b66c4
+      size: 3315
+    params:
+      params.yaml:
+        collect:
+          version: v1
+          sources:
+            v1:
+            - sources/movies-dataset/9000plus.csv
+            v2:
+            - sources/movies-dataset/9000plus.csv
+          source:
+            kind: huggingface_snapshot
+            dataset_id: Pablinho/movies-dataset
+            revision: 97da8cd79f0c0ee06c2f45dd30a878967d6d87a4
+            file: 9000plus.csv
+            sha256:
+              1d7636cc8ff75be70c0c00daaf5371242913dd29d17ac96417cf64ed4f581a6f
+            url:
+              https://huggingface.co/datasets/Pablinho/movies-dataset/resolve/97da8cd79f0c0ee06c2f45dd30a878967d6d87a4/9000plus.csv
+            license: CC0-1.0
+            license_url: https://creativecommons.org/publicdomain/zero/1.0/
+            metadata_retrieved_at: '2026-09-21'
+          target_clean_rows:
+            v1: 3000
+            v2: 6000
+          transforms:
+            required_columns:
+            - Release_Date
+            - Title
+            - Overview
+            - Original_Language
+            - Genre
+            title_column: Title
+            description_column: Overview
+            genres_column: Genre
+            release_date_column: Release_Date
+            language_column: Original_Language
+            require_nonempty_description: true
+            require_nonempty_genres: true
+            title_type: movie
+            title_type_strategy: dataset_scope
+            excluded_source_labels:
+            - TV Movie
+            excluded_source_ids:
+            - movie_34870477f31439c7c704739177d501ae9a7d635cf11727880daf030e1e591622
+            - movie_8a6848fd219210debe1b13cd9604040c6399eb41d1e6d32c760f2e43f618b8f4
+            min_genre_count: 25
+            genre_separator: ','
+            genre_aliases:
+              Action: боевик
+              Adventure: приключения
+              Animation: анимация
+              Comedy: комедия
+              Crime: криминал
+              Documentary: документальный
+              Drama: драма
+              Family: семейный
+              Fantasy: фэнтези
+              History: история
+              Horror: ужасы
+              Music: музыка
+              Mystery: детектив
+              Romance: мелодрама
+              Science Fiction: фантастика
+              Thriller: триллер
+              War: военный
+              Western: вестерн
+            id:
+              algorithm: sha256
+              fields:
+              - Title
+              - Release_Date
+              - Original_Language
+              separator: "\x1F"
+              prefix: movie_
+            topic:
+              template: release_year:{release_year}
+            version_order:
+              algorithm: sha256_source_id
+              v1_is_prefix_of_v2: true
+            system_prompt_selection:
+              algorithm: sha256_mod
+              key: source_id
+          system_prompts:
+          - Определи жанры фильма по его описанию. Ответь только списком жанров
+            через запятую.
+          - 'Классифицируй фильм по описанию: перечисли подходящие жанры через запятую
+            без пояснений.'
+          - По приведённому описанию назови жанры фильма. Выведи только жанровые
+            метки через запятую.
+          - Определи один или несколько жанров этого фильма по тексту. Никаких
+            пояснений, только метки через запятую.
+          - Прочитай описание фильма и укажи его жанры через запятую. Ответ
+            должен содержать только жанры.
+        paths.metrics_collect: metrics/collect.json
+        paths.raw: data/raw.jsonl
+    outs:
+    - path: data/raw.jsonl
+      hash: md5
+      md5: 2d1d863b8ff8744853b4b593e21e8a35
+      size: 2200588
+    - path: metrics/collect.json
+      hash: md5
+      md5: c583b794b307b2bdd32d8fdd51fd1714
+      size: 4385
+  clean:
+    cmd: uv run python -m src.clean
+    deps:
+    - path: data/raw.jsonl
+      hash: md5
+      md5: 2d1d863b8ff8744853b4b593e21e8a35
+      size: 2200588
+    - path: src/clean.py
+      hash: md5
+      md5: 1f2b52e735a43d027018c4b9e21d07e6
+      size: 4888
+    - path: src/config.py
+      hash: md5
+      md5: 10f851b9d905cdba48a0159191240b52
+      size: 2099
+    - path: src/dedup.py
+      hash: md5
+      md5: f804b2502004d2fd8b4a4880f519dbdb
+      size: 4487
+    - path: src/pii.py
+      hash: md5
+      md5: 54de6f3690578d83cfc17094d2d2aa7a
+      size: 2397
+    - path: src/schema.py
+      hash: md5
+      md5: 2108fffa5e358e5b5b1b4a181e3b66c4
+      size: 3315
+    - path: src/stats.py
+      hash: md5
+      md5: a54925032eff4769647b5775d72dd423
+      size: 2222
+    - path: src/textnorm.py
+      hash: md5
+      md5: de0c12c1a2ae2614dca69c13d044d796
+      size: 3514
+    params:
+      params.yaml:
+        clean:
+          min_user_chars: 30
+          max_user_chars: 4000
+          min_assistant_chars: 2
+          near_dup:
+            enabled: true
+            shingle_words: 4
+            num_perm: 64
+            threshold: 0.85
+          pii:
+            enabled: true
+        collect.version: v1
+        paths.clean: data/clean.jsonl
+        paths.metrics_clean: metrics/clean.json
+        paths.raw: data/raw.jsonl
+    outs:
+    - path: data/clean.jsonl
+      hash: md5
+      md5: 9c0b7e2bb00a4b0da475da76948b9d76
+      size: 2199576
+    - path: metrics/clean.json
+      hash: md5
+      md5: 2459a48761863a929202d5890bab7e71
+      size: 859
+  diversity:
+    cmd: uv run python -m src.diversity
+    deps:
+    - path: data/clean.jsonl
+      hash: md5
+      md5: 9c0b7e2bb00a4b0da475da76948b9d76
+      size: 2199576
+    - path: src/config.py
+      hash: md5
+      md5: 10f851b9d905cdba48a0159191240b52
+      size: 2099
+    - path: src/diversity.py
+      hash: md5
+      md5: c5ce1454a10f535445acee8a4c55f566
+      size: 9325
+    - path: src/schema.py
+      hash: md5
+      md5: 2108fffa5e358e5b5b1b4a181e3b66c4
+      size: 3315
+    - path: src/stats.py
+      hash: md5
+      md5: a54925032eff4769647b5775d72dd423
+      size: 2222
+    - path: src/textnorm.py
+      hash: md5
+      md5: de0c12c1a2ae2614dca69c13d044d796
+      size: 3514
+    params:
+      params.yaml:
+        collect.version: v1
+        diversity:
+          min_examples: 1000
+          min_system_prompts: 3
+          min_groups: 50
+          max_group_share: 0.1
+          min_answer_len_ratio: 1.6
+          max_same_length_share: 0.25
+          max_duplicate_answer_share: 0.9
+          min_genres: 15
+          max_genre_share: 0.5
+          min_multilabel_share: 0.6
+          min_description_len_ratio: 2.5
+        paths.clean: data/clean.jsonl
+        paths.metrics_diversity: metrics/diversity.json
+        split.group_key: topic
+    outs:
+    - path: metrics/diversity.json
+      hash: md5
+      md5: 13ff5d7795f133074dba692784572938
+      size: 1575
+  split:
+    cmd: uv run python -m src.split
+    deps:
+    - path: data/clean.jsonl
+      hash: md5
+      md5: 9c0b7e2bb00a4b0da475da76948b9d76
+      size: 2199576
+    - path: metrics/diversity.json
+      hash: md5
+      md5: 13ff5d7795f133074dba692784572938
+      size: 1575
+    - path: src/config.py
+      hash: md5
+      md5: 10f851b9d905cdba48a0159191240b52
+      size: 2099
+    - path: src/schema.py
+      hash: md5
+      md5: 2108fffa5e358e5b5b1b4a181e3b66c4
+      size: 3315
+    - path: src/split.py
+      hash: md5
+      md5: f8f1800c7486028ba71f5a93486c5327
+      size: 14895
+    - path: src/textnorm.py
+      hash: md5
+      md5: de0c12c1a2ae2614dca69c13d044d796
+      size: 3514
+    params:
+      params.yaml:
+        collect.version: v1
+        paths.clean: data/clean.jsonl
+        paths.metrics_split: metrics/split.json
+        paths.test: data/test.jsonl
+        paths.train: data/train.jsonl
+        paths.val: data/val.jsonl
+        split:
+          group_key: topic
+          ratios:
+            train: 0.8
+            val: 0.1
+            test: 0.1
+          seed: 42
+          search_attempts: 512
+          max_genre_total_variation: 0.1
+    outs:
+    - path: data/test.jsonl
+      hash: md5
+      md5: d4d5bf5a6fe5476572ac4950d5070cc3
+      size: 221365
+    - path: data/train.jsonl
+      hash: md5
+      md5: 371e6027818ca577cca149eefbb8898b
+      size: 1757394
+    - path: data/val.jsonl
+      hash: md5
+      md5: 9432c35f21c374cb28a95299ea16e318
+      size: 220817
+    - path: metrics/split.json
+      hash: md5
+      md5: 2efeaf7f7779d63b1ba4121b442e3dd8
+      size: 5141
+  contamination:
+    cmd: uv run python scripts/check_contamination.py
+    deps:
+    - path: data/test.jsonl
+      hash: md5
+      md5: d4d5bf5a6fe5476572ac4950d5070cc3
+      size: 221365
+    - path: data/train.jsonl
+      hash: md5
+      md5: 371e6027818ca577cca149eefbb8898b
+      size: 1757394
+    - path: scripts/check_contamination.py
+      hash: md5
+      md5: b6c55f76bb2d0eb7c56a38e543d250b7
+      size: 3026
+      isexec: true
+    - path: src/config.py
+      hash: md5
+      md5: 10f851b9d905cdba48a0159191240b52
+      size: 2099
+    - path: src/contamination.py
+      hash: md5
+      md5: 36580bb5f5c64204f1dc4326b58ab547
+      size: 4047
+    - path: src/dedup.py
+      hash: md5
+      md5: f804b2502004d2fd8b4a4880f519dbdb
+      size: 4487
+    - path: src/schema.py
+      hash: md5
+      md5: 2108fffa5e358e5b5b1b4a181e3b66c4
+      size: 3315
+    - path: src/textnorm.py
+      hash: md5
+      md5: de0c12c1a2ae2614dca69c13d044d796
+      size: 3514
+    params:
+      params.yaml:
+        clean.near_dup:
+          enabled: true
+          shingle_words: 4
+          num_perm: 64
+          threshold: 0.85
+        collect.version: v1
+        contamination:
+          threshold: 0.85
+        paths.metrics_contamination: metrics/contamination.json
+        paths.test: data/test.jsonl
+        paths.train: data/train.jsonl
+    outs:
+    - path: metrics/contamination.json
+      hash: md5
+      md5: 5982f53b87e25a58862889ee22d174c4
+      size: 334

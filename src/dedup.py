@@ -13,9 +13,28 @@ from src.textnorm import shingles
 
 
 def build_minhash(text: str, shingle_words: int, num_perm: int) -> MinHash:
-    mh = MinHash(num_perm=num_perm)
+    if num_perm <= 0:
+        raise ValueError(f"num_perm должен быть положительным, получено {num_perm}")
+    # Фиксируем seed явно: одинаковый вход обязан давать одинаковые кандидаты
+    # независимо от процесса и машины.
+    mh = MinHash(num_perm=num_perm, seed=1)
     mh.update_batch([s.encode("utf-8") for s in shingles(text, shingle_words)])
     return mh
+
+
+def jaccard(left: set[str], right: set[str]) -> float:
+    """Фактический Jaccard двух множеств, без MinHash-аппроксимации."""
+    union = left | right
+    if not union:
+        return 1.0
+    return len(left & right) / len(union)
+
+
+def _validate_threshold(threshold: float) -> None:
+    if not 0.0 < threshold <= 1.0:
+        raise ValueError(
+            f"threshold должен быть в интервале (0, 1], получено {threshold}"
+        )
 
 
 def exact_duplicates(keys: Sequence[str]) -> list[int]:
@@ -37,14 +56,21 @@ def near_duplicates(
 
     MinHash + LSH дают линейное время вместо O(n^2) полного попарного сравнения.
     """
+    _validate_threshold(threshold)
     lsh = MinHashLSH(threshold=threshold, num_perm=num_perm)
     dupes: list[int] = []
+    shingle_sets: dict[int, set[str]] = {}
     for i, text in enumerate(texts):
+        current = shingles(text, shingle_words)
         mh = build_minhash(text, shingle_words, num_perm)
-        if lsh.query(mh):
+        # LSH только дешёво отбирает кандидатов. Решение об удалении принимает
+        # реальный Jaccard; иначе MinHash-коллизия может удалить не-дубликат.
+        candidates = sorted(int(key) for key in lsh.query(mh))
+        if any(jaccard(current, shingle_sets[key]) >= threshold for key in candidates):
             dupes.append(i)
         else:
             lsh.insert(str(i), mh)
+            shingle_sets[i] = current
     return dupes
 
 
@@ -60,11 +86,20 @@ def cross_near_duplicates(
     Используется проверкой контаминации: точное совпадение текстов ловит
     копипасту, а протекают обычно парафразы.
     """
+    _validate_threshold(threshold)
     lsh = MinHashLSH(threshold=threshold, num_perm=num_perm)
+    left_shingles: list[set[str]] = []
     for i, text in enumerate(left):
+        left_shingles.append(shingles(text, shingle_words))
         lsh.insert(str(i), build_minhash(text, shingle_words, num_perm))
     pairs: list[tuple[int, int]] = []
     for j, text in enumerate(right):
-        for key in lsh.query(build_minhash(text, shingle_words, num_perm)):
-            pairs.append((int(key), j))
+        current = shingles(text, shingle_words)
+        candidates = sorted(
+            int(key)
+            for key in lsh.query(build_minhash(text, shingle_words, num_perm))
+        )
+        for i in candidates:
+            if jaccard(left_shingles[i], current) >= threshold:
+                pairs.append((i, j))
     return pairs

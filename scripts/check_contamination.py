@@ -6,7 +6,9 @@
 Возвращает 1 при любом пересечении — годится для CI.
 """
 
+import json
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -17,6 +19,7 @@ from src.schema import iter_examples  # noqa: E402
 
 
 def main() -> int:
+    started = time.perf_counter()
     params = load_params()
     paths = params["paths"]
     nd = params["clean"]["near_dup"]
@@ -30,6 +33,26 @@ def main() -> int:
         num_perm=nd["num_perm"],
         threshold=params["contamination"]["threshold"],
     )
+    metrics = {
+        "version": params["collect"]["version"],
+        "train_rows": len(train),
+        "test_rows": len(test),
+        "threshold": params["contamination"]["threshold"],
+        "shingle_words": nd["shingle_words"],
+        "num_perm": nd["num_perm"],
+        **rep,
+        "passed": is_clean(rep),
+        "seconds": round(time.perf_counter() - started, 2),
+    }
+    metrics_path = Path(paths["metrics_contamination"])
+    metrics_path.parent.mkdir(parents=True, exist_ok=True)
+    # Сначала перезаписываем метрику, затем возвращаем ненулевой код. Так при
+    # падении CI не останется старый зелёный отчёт от предыдущего запуска.
+    temporary_path = metrics_path.with_suffix(metrics_path.suffix + ".tmp")
+    temporary_path.write_text(
+        json.dumps(metrics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    temporary_path.replace(metrics_path)
 
     print(f"train: {len(train)} строк, test: {len(test)} строк")
     print(f"  пересечение по id:        {rep['id_overlap']}")
@@ -37,7 +60,7 @@ def main() -> int:
     print(f"  пересечение по группам:   {rep['group_overlap']}")
     print(f"  near-dup пар train↔test:  {rep['near_dup_pairs']}")
 
-    if is_clean(rep):
+    if metrics["passed"]:
         print("контаминации нет")
         return 0
 

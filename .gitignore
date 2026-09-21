@@ -1,5 +1,8 @@
 __pycache__/
+*.py[cod]
 .venv/
+.pytest_cache/
+.mypy_cache/
 docs/bench.json
 out1.txt
 out2.txt
@@ -9,3 +12,5 @@ PLAN.md
 PLAN-track.md
 .DS_Store
 *.bak
+data/
+dvc_remote/

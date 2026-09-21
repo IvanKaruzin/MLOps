@@ -4,7 +4,14 @@ import json
 from pathlib import Path
 from typing import Iterator, Literal
 
-from pydantic import BaseModel, ConfigDict, ValidationError, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    ValidationError,
+    ValidationInfo,
+    field_validator,
+    model_validator,
+)
 
 ROLES: tuple[str, ...] = ("system", "user", "assistant")
 
@@ -34,6 +41,13 @@ class Example(BaseModel):
     topic: str
     messages: list[Message]
 
+    @field_validator("id", "topic")
+    @classmethod
+    def _identifier_not_blank(cls, v: str, info: ValidationInfo) -> str:
+        if not v.strip():
+            raise ValueError(f"{info.field_name} пустой")
+        return v
+
     @model_validator(mode="after")
     def _exact_roles(self) -> "Example":
         got = tuple(m.role for m in self.messages)
@@ -41,8 +55,6 @@ class Example(BaseModel):
             raise ValueError(
                 f"роли должны идти ровно как {ROLES}, получено {got or '()'}"
             )
-        if not self.id.strip():
-            raise ValueError("id пустой")
         return self
 
     @property
@@ -74,7 +86,10 @@ def iter_examples(path: str | Path) -> Iterator[Example]:
             except json.JSONDecodeError as exc:
                 raise SchemaError(f"{path}:{lineno}: не разбирается как JSON — {exc.msg}") from exc
             if not isinstance(payload, dict):
-                raise SchemaError(f"{path}:{lineno}: ожидался объект, получен {type(payload).__name__}")
+                raise SchemaError(
+                    f"{path}:{lineno}: ожидался объект, "
+                    f"получен {type(payload).__name__}"
+                )
             try:
                 yield Example.model_validate(payload)
             except ValidationError as exc:

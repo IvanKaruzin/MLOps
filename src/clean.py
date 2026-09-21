@@ -5,22 +5,19 @@ import time
 from pathlib import Path
 
 from src.config import load_params
-from src.dedup import exact_duplicates
-from src.pii import scrub
+from src.dedup import exact_duplicates, near_duplicates
+from src.pii import PATTERNS, scrub
 from src.schema import Example, dump, iter_examples
-from src.stats import percentile
+from src.stats import percentile, spread
 from src.textnorm import normalize_group, normalize_text
 
 
-def percentiles(values: list[int]) -> dict[str, int]:
+def percentiles(values: list[int]) -> dict[str, int | float]:
     """Сводка длин для отчёта. Считается тем же модулем, что и гейт diversity:
     иначе в datasheet окажется одно число, а в сообщении об ошибке другое."""
-    return {
-        "p50": percentile(values, 0.50),
-        "p90": percentile(values, 0.90),
-        "p99": percentile(values, 0.99),
-        "max": max(values) if values else 0,
-    }
+    distribution = spread(values)
+    distribution["p99"] = percentile(values, 0.99)
+    return distribution
 
 
 def main() -> None:
@@ -48,6 +45,9 @@ def main() -> None:
 
     # 3. Чистка ПДн — по всем ролям, включая ответ ассистента.
     pii_hits: dict[str, int] = {}
+    pii_hits_by_role: dict[str, dict[str, int]] = {
+        role: {name: 0 for name in PATTERNS} for role in ("system", "user", "assistant")
+    }
     pii_rows = 0
     if cfg["pii"]["enabled"]:
         for ex in kept:
@@ -59,6 +59,7 @@ def main() -> None:
                     touched = True
                     for name, count in hits.items():
                         pii_hits[name] = pii_hits.get(name, 0) + count
+                        pii_hits_by_role[msg.role][name] += count
             pii_rows += touched
 
     # 4. Точная дедупликация по нормализованному тексту вопроса.
@@ -66,8 +67,21 @@ def main() -> None:
     exact = set(exact_duplicates(keys))
     kept = [ex for i, ex in enumerate(kept) if i not in exact]
 
-    # 5. TODO: сюда просится ещё один шаг дедупликации.
+    # 5. Near-duplicate: LSH ищет кандидатов, фактический Jaccard подтверждает
+    # совпадение. Передаём исходный текст с переносами, чтобы переставленные
+    # нумерованные варианты ответа канонизировались независимо от их порядка.
     near: set[int] = set()
+    nd = cfg["near_dup"]
+    if nd["enabled"]:
+        near = set(
+            near_duplicates(
+                [ex.user for ex in kept],
+                shingle_words=nd["shingle_words"],
+                num_perm=nd["num_perm"],
+                threshold=nd["threshold"],
+            )
+        )
+        kept = [ex for i, ex in enumerate(kept) if i not in near]
 
     out = Path(paths["clean"])
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -83,7 +97,8 @@ def main() -> None:
         "dropped_exact_dup": len(exact),
         "dropped_near_dup": len(near),
         "pii_rows_masked": pii_rows,
-        "pii_hits": {name: pii_hits.get(name, 0) for name in ("phone", "email", "birth_date")},
+        "pii_hits": {name: pii_hits.get(name, 0) for name in PATTERNS},
+        "pii_hits_by_role": pii_hits_by_role,
         "groups": len({normalize_group(ex.topic) for ex in kept}),
         "user_chars": percentiles([len(ex.user) for ex in kept]),
         "assistant_chars": percentiles([len(ex.assistant) for ex in kept]),

@@ -1,0 +1,111 @@
+# Reproducible dataset pipeline for HW-3.
+#
+# Data artifacts are cached by DVC. Small JSON metrics stay in Git and are
+# therefore declared with cache: false.
+
+stages:
+  collect:
+    cmd: uv run python -m src.collect
+    deps:
+      - sources/movies-dataset/9000plus.csv
+      - src/collect.py
+      - src/config.py
+      - src/schema.py
+    params:
+      - collect
+      - paths.raw
+      - paths.metrics_collect
+    outs:
+      - data/raw.jsonl
+    metrics:
+      - metrics/collect.json:
+          cache: false
+
+  clean:
+    cmd: uv run python -m src.clean
+    deps:
+      - data/raw.jsonl
+      - src/clean.py
+      - src/config.py
+      - src/dedup.py
+      - src/pii.py
+      - src/schema.py
+      - src/stats.py
+      - src/textnorm.py
+    params:
+      - collect.version
+      - clean
+      - paths.raw
+      - paths.clean
+      - paths.metrics_clean
+    outs:
+      - data/clean.jsonl
+    metrics:
+      - metrics/clean.json:
+          cache: false
+
+  diversity:
+    cmd: uv run python -m src.diversity
+    deps:
+      - data/clean.jsonl
+      - src/config.py
+      - src/diversity.py
+      - src/schema.py
+      - src/stats.py
+      - src/textnorm.py
+    params:
+      - collect.version
+      - diversity
+      - split.group_key
+      - paths.clean
+      - paths.metrics_diversity
+    metrics:
+      - metrics/diversity.json:
+          cache: false
+
+  split:
+    cmd: uv run python -m src.split
+    deps:
+      - data/clean.jsonl
+      - metrics/diversity.json
+      - src/config.py
+      - src/schema.py
+      - src/split.py
+      - src/textnorm.py
+    params:
+      - collect.version
+      - split
+      - paths.clean
+      - paths.train
+      - paths.val
+      - paths.test
+      - paths.metrics_split
+    outs:
+      - data/train.jsonl
+      - data/val.jsonl
+      - data/test.jsonl
+    metrics:
+      - metrics/split.json:
+          cache: false
+
+  contamination:
+    cmd: uv run python scripts/check_contamination.py
+    deps:
+      - data/train.jsonl
+      - data/test.jsonl
+      - scripts/check_contamination.py
+      - src/config.py
+      - src/contamination.py
+      - src/dedup.py
+      - src/schema.py
+      - src/textnorm.py
+    params:
+      - collect.version
+      - clean.near_dup
+      - contamination
+      - paths.train
+      - paths.test
+      - paths.metrics_contamination
+    metrics:
+      - metrics/contamination.json:
+          cache: false

@@ -1,0 +1,6 @@
+outs:
+- md5: f5e3379b4119ebd052e167d8c5ff6ac5.dir
+  size: 4208091
+  nfiles: 1
+  hash: md5
+  path: movies-dataset
