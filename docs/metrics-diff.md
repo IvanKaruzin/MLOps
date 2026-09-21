@@ -1,0 +1,44 @@
+# Сравнение метрик data-v1 и data-v2
+
+Сравнивались проверенные Git/DVC-ревизии:
+
+- `data-v1` — `f56c62c029210b564080a4281552cca40ccadea0`;
+- `data-v2` — `d830e539ccf9a6082d446ce9d8117d32a5b3cd0d`.
+
+Команда:
+
+```bash
+uv run dvc metrics diff data-v1 data-v2
+```
+
+Ниже приведены ключевые строки фактического вывода DVC. Неизменившиеся
+числовые метрики по умолчанию в вывод не попадают.
+
+| Path | Metric | data-v1 | data-v2 | Change |
+| --- | --- | ---: | ---: | ---: |
+| `metrics/collect.json` | `rows_written` | 3000 | 6000 | +3000 |
+| `metrics/collect.json` | `multi_label_examples` | 2502 | 4985 | +2483 |
+| `metrics/collect.json` | `year_count` | 92 | 96 | +4 |
+| `metrics/collect.json` | `language_count` | 35 | 41 | +6 |
+| `metrics/clean.json` | `rows_in` | 3000 | 6000 | +3000 |
+| `metrics/clean.json` | `rows_out` | 2998 | 5998 | +3000 |
+| `metrics/diversity.json` | `examples` | 2998 | 5998 | +3000 |
+| `metrics/diversity.json` | `groups` | 92 | 96 | +4 |
+| `metrics/diversity.json` | `multilabel_share` | 0.8339 | 0.8308 | -0.0031 |
+| `metrics/split.json` | `sizes.train` | 2397 | 4800 | +2403 |
+| `metrics/split.json` | `sizes.val` | 300 | 599 | +299 |
+| `metrics/split.json` | `sizes.test` | 301 | 599 | +298 |
+| `metrics/split.json` | `groups_total` | 92 | 96 | +4 |
+| `metrics/split.json` | `optimization.drift.max_total_variation` | 0.04130 | 0.02953 | -0.01177 |
+
+v2 удваивает выбранную сырую выборку и сохраняет ту же потерю двух строк при
+очистке: одна строка отбрасывается по длине и одна как точный дубль; почти-дубли
+после отбора отсутствуют. Чистый набор вырос с 2998 до 5998 строк. Число
+многометочных примеров выросло почти вдвое, а их доля изменилась лишь на 0.31
+процентного пункта, поэтому расширение не меняет характер задачи.
+
+Групповой split сохраняет целевые пропорции около 80/10/10, а максимальное
+расхождение жанровых распределений относительно train снизилось с 0.04130 до
+0.02953. Во всех четырёх проверках контаминации (`id_overlap`, `text_overlap`,
+`group_overlap`, `near_dup_pairs`) значение осталось равным нулю для обеих
+версий; поэтому эти неизменившиеся строки отсутствуют в стандартном diff.
