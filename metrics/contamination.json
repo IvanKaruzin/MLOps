@@ -1,7 +1,7 @@
 {
-  "version": "v1",
-  "train_rows": 2397,
-  "test_rows": 301,
+  "version": "v2",
+  "train_rows": 4800,
+  "test_rows": 599,
   "threshold": 0.85,
   "shingle_words": 4,
   "num_perm": 64,
@@ -16,5 +16,5 @@
     "near_dup": []
   },
   "passed": true,
-  "seconds": 0.64
+  "seconds": 1.27
 }

@@ -1,7 +1,7 @@
 {
-  "version": "v1",
-  "rows_in": 3000,
-  "rows_out": 2998,
+  "version": "v2",
+  "rows_in": 6000,
+  "rows_out": 5998,
   "dropped_length": 1,
   "dropped_exact_dup": 1,
   "dropped_near_dup": 0,
@@ -28,26 +28,26 @@
       "birth_date": 0
     }
   },
-  "groups": 92,
+  "groups": 96,
   "user_chars": {
-    "p10": 126,
-    "p50": 259,
-    "p90": 495,
-    "ratio_p90_p10": 3.93,
+    "p10": 125,
+    "p50": 250,
+    "p90": 478,
+    "ratio_p90_p10": 3.82,
     "cv": 0.537,
     "min": 35,
-    "max": 997,
-    "p99": 816
+    "max": 998,
+    "p99": 802
   },
   "assistant_chars": {
     "p10": 7,
     "p50": 22,
     "p90": 38,
     "ratio_p90_p10": 5.43,
-    "cv": 0.511,
+    "cv": 0.513,
     "min": 5,
     "max": 78,
     "p99": 54
   },
-  "seconds": 0.85
+  "seconds": 1.68
 }
