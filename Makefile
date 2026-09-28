@@ -1,4 +1,4 @@
-.PHONY: install generate bench inspect repro v1 v2 diff dag diversity contamination sample tokenize check check-hw1 check-hw2 check-hw3 check-all clean
+.PHONY: install generate bench inspect bootstrap-source repro v1 v2 diff dag diversity contamination sample tokenize check check-hw1 check-hw2 check-hw3 check-all clean
 
 install:
 	uv sync
@@ -11,6 +11,10 @@ bench:
 
 inspect:
 	uv run python -m src.inspect_model
+
+bootstrap-source:
+	uv run python scripts/fetch_source.py
+	uv run dvc commit sources/movies-dataset.dvc
 
 repro:
 	uv run dvc repro

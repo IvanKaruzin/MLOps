@@ -57,7 +57,7 @@
 
 **Файлы:** `params.yaml`, `dvc.lock`, `metrics/tokenize.json`, `docs/tokenize_report.md`.
 
-**Проверка:** `UV_CACHE_DIR=/private/tmp/mlops-uv-cache uv run dvc repro`; `UV_CACHE_DIR=/private/tmp/mlops-uv-cache uv run dvc status`; `git ls-files data/`.
+**Проверка:** `UV_CACHE_DIR=/private/tmp/mlops-uv-cache DVC_SITE_CACHE_DIR=/private/tmp/mlops-dvc-site-cache uv run dvc repro`; `UV_CACHE_DIR=/private/tmp/mlops-uv-cache DVC_SITE_CACHE_DIR=/private/tmp/mlops-dvc-site-cache uv run dvc status`; `git ls-files data/`.
 
 ### Stage 5: Описать результат и найденные дефекты
 
@@ -77,11 +77,12 @@
 
 - Другим агентом перечитать diff, требования и фактические артефакты; исправить каждое подтверждённое замечание.
 - Выполнить `make check-all` и повторно сверить метрики, выходы DVC, отпечаток проверки и состав Git.
+- Проверить восстановление публичного source snapshot в свежем клоне без локального DVC remote; добавить `make bootstrap-source` с SHA-256 гейтом и проверить его отдельно.
 - Удалить `hw4-broken/` после переноса всех нужных файлов; добавить `course_tasks/hw4/`.
 
-**Файлы:** все изменённые файлы, `hw4-broken/`, `course_tasks/hw4/`.
+**Файлы:** все изменённые файлы, `scripts/fetch_source.py`, `tests/test_fetch_source.py`, `hw4-broken/`, `course_tasks/hw4/`.
 
-**Проверка:** `UV_CACHE_DIR=/private/tmp/mlops-uv-cache make check-all`; `UV_CACHE_DIR=/private/tmp/mlops-uv-cache uv run dvc status`; `git diff --check`; `git status --short`.
+**Проверка:** `UV_CACHE_DIR=/private/tmp/mlops-uv-cache DVC_SITE_CACHE_DIR=/private/tmp/mlops-dvc-site-cache make check-all` с доступом к MPS; `UV_CACHE_DIR=/private/tmp/mlops-uv-cache uv run python -m unittest discover -s tests -p 'test_fetch_source.py'`; `UV_CACHE_DIR=/private/tmp/mlops-uv-cache DVC_SITE_CACHE_DIR=/private/tmp/mlops-dvc-site-cache make bootstrap-source`; `UV_CACHE_DIR=/private/tmp/mlops-uv-cache DVC_SITE_CACHE_DIR=/private/tmp/mlops-dvc-site-cache uv run dvc status`; `git diff --check`; `git status --short`.
 
 ### Stage 7: Зафиксировать и отправить изменения
 
