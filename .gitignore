@@ -14,3 +14,4 @@ PLAN-track.md
 *.bak
 data/
 dvc_remote/
+vibe/*
