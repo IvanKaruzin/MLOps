@@ -11,6 +11,39 @@ generate:
   seed: 67
   enable_thinking: false    # Qwen3 без этого отвечает <think>-блоком
 
+# ДЗ-4 использует train/val стадии split ДЗ-3. Пути дублируют paths.train/val
+# ради контракта проверочного скрипта; src.config проверяет их совпадение.
+data:
+  train_jsonl: "data/train.jsonl"
+  val_jsonl: "data/val.jsonl"
+  out_dir: "data/tokenized"
+  # Только для преподавательского среза; обычный запуск использует split ДЗ-3.
+  source_train: "../../datasets/nmo/sft_single/train/0000.parquet"
+  source_val: "../../datasets/nmo/sft_single/validation/0000.parquet"
+
+sample:
+  train_size: 500
+  val_size: 100
+  scan_rows: 20000
+  seed: 42
+
+tokenize:
+  # На v2 полная длина train/val по предварительному замеру не выше 301/274.
+  max_seq_len: 320
+  truncated_warn_ratio: 0.05
+  padding_side: "left"
+
+packing:
+  # Без блочной маски внимания packing смешивает примеры между собой.
+  enabled: false
+  batch_size: 8
+
+train_estimate:
+  epochs: 3
+  # Медиана генерации Qwen3-1.7B на этой машине из docs/hardware.md.
+  # Это оптимистичная граница для обучения, а не замер backward.
+  tokens_per_sec: 42.69
+
 bench:
   warmup_runs: 1            # прогрев не засчитывается в замер
   measure_runs: 3

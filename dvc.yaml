@@ -1,4 +1,4 @@
-# Reproducible dataset pipeline for HW-3.
+# Reproducible dataset pipeline for HW-3 and HW-4.
 #
 # Data artifacts are cached by DVC. Small JSON metrics stay in Git and are
 # therefore declared with cache: false.
@@ -108,4 +108,31 @@ stages:
       - paths.metrics_contamination
     metrics:
       - metrics/contamination.json:
+          cache: false
+
+  tokenize:
+    cmd: uv run python -m src.tokenize_data
+    deps:
+      - data/train.jsonl
+      - data/val.jsonl
+      - src/tokenize_data.py
+      - src/prompt.py
+      - src/collate.py
+      - src/pack.py
+      - src/config.py
+    params:
+      - model.name
+      - generate.enable_thinking
+      - tokenize
+      - packing
+      - train_estimate
+      - data.train_jsonl
+      - data.val_jsonl
+      - data.out_dir
+    outs:
+      - data/tokenized
+      - docs/tokenize_report.md:
+          cache: false
+    metrics:
+      - metrics/tokenize.json:
           cache: false

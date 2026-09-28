@@ -1,0 +1,87 @@
+{
+  "model": "Qwen/Qwen3-1.7B",
+  "enable_thinking": false,
+  "max_seq_len": 320,
+  "padding_side": "left",
+  "truncated_warn_ratio": 0.05,
+  "splits": {
+    "train": {
+      "examples_in": 4800,
+      "examples_kept": 4800,
+      "dropped_no_supervision": 0,
+      "length_tokens": {
+        "count": 4800,
+        "mean": 120.0,
+        "p50": 113,
+        "p90": 162,
+        "p99": 235,
+        "max": 300
+      },
+      "prompt_tokens": {
+        "count": 4800,
+        "mean": 109.2,
+        "p50": 102,
+        "p90": 151,
+        "p99": 222,
+        "max": 286
+      },
+      "answer_tokens": {
+        "count": 4800,
+        "mean": 10.8,
+        "p50": 10,
+        "p90": 17,
+        "p99": 24,
+        "max": 34
+      },
+      "bpe_boundary_fallback": 0,
+      "total_tokens": 576023,
+      "supervised_tokens": 51919,
+      "truncated": 0,
+      "truncated_ratio": 0.0,
+      "packing": null
+    },
+    "val": {
+      "examples_in": 599,
+      "examples_kept": 599,
+      "dropped_no_supervision": 0,
+      "length_tokens": {
+        "count": 599,
+        "mean": 124.0,
+        "p50": 119,
+        "p90": 167,
+        "p99": 231,
+        "max": 273
+      },
+      "prompt_tokens": {
+        "count": 599,
+        "mean": 113.3,
+        "p50": 107,
+        "p90": 155,
+        "p99": 218,
+        "max": 263
+      },
+      "answer_tokens": {
+        "count": 599,
+        "mean": 10.7,
+        "p50": 10,
+        "p90": 17,
+        "p99": 23,
+        "max": 28
+      },
+      "bpe_boundary_fallback": 0,
+      "total_tokens": 74255,
+      "supervised_tokens": 6411,
+      "truncated": 0,
+      "truncated_ratio": 0.0,
+      "packing": null
+    }
+  },
+  "train_time_estimate": {
+    "epochs": 3,
+    "tokens_per_sec": 42.69,
+    "tokens_per_epoch": 576023,
+    "seconds": 40479.5,
+    "hours": 11.24,
+    "note": "tokens_per_sec — ориентир по скорости ГЕНЕРАЦИИ из конфигурации. Обучение считает также backward и шаг оптимизатора; по материалам курса оно может быть медленнее в 2–3 раза. Реальное время нужно измерить в первом обучающем прогоне."
+  }
+}

@@ -13,8 +13,8 @@ stages:
       size: 14613
     - path: src/config.py
       hash: md5
-      md5: 10f851b9d905cdba48a0159191240b52
-      size: 2099
+      md5: ddabf6f31c432a17ad35933161e4e782
+      size: 3095
     - path: src/schema.py
       hash: md5
       md5: 2108fffa5e358e5b5b1b4a181e3b66c4
@@ -136,8 +136,8 @@ stages:
       size: 4888
     - path: src/config.py
       hash: md5
-      md5: 10f851b9d905cdba48a0159191240b52
-      size: 2099
+      md5: ddabf6f31c432a17ad35933161e4e782
+      size: 3095
     - path: src/dedup.py
       hash: md5
       md5: f804b2502004d2fd8b4a4880f519dbdb
@@ -182,7 +182,7 @@ stages:
       size: 4365028
     - path: metrics/clean.json
       hash: md5
-      md5: dd8ff43ce92cb78dc9d0dd4d08f25a49
+      md5: ca38993e2ecdaa620b0e10d949f901ae
       size: 859
   diversity:
     cmd: uv run python -m src.diversity
@@ -193,8 +193,8 @@ stages:
       size: 4365028
     - path: src/config.py
       hash: md5
-      md5: 10f851b9d905cdba48a0159191240b52
-      size: 2099
+      md5: ddabf6f31c432a17ad35933161e4e782
+      size: 3095
     - path: src/diversity.py
       hash: md5
       md5: c5ce1454a10f535445acee8a4c55f566
@@ -247,8 +247,8 @@ stages:
       size: 1582
     - path: src/config.py
       hash: md5
-      md5: 10f851b9d905cdba48a0159191240b52
-      size: 2099
+      md5: ddabf6f31c432a17ad35933161e4e782
+      size: 3095
     - path: src/schema.py
       hash: md5
       md5: 2108fffa5e358e5b5b1b4a181e3b66c4
@@ -293,7 +293,7 @@ stages:
       size: 444727
     - path: metrics/split.json
       hash: md5
-      md5: 89b521af48ca540a8a819248815ecaf9
+      md5: 2d4046175e7603dc2072223fcfaf78d7
       size: 5165
   contamination:
     cmd: uv run python scripts/check_contamination.py
@@ -313,8 +313,8 @@ stages:
       isexec: true
     - path: src/config.py
       hash: md5
-      md5: 10f851b9d905cdba48a0159191240b52
-      size: 2099
+      md5: ddabf6f31c432a17ad35933161e4e782
+      size: 3095
     - path: src/contamination.py
       hash: md5
       md5: 36580bb5f5c64204f1dc4326b58ab547
@@ -349,3 +349,65 @@ stages:
       hash: md5
       md5: 3c7e8e8c3d41ff60b37d8c4da496b406
       size: 334
+  tokenize:
+    cmd: uv run python -m src.tokenize_data
+    deps:
+    - path: data/train.jsonl
+      hash: md5
+      md5: 6769d0116a777c69d0c3626d082d79d4
+      size: 3475849
+    - path: data/val.jsonl
+      hash: md5
+      md5: 06729181af60c8b20a448ac9010c1f04
+      size: 444727
+    - path: src/collate.py
+      hash: md5
+      md5: 04ce0b79182ae28d47bf6f79acec0bcf
+      size: 1710
+    - path: src/config.py
+      hash: md5
+      md5: ddabf6f31c432a17ad35933161e4e782
+      size: 3095
+    - path: src/pack.py
+      hash: md5
+      md5: 3585cab7024fbeeb54e9371b432e5925
+      size: 2773
+    - path: src/prompt.py
+      hash: md5
+      md5: 4b84e5bd3afbdb4d30ef6c104b6b33eb
+      size: 4805
+    - path: src/tokenize_data.py
+      hash: md5
+      md5: e369b78a405102d91ffcc397efddb816
+      size: 16937
+    params:
+      params.yaml:
+        data.out_dir: data/tokenized
+        data.train_jsonl: data/train.jsonl
+        data.val_jsonl: data/val.jsonl
+        generate.enable_thinking: false
+        model.name: Qwen/Qwen3-1.7B
+        packing:
+          enabled: false
+          batch_size: 8
+        tokenize:
+          max_seq_len: 320
+          truncated_warn_ratio: 0.05
+          padding_side: left
+        train_estimate:
+          epochs: 3
+          tokens_per_sec: 42.69
+    outs:
+    - path: data/tokenized
+      hash: md5
+      md5: c36cec1eaeec9eead265f9303356951d.dir
+      size: 7223734
+      nfiles: 2
+    - path: docs/tokenize_report.md
+      hash: md5
+      md5: 49c5de55bbfb18829e1f8171c0bc6104
+      size: 2053
+    - path: metrics/tokenize.json
+      hash: md5
+      md5: fa9b64f6e6e9fb4bab20a228a491b958
+      size: 2237

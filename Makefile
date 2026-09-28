@@ -1,4 +1,4 @@
-.PHONY: install generate bench inspect repro v1 v2 diff dag diversity contamination check check-hw1 check-hw2 check-all clean
+.PHONY: install generate bench inspect repro v1 v2 diff dag diversity contamination sample tokenize check check-hw1 check-hw2 check-hw3 check-all clean
 
 install:
 	uv sync
@@ -35,6 +35,12 @@ diversity:
 contamination:
 	uv run python scripts/check_contamination.py
 
+sample:
+	uv run python -m scripts.make_sample
+
+tokenize:
+	uv run python -m src.tokenize_data
+
 check:
 	bash tests/check.sh
 
@@ -44,9 +50,13 @@ check-hw1:
 check-hw2:
 	bash tests/check_hw2.sh
 
+check-hw3:
+	bash tests/check_hw3.sh
+
 check-all:
 	$(MAKE) check-hw1
 	$(MAKE) check-hw2
+	$(MAKE) check-hw3
 	$(MAKE) check
 
 clean:
