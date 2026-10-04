@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Лекция 5 — Дообучение LoRA</title>
+  <style>
+/* ============================================
+   YABD-26 Course — Glassmorphism Apple Style
+   White + Purple palette, parallax
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --purple-50:  #faf5ff;
+  --purple-100: #f3e8ff;
+  --purple-200: #e9d5ff;
+  --purple-300: #d8b4fe;
+  --purple-400: #c084fc;
+  --purple-500: #a855f7;
+  --purple-600: #9333ea;
+  --purple-700: #7e22ce;
+  --purple-800: #6b21a8;
+  --purple-900: #581c87;
+
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px rgba(88, 28, 135, 0.12);
+  --glass-blur: 20px;
+
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a6a;
+  --text-muted: #8888aa;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #f5f0ff 0%, #ede4ff 25%, #f8f4ff 50%, #e8deff 75%, #f0eaff 100%);
+  color: var(--text-primary);
+  height: 100%;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------- Parallax Background Orbs ---------- */
+.parallax-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  will-change: transform;
+  transition: transform 0.3s ease-out;
+}
+
+.orb-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, var(--purple-300), transparent 70%);
+  top: -10%;
+  right: -5%;
+}
+
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, var(--purple-200), transparent 70%);
+  bottom: -15%;
+  left: -10%;
+}
+
+.orb-3 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--purple-400), transparent 70%);
+  top: 40%;
+  left: 50%;
+  opacity: 0.3;
+}
+
+.orb-4 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, #fff, transparent 70%);
+  top: 20%;
+  left: 20%;
+  opacity: 0.6;
+}
+
+/* ---------- Slide Container ---------- */
+.slides-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(30px);
+  padding: 60px 40px 100px;
+}
+
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* ---------- Glass Card ---------- */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  padding: 48px 56px;
+  max-width: 960px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.glass-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.glass-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.glass-card::-webkit-scrollbar-thumb {
+  background: var(--purple-300);
+  border-radius: 3px;
+}
+
+/* ---------- Home Page ---------- */
+.home-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.home-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: var(--glass-shadow);
+  padding: 48px 56px;
+  max-width: 1100px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.home-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.home-card::-webkit-scrollbar-thumb {
+  background: var(--purple-300);
+  border-radius: 3px;
+}
+
+.course-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--purple-700), var(--purple-500));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.course-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+  font-weight: 400;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.schedule-item {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  padding: 24px 28px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+.schedule-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 16px 16px 0 0;
+}
+
+.schedule-item.lecture::before {
+  background: linear-gradient(90deg, var(--purple-500), var(--purple-700));
+}
+
+.schedule-item.seminar::before {
+  background: linear-gradient(90deg, var(--purple-300), var(--purple-500));
+}
+
+.schedule-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(88, 28, 135, 0.18);
+  border-color: var(--purple-300);
+}
+
+.schedule-item .badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.schedule-item.lecture .badge {
+  background: var(--purple-600);
+  color: #fff;
+}
+
+.schedule-item.seminar .badge {
+  background: var(--purple-200);
+  color: var(--purple-800);
+}
+
+.schedule-item .date {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.schedule-item .title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.schedule-item .desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* ---------- Slide Typography ---------- */
+.slide-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 5px 14px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.slide-badge.lecture {
+  background: var(--purple-600);
+  color: #fff;
+}
+
+.slide-badge.seminar {
+  background: var(--purple-200);
+  color: var(--purple-800);
+}
+
+.slide-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+}
+
+.slide-content h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--purple-700);
+  margin: 20px 0 10px;
+}
+
+.slide-content p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.slide-content ul, .slide-content ol {
+  padding-left: 24px;
+  margin-bottom: 16px;
+}
+
+.slide-content li {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.slide-content li strong {
+  color: var(--text-primary);
+}
+
+/* ---------- Code Blocks ---------- */
+.code-block {
+  background: rgba(30, 20, 50, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  overflow-x: auto;
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.code-block code,
+.code-block pre {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: #e8deff;
+  white-space: pre;
+  margin: 0;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+/* Комментарии внутри блока — приглушённые, но читаемые на тёмном */
+.code-block pre { tab-size: 2; }
+
+.code-block .comment { color: #8888aa; }
+.code-block .keyword { color: #c084fc; }
+.code-block .string  { color: #a78bfa; }
+.code-block .type    { color: #d8b4fe; }
+.code-block .annotation { color: #f0abfc; }
+
+.code-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--purple-400);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* ---------- Comparison Table ---------- */
+.comparison-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 16px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.comparison-table th {
+  background: rgba(147, 51, 234, 0.15);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--purple-800);
+}
+
+.comparison-table td {
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.comparison-table tr:hover td {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* ---------- Task Box ---------- */
+.task-box {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.08), rgba(168, 85, 247, 0.12));
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin: 20px 0;
+}
+
+.task-box h3 {
+  color: var(--purple-700) !important;
+  margin-top: 0 !important;
+  font-size: 1.1rem !important;
+}
+
+.task-box .task-steps {
+  counter-reset: step;
+  list-style: none;
+  padding-left: 0;
+}
+
+.task-box .task-steps li {
+  counter-increment: step;
+  padding-left: 32px;
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.task-box .task-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 22px;
+  height: 22px;
+  background: var(--purple-500);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- Bottom Navigation Bar ---------- */
+.nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 40px;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: var(--purple-700);
+  font-size: 1.1rem;
+  text-decoration: none;
+}
+
+.nav-btn:hover {
+  background: var(--purple-100);
+  border-color: var(--purple-300);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(88, 28, 135, 0.15);
+}
+
+.nav-btn:active {
+  transform: translateY(0);
+}
+
+.nav-btn.disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+.nav-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.page-indicator {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 60px;
+  text-align: center;
+  user-select: none;
+}
+
+.nav-home {
+  font-size: 0.8rem;
+  font-weight: 600;
+  width: auto;
+  padding: 0 16px;
+  gap: 6px;
+}
+
+.nav-home svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Diagram / Architecture Blocks ---------- */
+.arch-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.arch-box {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 14px 20px;
+  text-align: center;
+  min-width: 120px;
+}
+
+.arch-box .arch-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.arch-box .arch-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--purple-700);
+}
+
+.arch-arrow {
+  font-size: 1.4rem;
+  color: var(--purple-400);
+}
+
+.arch-box.highlight {
+  background: rgba(147, 51, 234, 0.12);
+  border-color: var(--purple-300);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .glass-card, .home-card {
+    padding: 28px 24px;
+    border-radius: 18px;
+  }
+
+  .course-title {
+    font-size: 1.8rem;
+  }
+
+  .slide-title {
+    font-size: 1.5rem;
+  }
+
+  .schedule-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .slide {
+    padding: 40px 20px 100px;
+  }
+
+  .nav-bar {
+    padding: 12px 20px;
+  }
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.schedule-item {
+  animation: fadeInUp 0.5s ease backwards;
+}
+
+.schedule-item:nth-child(1)  { animation-delay: 0.05s; }
+.schedule-item:nth-child(2)  { animation-delay: 0.1s; }
+.schedule-item:nth-child(3)  { animation-delay: 0.15s; }
+.schedule-item:nth-child(4)  { animation-delay: 0.2s; }
+.schedule-item:nth-child(5)  { animation-delay: 0.25s; }
+.schedule-item:nth-child(6)  { animation-delay: 0.3s; }
+.schedule-item:nth-child(7)  { animation-delay: 0.35s; }
+.schedule-item:nth-child(8)  { animation-delay: 0.4s; }
+.schedule-item:nth-child(9)  { animation-delay: 0.45s; }
+.schedule-item:nth-child(10) { animation-delay: 0.5s; }
+.schedule-item:nth-child(11) { animation-delay: 0.55s; }
+.schedule-item:nth-child(12) { animation-delay: 0.6s; }
+.schedule-item:nth-child(13) { animation-delay: 0.65s; }
+.schedule-item:nth-child(14) { animation-delay: 0.7s; }
+.schedule-item:nth-child(15) { animation-delay: 0.75s; }
+.schedule-item:nth-child(16) { animation-delay: 0.8s; }
+
+/* ---------- Section Divider ---------- */
+.section-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--purple-400);
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+/* ---------- Highlight Chip ---------- */
+.chip {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: rgba(147, 51, 234, 0.1);
+  color: var(--purple-700);
+  margin: 2px 4px 2px 0;
+}
+
+/* ---------- Two Column Layout ---------- */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 16px 0;
+}
+
+@media (max-width: 768px) {
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.col-card {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.col-card h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--purple-700);
+  margin-bottom: 10px;
+}
+.schedule-item.homework::before{background:linear-gradient(90deg,var(--purple-300),var(--purple-500));}
+.schedule-item.homework .badge{background:var(--purple-200);color:var(--purple-800);}
+
+/* ---------- Speech pages ---------- */
+.speech-columns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 8px; }
+@media (max-width: 1000px) { .speech-columns { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 680px) { .speech-columns { grid-template-columns: 1fr; } }
+.speech-block { background: rgba(255,255,255,0.35); border: 1px solid var(--glass-border); border-radius: 14px; padding: 18px 20px; }
+.speech-block h4 { font-size: 0.8rem; font-weight: 600; color: var(--purple-700); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(147,51,234,0.15); }
+.speech-block p { font-size: 0.88rem; line-height: 1.65; color: var(--text-secondary); margin-bottom: 8px; }
+.speech-block p:last-child { margin-bottom: 0; }
+.speech-hint { font-size: 0.78rem; color: var(--purple-500); font-style: italic; margin-top: 6px; }
+.slide-badge.homework { background: var(--purple-200); color: var(--purple-800); }
+
+/* ---------- Тезисный конспект лектора (speech) ---------- */
+.cue-card { max-width: 1120px; padding: 34px 44px; }
+
+.cue-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 4px; }
+.cue-time {
+  font-size: .8rem; font-weight: 600; color: var(--purple-700);
+  background: rgba(255,255,255,.55); border: 1px solid var(--glass-border);
+  border-radius: 999px; padding: 5px 15px; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.cue-title { font-size: 2rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.12; margin: 8px 0 22px; }
+
+.cue-list { list-style: none; padding: 0; margin: 0 0 20px; display: flex; flex-direction: column; gap: 12px; }
+.cue-list.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 34px; }
+@media (max-width: 900px) { .cue-list.two { grid-template-columns: 1fr; } }
+.cue-list li { position: relative; padding-left: 28px; font-size: 1.15rem; line-height: 1.42; color: var(--text-primary); }
+.cue-list li::before {
+  content: ""; position: absolute; left: 5px; top: .52em;
+  width: 9px; height: 9px; border-radius: 50%; background: var(--purple-400);
+}
+.cue-list li.key::before { background: var(--purple-700); box-shadow: 0 0 0 4px rgba(147,51,234,.18); }
+.cue-list li.warn::before { background: #d97706; box-shadow: 0 0 0 4px rgba(217,119,6,.18); }
+.cue-list li strong { color: var(--purple-800); font-weight: 700; }
+.cue-list li span { display: block; margin-top: 3px; font-size: .92rem; color: var(--text-muted); }
+
+.cue-say {
+  background: rgba(255,255,255,.55); border-left: 4px solid var(--purple-600);
+  border-radius: 0 14px 14px 0; padding: 15px 22px; margin: 0 0 18px;
+}
+.cue-say .cue-lbl {
+  display: block; font-size: .68rem; font-weight: 700; letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--purple-700); margin-bottom: 7px;
+}
+.cue-say p { font-size: 1.1rem; line-height: 1.48; margin: 0 0 8px; color: var(--text-primary); }
+.cue-say p:last-child { margin-bottom: 0; }
+
+.cue-next {
+  display: flex; align-items: center; gap: 8px; font-size: .88rem; color: var(--text-muted);
+  border-top: 1px solid rgba(147,51,234,.15); padding-top: 13px;
+}
+.cue-next b { color: var(--purple-700); font-weight: 600; }
+
+/* ---------- Inline code (не затрагивает .code-block) ---------- */
+.cue-list code, .cue-say code, .cue-next code,
+.slide-content p > code, .slide-content li > code, .slide-content td > code {
+  font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+  font-size: .88em;
+  background: rgba(147, 51, 234, .10);
+  color: var(--purple-800);
+  padding: .08em .36em;
+  border-radius: 5px;
+}
+
+/* ---------- Навигация: крупные кнопки и счётчик ---------- */
+.slides-wrapper { height: 100dvh; }
+.slide { height: 100dvh; }
+
+.nav-bar {
+  gap: 20px;
+  padding: 14px 24px calc(14px + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.55);
+  border-top: 1px solid rgba(147, 51, 234, .18);
+}
+
+.nav-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.75);
+  border-color: var(--purple-200);
+  box-shadow: 0 2px 10px rgba(88, 28, 135, .08);
+}
+.nav-btn svg { width: 26px; height: 26px; stroke-width: 2.4; }
+.nav-btn.disabled { opacity: .22; }
+
+.page-indicator {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--purple-800);
+  min-width: 92px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .01em;
+  background: rgba(255, 255, 255, .7);
+  border: 1px solid var(--purple-200);
+  border-radius: 12px;
+  padding: 12px 8px;
+}
+
+/* Телефон: кнопки разнесены по краям — под большой палец */
+@media (max-width: 768px) {
+  .nav-bar { justify-content: space-between; gap: 10px; padding-left: 14px; padding-right: 14px; }
+  .nav-btn { width: 62px; height: 58px; }
+  .nav-btn svg { width: 30px; height: 30px; }
+  .page-indicator { font-size: 1.2rem; min-width: 0; flex: 1; max-width: 130px; }
+  .slide { padding: 32px 16px 110px; }
+}
+
+/* Плавная прокрутка содержимого карточки на мобильных */
+.glass-card { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+@media (max-width: 768px) { .glass-card { max-height: calc(100dvh - 150px); } }
+
+/* Карточка ещё не готового занятия */
+.schedule-item.pending { opacity: .42; cursor: default; pointer-events: none; }
+.schedule-item.pending::after {
+  content: "скоро"; position: absolute; top: 14px; right: 16px;
+  font-size: .68rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-muted); background: rgba(255,255,255,.6);
+  border: 1px solid var(--glass-border); border-radius: 6px; padding: 3px 8px;
+}
+
+/* ---------- Слайд в две колонки: текст слева, схема справа ---------- */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 26px;
+  align-items: start;
+}
+.split-text > :first-child { margin-top: 0; }
+.split-text p,
+.split-text li { font-size: 0.92rem; line-height: 1.62; }
+.split-text h3 { margin-top: 18px; }
+.split .code-block pre { font-size: 0.72rem; line-height: 1.55; }
+.split .code-block { padding: 14px 16px; margin: 12px 0; }
+
+.split-fig {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 16px;
+  padding: 16px 16px 12px;
+  box-shadow: 0 6px 24px rgba(88, 28, 135, 0.07);
+}
+.split-fig + .split-fig { margin-top: 16px; }
+.split-fig svg { width: 100%; height: auto; display: block; }
+.split-fig figcaption {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(168, 85, 247, 0.16);
+  font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+  font-size: 0.72rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  overflow-x: auto;
+}
+.split-fig figcaption b { color: var(--purple-700); font-weight: 600; }
+
+@media (max-width: 900px) {
+  .split { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .split-fig { padding: 14px 12px 10px; }
+}
+
+/* ---------- Плашки-определения ---------- */
+.defs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0 4px;
+}
+.def {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.def.hi { background: rgba(243, 232, 255, 0.85); border-color: var(--purple-400); }
+.def b {
+  display: block;
+  font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--purple-700);
+  margin-bottom: 5px;
+}
+.def span { display: block; font-size: 0.8rem; line-height: 1.5; color: var(--text-secondary); }
+.def i {
+  display: block;
+  margin-top: 7px;
+  font-style: normal;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+@media (max-width: 900px) { .defs { grid-template-columns: minmax(0, 1fr); } }
+
+/* В двухколоночной раскладке таблицы и заголовки чуть компактнее */
+.split .comparison-table { font-size: 0.84rem; }
+.split .comparison-table th,
+.split .comparison-table td { padding: 8px 10px; }
+.split h3 { font-size: 1rem; margin-top: 16px; }
+.def code { font-size: 0.76em; word-break: break-word; }
+
+/* ---------- Слайд-схема: картинка крупно, текста мало ---------- */
+.figure-wide {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 18px;
+  padding: 18px 20px 14px;
+  margin: 4px 0 18px;
+  box-shadow: 0 6px 24px rgba(88, 28, 135, 0.07);
+}
+.figure-wide svg { width: 100%; height: auto; display: block; }
+.figure-wide figcaption {
+  margin-top: 12px; padding-top: 10px;
+  border-top: 1px solid rgba(168, 85, 247, 0.16);
+  font-size: 0.82rem; line-height: 1.6; color: var(--text-secondary);
+}
+.figure-wide figcaption b { color: var(--purple-700); }
+
+/* Крупные цифры под схемой */
+.numbers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0; }
+.numbers.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.numbers.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.num {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 14px; padding: 14px 16px; text-align: center;
+}
+.num.hi { background: rgba(243, 232, 255, 0.9); border-color: var(--purple-400); }
+.num b { display: block; font-size: 1.75rem; font-weight: 700; color: var(--purple-700); line-height: 1.1; }
+.num.hi b { color: var(--purple-800); }
+.num span { display: block; margin-top: 6px; font-size: 0.78rem; line-height: 1.45; color: var(--text-secondary); }
+@media (max-width: 900px) {
+  .numbers, .numbers.two, .numbers.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+</style>
+  <style>
+.bx{fill:#fff;stroke:rgba(147,51,234,.35);stroke-width:1.4}
+.bxh{fill:#f3e8ff;stroke:#9333ea;stroke-width:1.8}
+.bxr{fill:#fef2f2;stroke:#dc2626;stroke-width:1.6}
+.bxg{fill:#f0fdf4;stroke:#16a34a;stroke-width:1.6}
+.bxz{fill:#f4f4f5;stroke:#d4d4d8;stroke-width:1.2}
+.fp{fill:#9333ea}.fpl{fill:#e9d5ff}.fr{fill:#dc2626}.fg{fill:#16a34a}.fz{fill:#d4d4d8}
+.w{fill:none;stroke:#c084fc;stroke-width:2}
+.ax{fill:none;stroke:#d4d4d8;stroke-width:1}
+.cp{fill:none;stroke:#9333ea;stroke-width:2.4}
+.cpd{fill:none;stroke:#9333ea;stroke-width:1.6;stroke-dasharray:5 4}
+.cg{fill:none;stroke:#16a34a;stroke-width:2.4}
+.cgd{fill:none;stroke:#16a34a;stroke-width:1.6;stroke-dasharray:5 4}
+.cr{fill:none;stroke:#dc2626;stroke-width:2.4}
+.t{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e;text-anchor:middle}
+.tb{font-family:Inter,sans-serif;font-size:13px;font-weight:600;fill:#1a1a2e;text-anchor:middle}
+.ts{font-family:Inter,sans-serif;font-size:12px;fill:#8888aa;text-anchor:middle}
+.tl{font-family:Inter,sans-serif;font-size:12px;fill:#8888aa}
+.tlb{font-family:Inter,sans-serif;font-size:13px;fill:#1a1a2e}
+.tr{font-family:Inter,sans-serif;font-size:12px;fill:#8888aa;text-anchor:end}
+.m{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:12px;fill:#6b21a8}
+.mm{font-family:'SF Mono',ui-monospace,Menlo,monospace;font-size:12px;fill:#6b21a8;text-anchor:middle}
+.big{font-family:Inter,sans-serif;font-size:22px;font-weight:700;fill:#6b21a8;text-anchor:middle}
+.bigr{font-family:Inter,sans-serif;font-size:22px;font-weight:700;fill:#dc2626;text-anchor:middle}
+.bigg{font-family:Inter,sans-serif;font-size:22px;font-weight:700;fill:#16a34a;text-anchor:middle}
+.red{fill:#dc2626}.grn{fill:#16a34a}.pur{fill:#6b21a8}
+/* Телефон: схема не сжимается до нечитаемого, а прокручивается вбок */
+@media (max-width: 760px) {
+  .figure-wide { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 12px; }
+  .figure-wide svg { min-width: 720px; }
+}
+</style>
+</head>
+<body>
+  <div class="parallax-bg">
+    <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div><div class="orb orb-4"></div>
+  </div>
+  <div class="slides-wrapper">
+
+    <!-- ==================== SLIDE 1 ==================== -->
+    <div class="slide active">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 5 &middot; Слайд 1/12</span>
+        <h1 class="slide-title">Дообучение LoRA: обучаем 0,8% модели</h1>
+        <div class="slide-content">
+          <figure class="figure-wide"><svg viewBox="0 0 900 145" role="img" aria-label="Путь от токенизированных данных до сравнения ответов"><defs>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/></marker>
+</defs><text class="tl" x="20" y="24">ДЗ 5 целиком: от токенов ДЗ 4 до адаптера, который можно отдать</text><rect class="bx" x="20" y="40" width="130" height="62" rx="10"/><text class="t" x="85.0" y="67.0">train.pt / val.pt</text><text class="ts" x="85.0" y="84.0">из ДЗ 4</text><rect class="bxz" x="170" y="40" width="130" height="62" rx="10"/><text class="t" x="235.0" y="67.0">Qwen3-0.6B</text><text class="ts" x="235.0" y="84.0">596 млн, заморожена</text><path class="w" d="M152,71 L167,71" marker-end="url(#ar5)"/><rect class="bxh" x="320" y="40" width="130" height="62" rx="10"/><text class="t" x="385.0" y="67.0">+ LoRA</text><text class="ts" x="385.0" y="84.0">5,05 млн обучаем</text><path class="w" d="M302,71 L317,71" marker-end="url(#ar5)"/><rect class="bx" x="470" y="40" width="130" height="62" rx="10"/><text class="t" x="535.0" y="67.0">цикл обучения</text><text class="ts" x="535.0" y="84.0">AdamW, накопление</text><path class="w" d="M452,71 L467,71" marker-end="url(#ar5)"/><rect class="bxh" x="620" y="40" width="130" height="62" rx="10"/><text class="t" x="685.0" y="67.0">адаптер</text><text class="ts" x="685.0" y="84.0">20,2 МБ</text><path class="w" d="M602,71 L617,71" marker-end="url(#ar5)"/><rect class="bx" x="770" y="40" width="130" height="62" rx="10"/><text class="t" x="835.0" y="67.0">база vs адаптер</text><text class="ts" x="835.0" y="84.0">5 вопросов</text><path class="w" d="M752,71 L767,71" marker-end="url(#ar5)"/><text class="ts" x="385" y="130">val loss на каждом 10-м шаге — без него ничего не видно</text></svg></figure>
+          <ul>
+            <li>Базовая модель не меняется ни на байт. Обучаем две тонкие матрицы рядом с каждым слоем — <strong>5,05 млн</strong> параметров из 601 млн</li>
+            <li>На выходе не новая модель, а файл-поправка. Его отдают отдельно и подключают к той же базе</li>
+            <li>Все числа — замер на ноутбуке курса: Apple M-серии, mps, bf16, датасет курса 497 train / 99 val</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 2 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 5 &middot; Слайд 2/12</span>
+        <h1 class="slide-title">Три способа подстроить модель</h1>
+        <div class="slide-content">
+          <figure class="figure-wide"><svg viewBox="0 0 900 255" role="img" aria-label="Сравнение полного дообучения, LoRA и промпта по параметрам и памяти"><defs>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/></marker>
+</defs><text class="tl" x="20" y="24">обучаемые параметры</text><text class="tlb" x="20" y="53">полное дообучение</text><rect class="fp" x="190" y="38" width="560.0" height="20" rx="3"/><text class="tl" x="758.0" y="53">596,05 млн</text><text class="tlb" x="20" y="83">LoRA r=8</text><rect class="fp" x="190" y="68" width="4.7" height="20" rx="3"/><text class="tl" x="202.74106652006597" y="83">5,05 млн</text><text class="tlb" x="20" y="113">промпт</text><rect class="fz" x="190" y="98" width="2.0" height="20" rx="3"/><text class="tl" x="200" y="113">0</text><text class="tl" x="20" y="150">память на веса, градиенты и Adam (оценка: 16 байт на обучаемый, 2 — на замороженный)</text><text class="tlb" x="20" y="179">полное дообучение</text><rect class="fpl" x="190" y="164" width="560.0" height="20" rx="3"/><text class="tl" x="758.0" y="179">9,5 ГБ</text><text class="tlb" x="20" y="209">LoRA r=8</text><rect class="fpl" x="190" y="194" width="74.7" height="20" rx="3"/><text class="tl" x="272.74106652006594" y="209">1,3 ГБ</text><text class="tl" x="20" y="245">замер пика на обучении LoRA вместе с активациями: 9,0 ГБ</text></svg></figure>
+          <ul>
+            <li>Полное дообучение: трогаем всё, платим памятью на градиенты и состояние Adam для каждого веса</li>
+            <li>LoRA: градиенты и Adam только для крошечной доли. Замороженная база стоит 2 байта на параметр</li>
+            <li>Промпт ничего не обучает — и часто его хватает. Сначала промпт, потом LoRA</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 3 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 5 &middot; Слайд 3/12</span>
+        <h1 class="slide-title">Когда дообучать не нужно</h1>
+        <div class="slide-content">
+          <figure class="figure-wide"><svg viewBox="0 0 900 262" role="img" aria-label="Выбор между RAG, LoRA и промптом"><defs>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/></marker>
+</defs><rect class="bxh" x="330" y="12" width="240" height="50" rx="10"/><text class="t" x="450.0" y="41.0">Чем плох ответ базы?</text><path class="w" d="M450,64 L160,92" marker-end="url(#ar5)"/><rect class="bx" x="40" y="95" width="240" height="56" rx="10"/><text class="t" x="160.0" y="119.0">не знает факта</text><text class="ts" x="160.0" y="136.0">факт устарел или закрытый</text><path class="w" d="M160,153 L160,175" marker-end="url(#ar5)"/><rect class="bxg" x="40" y="178" width="240" height="46" rx="10"/><text class="t" x="160.0" y="205.0">RAG: дать документ</text><path class="w" d="M450,64 L450,92" marker-end="url(#ar5)"/><rect class="bx" x="330" y="95" width="240" height="56" rx="10"/><text class="t" x="450.0" y="119.0">не держит формат</text><text class="ts" x="450.0" y="136.0">стиль, язык, структура ответа</text><path class="w" d="M450,153 L450,175" marker-end="url(#ar5)"/><rect class="bxh" x="330" y="178" width="240" height="46" rx="10"/><text class="t" x="450.0" y="205.0">LoRA</text><path class="w" d="M450,64 L740,92" marker-end="url(#ar5)"/><rect class="bx" x="620" y="95" width="240" height="56" rx="10"/><text class="t" x="740.0" y="119.0">не понял задачу</text><text class="ts" x="740.0" y="136.0">нет инструкции и примеров</text><path class="w" d="M740,153 L740,175" marker-end="url(#ar5)"/><rect class="bxg" x="620" y="178" width="240" height="46" rx="10"/><text class="t" x="740.0" y="205.0">промпт + 3 примера</text><text class="ts" x="450" y="250">дообучение учит манере, а не знаниям: новые факты адаптер 5 млн параметров запоминает плохо и выдумывает похожие</text></svg></figure>
+          <ul>
+            <li>LoRA — когда модель понимает задачу, но отвечает не в той форме: лишние рассуждения, не тот формат, чужой стиль</li>
+            <li>Факты — в контекст через поиск. Дообучение на фактах даёт уверенные выдумки</li>
+            <li>Наш случай — тесты НМО. Учим форму ответа датасета «Ответ: N. текст», а не медицину</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 4 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 5 &middot; Слайд 4/12</span>
+        <h1 class="slide-title">LoRA: поправка малого ранга, нарисованная в масштабе</h1>
+        <div class="slide-content">
+          <figure class="figure-wide"><svg viewBox="0 0 900 337" role="img" aria-label="Матрица W и адаптер B·A в одном масштабе"><defs>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/></marker>
+</defs><rect class="bxz" x="40" y="20" width="143.4" height="286.7"/><text class="big" x="111.68" y="157.36">W</text><text class="ts" x="111.68" y="177.36">1024×2048 = 2,10 млн</text><text class="ts" x="111.68" y="191.36">заморожена</text><text class="big" x="205.36" y="169.36">+</text><rect class="fp" x="228.36" y="20" width="1.12" height="286.7"/><text class="tb" x="232.36" y="322.72">B</text><rect class="fp" x="248.36" y="20" width="143.4" height="1.12"/><text class="tb" x="320.04" y="40">A</text><text class="tl" x="248.36" y="64">A: 8×1024, B: 2048×8</text><text class="tl" x="248.36" y="82">в масштабе — полоски</text><text class="tl" x="248.36" y="98">толщиной 1,1 пикселя</text><text class="tlb" x="441.72" y="60">q_proj одного слоя</text><text class="m" x="441.72" y="84">W: 2 097 152 весов</text><text class="m" x="441.72" y="104">B·A: 24 576 весов</text><text class="m" x="441.72" y="124">доля: 1,17%</text><text class="m" x="441.72" y="164">h = W·x + (α/r)·B·A·x</text><text class="tl" x="441.72" y="190">B стартует с нулей →</text><text class="tl" x="441.72" y="206">на шаге 0 адаптер = база</text><text class="tl" x="441.72" y="232">val loss шага 0 — это loss базы:</text><text class="m" x="441.72" y="248">0,5889</text></svg></figure>
+          <ul>
+            <li>Вместо изменения W на ΔW размера 1024×2048 учим ΔW = B·A: две узкие матрицы с внутренней размерностью r</li>
+            <li>Гипотеза LoRA: нужная поправка «плоская», её хватает описать несколькими направлениями</li>
+            <li>B инициализирована нулями — первый шаг начинается ровно с базовой модели</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 5 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 5 &middot; Слайд 5/12</span>
+        <h1 class="slide-title">Ранг r и alpha: сколько весит поправка</h1>
+        <div class="slide-content">
+          <figure class="figure-wide"><svg viewBox="0 0 900 225" role="img" aria-label="Размер адаптера в зависимости от ранга"><defs>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/></marker>
+</defs><text class="tl" x="20" y="24">размер адаптера (fp32, все 7 проекций, 28 слоёв) от ранга r</text><text class="tlb" x="20" y="56">r = 4</text><rect class="fpl" x="90" y="40" width="32.5" height="24" rx="3"/><text class="tl" x="130.5" y="56">10,1 МБ · 2,52 млн</text><text class="tlb" x="20" y="92">r = 8</text><rect class="fp" x="90" y="76" width="65.0" height="24" rx="3"/><text class="tl" x="163.0" y="92">20,2 МБ · 5,05 млн</text><text class="tlb" x="20" y="128">r = 16</text><rect class="fpl" x="90" y="112" width="130.0" height="24" rx="3"/><text class="tl" x="228.0" y="128">40,4 МБ · 10,09 млн</text><text class="tlb" x="20" y="164">r = 32</text><rect class="fpl" x="90" y="148" width="260.0" height="24" rx="3"/><text class="tl" x="358.0" y="164">80,7 МБ · 20,19 млн</text><text class="tlb" x="20" y="200">r = 64</text><rect class="fpl" x="90" y="184" width="520.0" height="24" rx="3"/><text class="tl" x="618.0" y="200">161,5 МБ · 40,37 млн</text><text class="tlb" x="640" y="60">α / r — множитель поправки</text><text class="m" x="640" y="84">r=8, α=16 → ×2</text><text class="tl" x="640" y="104">подняли r, не тронув α →</text><text class="tl" x="640" y="120">поправка ослабла, lr «уехал»</text><text class="m" x="640" y="156">замер r=8: 20,2 МБ</text><text class="tl" x="640" y="176">на диске, adapter_model.safetensors</text></svg></figure>
+          <ul>
+            <li>Размер растёт линейно по r. Качество — нет: на узкой задаче r=8 и r=64 часто неотличимы</li>
+            <li>Обычная связка — α = 2r. Меняете r — меняйте α вместе с ним, иначе меняется эффективный шаг обучения</li>
+            <li>Начинайте с r=8. Поднимать — если train loss упёрся, а val ещё падает</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 6 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 5 &middot; Слайд 6/12</span>
+        <h1 class="slide-title">Куда вешать адаптеры</h1>
+        <div class="slide-content">
+          <figure class="figure-wide"><svg viewBox="0 0 900 252" role="img" aria-label="Число параметров LoRA на каждой проекции слоя"><defs>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/></marker>
+</defs><text class="tl" x="20" y="24">один слой декодера Qwen3 и LoRA на каждой проекции, r=8</text><rect class="bxz" x="20" y="36" width="410" height="176" rx="12"/><text class="tb" x="225" y="56">внимание</text><rect class="bxz" x="450" y="36" width="430" height="176" rx="12"/><text class="tb" x="665" y="56">MLP</text><rect class="fp" x="66.0" y="102.5" width="32" height="67.5" rx="3"/><text class="ts" x="82.0" y="96.5">24 576</text><text class="mm" x="82.0" y="190">q_proj</text><rect class="fp" x="164.0" y="125.0" width="32" height="45.0" rx="3"/><text class="ts" x="180.0" y="119.0">16 384</text><text class="mm" x="180.0" y="190">k_proj</text><rect class="fp" x="262.0" y="125.0" width="32" height="45.0" rx="3"/><text class="ts" x="278.0" y="119.0">16 384</text><text class="mm" x="278.0" y="190">v_proj</text><rect class="fp" x="360.0" y="102.5" width="32" height="67.5" rx="3"/><text class="ts" x="376.0" y="96.5">24 576</text><text class="mm" x="376.0" y="190">o_proj</text><rect class="fp" x="520.0" y="80.0" width="32" height="90.0" rx="3"/><text class="ts" x="536.0" y="74.0">32 768</text><text class="mm" x="536.0" y="190">gate_proj</text><rect class="fp" x="658.0" y="80.0" width="32" height="90.0" rx="3"/><text class="ts" x="674.0" y="74.0">32 768</text><text class="mm" x="674.0" y="190">up_proj</text><rect class="fp" x="796.0" y="80.0" width="32" height="90.0" rx="3"/><text class="ts" x="812.0" y="74.0">32 768</text><text class="mm" x="812.0" y="190">down_proj</text><text class="tlb" x="20" y="240">только q и v (как в статье LoRA): 1,15 млн  ·  все семь: 5,05 млн — в 4,4 раза больше</text></svg></figure>
+          <ul>
+            <li>Оригинальная статья LoRA вешала адаптеры только на q и v. Сейчас стандарт — все линейные слои</li>
+            <li>MLP — больше половины параметров адаптера: там матрицы шире, 1024→3072</li>
+            <li>Эмбеддинги и lm_head не трогаем: это словарь, 151 936 строк. Почему — на слайде 9</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 7 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 5 &middot; Слайд 7/12</span>
+        <h1 class="slide-title">Заморозка нижних слоёв</h1>
+        <div class="slide-content">
+          <figure class="figure-wide"><svg viewBox="0 0 900 268" role="img" aria-label="Два варианта: адаптеры во всех слоях и только в верхних 14"><defs>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/></marker>
+</defs><text class="tb" x="120" y="22">all_layers</text><rect class="fp" x="30" y="233.8" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="226.4" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="219.0" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="211.6" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="204.2" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="196.8" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="189.4" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="182.0" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="174.6" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="167.2" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="159.8" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="152.4" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="145.0" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="137.6" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="130.2" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="122.8" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="115.4" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="108.0" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="100.6" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="93.2" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="85.8" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="78.4" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="71.0" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="63.6" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="56.2" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="48.8" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="41.4" width="180" height="6" rx="1.5"/><rect class="fp" x="30" y="34.0" width="180" height="6" rx="1.5"/><text class="ts" x="120" y="258">слои 0–13 с адаптерами</text><text class="tb" x="370" y="22">freeze14</text><rect class="fz" x="280" y="233.8" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="226.4" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="219.0" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="211.6" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="204.2" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="196.8" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="189.4" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="182.0" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="174.6" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="167.2" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="159.8" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="152.4" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="145.0" width="180" height="6" rx="1.5"/><rect class="fz" x="280" y="137.6" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="130.2" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="122.8" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="115.4" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="108.0" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="100.6" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="93.2" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="85.8" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="78.4" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="71.0" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="63.6" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="56.2" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="48.8" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="41.4" width="180" height="6" rx="1.5"/><rect class="fp" x="280" y="34.0" width="180" height="6" rx="1.5"/><text class="ts" x="370" y="258">слои 0–13 без адаптеров</text><text class="tr" x="690" y="60">all</text><text class="tr" x="800" y="60">freeze14</text><text class="tl" x="520" y="90">обучаемых</text><text class="tr" x="690" y="90">5,05 млн</text><text class="tr" x="800" y="90">2,52 млн</text><text class="tl" x="520" y="120">с/шаг</text><text class="tr" x="690" y="120">10,2</text><text class="tr" x="800" y="120">9,5</text><text class="tl" x="520" y="150">пик памяти</text><text class="tr" x="690" y="150">9,0 ГБ</text><text class="tr" x="800" y="150">7,3 ГБ</text><text class="tl" x="520" y="180">val loss в конце</text><text class="tr" x="690" y="180">0,0637</text><text class="tr" x="800" y="180">0,0651</text><text class="tl" x="520" y="230">вход снизу, выход сверху</text></svg></figure>
+          <ul>
+            <li>Нижние слои — общая грамматика и лексика, верхние — задача. Замер: вдвое меньше параметров, val почти тот же</li>
+            <li>Время почти не выиграли: −7%. С gradient checkpointing обратный проход всё равно идёт до входа</li>
+            <li>В peft это <code>layers_to_transform</code>. Проверка ДЗ: список слоёв начинается с 14 и обучаемых меньше</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 8 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 5 &middot; Слайд 8/12</span>
+        <h1 class="slide-title">Настоящие кривые: эталонный прогон</h1>
+        <div class="slide-content">
+          <figure class="figure-wide"><svg viewBox="0 0 900 262" role="img" aria-label="Кривые train и val loss двух вариантов"><defs>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/></marker>
+</defs><path class="ax" d="M60,20 L60,240 L620,240"/><path class="ax" d="M56,240.0 L60,240.0"/><text class="tr" x="52" y="244.0">0,0</text><path class="ax" d="M56,177.1 L60,177.1"/><text class="tr" x="52" y="181.14285714285714">0,2</text><path class="ax" d="M56,114.3 L60,114.3"/><text class="tr" x="52" y="118.28571428571428">0,4</text><path class="ax" d="M56,51.4 L60,51.4"/><text class="tr" x="52" y="55.428571428571416">0,6</text><text class="tr" x="620" y="256">шаг 62</text><text class="ts" x="60" y="256">0</text><polyline class="cpd" points="69.0,37.6 78.1,30.1 87.1,146.7 96.1,167.9 105.2,182.6 114.2,198.3 123.2,216.1 132.3,197.5 141.3,214.4 150.3,215.8 159.4,218.9 168.4,196.0 177.4,193.6 186.5,221.5 195.5,206.4 204.5,203.9 213.5,215.5 222.6,214.3 231.6,218.1 240.6,211.8 249.7,213.8 258.7,215.7 267.7,219.0 276.8,213.4 285.8,204.4 294.8,222.3 303.9,211.7 312.9,215.1 321.9,214.7 331.0,219.6 340.0,217.3 349.0,218.2 358.1,211.8 367.1,195.7 376.1,213.8 385.2,211.5 394.2,221.4 403.2,218.2 412.3,221.7 421.3,215.3 430.3,218.4 439.4,222.2 448.4,215.6 457.4,189.1 466.5,220.8 475.5,223.2 484.5,214.6 493.5,218.6 502.6,214.0 511.6,202.0 520.6,219.8 529.7,215.0 538.7,215.2 547.7,215.2 556.8,215.0 565.8,216.3 574.8,220.6 583.9,212.8 592.9,198.0 601.9,222.3 611.0,213.4 620.0,209.3"/><polyline class="cgd" points="69.0,37.6 78.1,30.1 87.1,117.5 96.1,188.8 105.2,192.9 114.2,198.3 123.2,214.9 132.3,195.2 141.3,209.3 150.3,213.9 159.4,214.8 168.4,192.2 177.4,208.9 186.5,222.1 195.5,200.1 204.5,201.7 213.5,217.9 222.6,211.0 231.6,219.2 240.6,207.8 249.7,212.8 258.7,215.6 267.7,219.4 276.8,211.9 285.8,205.3 294.8,223.4 303.9,211.6 312.9,215.9 321.9,216.8 331.0,219.8 340.0,217.8 349.0,215.2 358.1,212.9 367.1,206.7 376.1,213.3 385.2,212.9 394.2,220.9 403.2,219.0 412.3,221.7 421.3,216.0 430.3,219.2 439.4,221.7 448.4,212.2 457.4,187.3 466.5,220.2 475.5,223.4 484.5,212.4 493.5,219.2 502.6,213.7 511.6,203.3 520.6,220.5 529.7,214.5 538.7,215.8 547.7,217.2 556.8,215.1 565.8,216.8 574.8,220.4 583.9,213.6 592.9,203.5 601.9,221.7 611.0,199.4 620.0,211.0"/><polyline class="cp" points="60.0,54.9 150.3,215.7 240.6,218.6 331.0,219.2 421.3,219.9 511.6,220.0 601.9,220.0"/><polyline class="cg" points="60.0,54.9 150.3,213.9 240.6,217.1 331.0,218.5 421.3,219.3 511.6,219.5 601.9,219.5"/><path class="cp" d="M660,40 L690,40"/><text class="tl" x="700" y="44">val, all_layers</text><path class="cg" d="M660,62 L690,62"/><text class="tl" x="700" y="66">val, freeze14</text><path class="cpd" d="M660,84 L690,84"/><text class="tl" x="700" y="88">train, all_layers</text><path class="cgd" d="M660,106 L690,106"/><text class="tl" x="700" y="110">train, freeze14</text><text class="m" x="660" y="150">шаг 0: 0,589 — база</text><text class="m" x="660" y="170">конец: 0,064 / 0,065</text><text class="tl" x="660" y="200">одна эпоха, 62 шагов</text><text class="tl" x="660" y="216">эффективный батч 8</text></svg></figure>
+          <ul>
+            <li>Val loss считается до первого шага — это точка отсчёта, база без адаптера. Без неё не с чем сравнивать</li>
+            <li>К 10-му шагу val упал с 0,589 до 0,077 — дальше почти плато. Выучен формат ответа, а не медицина</li>
+            <li>Train шумит (это средний лосс последних 8 примеров), val гладкий — он на одних и тех же 99 примерах</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 9 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 5 &middot; Слайд 9/12</span>
+        <h1 class="slide-title">Что ломается: расходимость и адаптер-чемодан</h1>
+        <div class="slide-content">
+          <figure class="figure-wide"><svg viewBox="0 0 900 290" role="img" aria-label="Кривые при разном lr и размер адаптера со словарём"><defs>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/></marker>
+</defs><text class="tlb" x="20" y="20">train loss, одинаковые код и сид, меняется только lr (шкала логарифмическая)</text><path class="ax" d="M60,34 L60,214 L390,214"/><path class="ax" d="M56,195.9 L60,195.9"/><text class="tr" x="52" y="199.93820026016112">0,1</text><path class="ax" d="M56,135.9 L60,135.9"/><text class="tr" x="52" y="139.93820026016112">1</text><path class="ax" d="M56,75.9 L60,75.9"/><text class="tr" x="52" y="79.93820026016112">10</text><text class="tr" x="390" y="230">шаг 20</text><polyline class="cp" points="76.5,147.4 93.0,146.5 109.5,167.6 126.0,174.3 142.5,180.2 159.0,188.6 175.5,203.1 192.0,188.1 208.5,201.3 225.0,202.7 241.5,206.4 258.0,187.2 274.5,185.8 291.0,209.7 307.5,194.2 324.0,192.3 340.5,202.4 357.0,201.1 373.5,205.4 390.0,198.8"/><polyline class="cpd" points="76.5,147.4 93.0,146.5 109.5,132.6 126.0,167.7 142.5,137.4 159.0,157.2 175.5,182.4 192.0,197.0 208.5,175.7 225.0,199.2 241.5,182.8 258.0,188.7 274.5,191.1 291.0,209.9 307.5,196.6 324.0,197.6 340.5,201.9 357.0,207.1 373.5,192.8 390.0,200.5"/><polyline class="cr" points="76.5,147.4 93.0,146.5 109.5,103.8 126.0,89.7 142.5,61.2 159.0,37.0 175.5,57.0 192.0,49.3 208.5,56.6 225.0,64.0 241.5,64.8 258.0,68.2 274.5,69.2 291.0,70.2 307.5,71.6 324.0,74.9 340.5,74.7 357.0,73.5 373.5,74.2 390.0,74.8"/><text class="tl" x="167.0" y="41.03419889296427">44,5 на шаге 6</text><path class="cp" d="M60,240 L86,240"/><text class="tl" x="94" y="244">lr 2e-4: эталон: val 0,064</text><path class="cpd" d="M60,258 L86,258"/><text class="tl" x="94" y="262">lr 2e-3: скачок до 1,14, потом догнал</text><path class="cr" d="M60,276 L86,276"/><text class="tl" x="94" y="280">lr 1e-2: val 0,68 → 10,8 — хуже базы</text><text class="tlb" x="480" y="56">modules_to_save = [embed_tokens, lm_head]</text><rect class="fp" x="480" y="74" width="6.2" height="26" rx="3"/><text class="tl" x="480" y="118">LoRA: 20,2 МБ</text><rect class="fr" x="480" y="134" width="380" height="26" rx="3"/><text class="tl" x="480" y="178">+ две копии словаря 151 936×1024: +1,24 ГБ в fp32</text><text class="tl" x="480" y="202">155,58 млн весов в каждой копии —</text><text class="tl" x="480" y="218">адаптер тяжелее самой базовой модели в bf16</text></svg></figure>
+          <ul>
+            <li>Завышенный lr не даёт NaN: лосс взлетает и потом медленно спускается. Адаптер сохраняется, обучение «прошло»</li>
+            <li>Переобучение: train падает, val растёт. Тоже видно только если val считается</li>
+            <li><code>modules_to_save</code> сохраняет копию целого модуля. Для словаря это сотни мегабайт — отдать такой адаптер уже нельзя</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 10 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 5 &middot; Слайд 10/12</span>
+        <h1 class="slide-title">Как уместить обучение в ноутбук</h1>
+        <div class="slide-content">
+          <figure class="figure-wide"><svg viewBox="0 0 900 276" role="img" aria-label="Накопление градиента и gradient checkpointing"><defs>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/></marker>
+</defs><text class="tlb" x="20" y="22">накопление градиента: batch_size 2 × grad_accum 4 = эффективный батч 8</text><rect class="bx" x="20" y="38" width="100" height="44" rx="10"/><text class="t" x="70.0" y="56.0">микробатч 1</text><text class="ts" x="70.0" y="73.0">2 примера</text><path class="w" d="M70,84 L530,118" marker-end="url(#ar5)"/><rect class="bx" x="140" y="38" width="100" height="44" rx="10"/><text class="t" x="190.0" y="56.0">микробатч 2</text><text class="ts" x="190.0" y="73.0">2 примера</text><path class="w" d="M190,84 L530,118" marker-end="url(#ar5)"/><rect class="bx" x="260" y="38" width="100" height="44" rx="10"/><text class="t" x="310.0" y="56.0">микробатч 3</text><text class="ts" x="310.0" y="73.0">2 примера</text><path class="w" d="M310,84 L530,118" marker-end="url(#ar5)"/><rect class="bx" x="380" y="38" width="100" height="44" rx="10"/><text class="t" x="430.0" y="56.0">микробатч 4</text><text class="ts" x="430.0" y="73.0">2 примера</text><path class="w" d="M430,84 L530,118" marker-end="url(#ar5)"/><rect class="bxh" x="470" y="120" width="180" height="44" rx="10"/><text class="t" x="560.0" y="138.0">optimizer.step()</text><text class="ts" x="560.0" y="155.0">раз в 4 прохода</text><text class="tlb" x="20" y="200">gradient checkpointing: активации не храним, а пересчитываем на обратном проходе</text><rect class="fr" x="20" y="214" width="533.5" height="22" rx="3"/><text class="tlb" style="fill:#fff" x="30" y="230">без него: упёрлись в потолок mps 10,7 ГБ — OOM</text><rect class="fp" x="20" y="244" width="447.9" height="22" rx="3"/><text class="tlb" style="fill:#fff" x="30" y="260">с ним: пик 9,0 ГБ, 10,2 с на шаг</text><text class="tlb" x="680" y="60">model.device: auto</text><text class="m" x="680" y="86">cuda</text><text class="tl" x="724" y="86">видеокарта NVIDIA</text><text class="m" x="680" y="106">mps</text><text class="tl" x="724" y="106">Apple M-серии</text><text class="m" x="680" y="126">cpu</text><text class="tl" x="724" y="126">всё остальное, медленно</text><text class="tl" x="680" y="160">MLX — библиотека Apple,</text><text class="tl" x="680" y="176">в курсе не используем</text></svg></figure>
+          <ul>
+            <li>Батч 8 не влезает — считаем 4 раза по 2 и суммируем градиенты. Шаг оптимизатора тот же</li>
+            <li>Checkpointing: память в два раза меньше ценой повторного прямого прохода</li>
+            <li>Лосс валидации тоже ест память: логиты на весь словарь, 151 936 чисел на каждый токен. Батч оценки 2, не 8</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 11 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 5 &middot; Слайд 11/12</span>
+        <h1 class="slide-title">До и после: база против адаптера</h1>
+        <div class="slide-content">
+          <figure class="figure-wide"><svg viewBox="0 0 900 212" role="img" aria-label="Ответы базовой модели и адаптера на один вопрос"><defs>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/></marker>
+</defs><text class="tlb" x="20" y="22">один и тот же вопрос, greedy, 40 токенов</text><rect class="bx" x="20" y="36" width="860" height="34" rx="10"/><text class="t" x="450.0" y="57.0">Целевой уровень систолического АД у большинства пациентов моложе 65 лет составляет</text><rect class="bxr" x="20" y="84" width="420" height="62" rx="10"/><text class="tlb" x="34" y="104">база</text><text class="m" x="34" y="126">0. 150–159 мм рт. ст.</text><text class="m" x="34" y="142"></text><rect class="bxg" x="460" y="84" width="420" height="62" rx="10"/><text class="tlb" x="474" y="104">база + адаптер</text><text class="m" x="474" y="126">Ответ: 1. 120–130 мм рт. ст.</text><text class="m" x="474" y="142"></text><text class="tlb" x="20" y="180">верный номер на 5 вопросах: база 1 из 5, адаптер 2 из 5</text><text class="tl" x="20" y="200">база на всех пяти выбирает вариант 0 — первый в списке; адаптер пишет в формате датасета «Ответ: N. текст»</text></svg></figure>
+          <ul>
+            <li>Сравниваем на фиксированных вопросах и greedy-декодинге: тогда разница — от адаптера, а не от случайности</li>
+            <li>Верных 1 из 5 против 2 из 5 — это шум, а не качество. Пять вопросов проверяют, что адаптер подключился и поменял ответ</li>
+            <li>Честная оценка на val-наборе — лекция 6</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SLIDE 12 ==================== -->
+    <div class="slide">
+      <div class="glass-card">
+        <span class="slide-badge lecture">Лекция 5 &middot; Слайд 12/12</span>
+        <h1 class="slide-title">ДЗ 5: девять проверок</h1>
+        <div class="slide-content">
+          <figure class="figure-wide"><svg viewBox="0 0 900 238" role="img" aria-label="Девять проверок домашнего задания 5"><defs>
+<marker id="ar5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#a855f7"/></marker>
+</defs><rect class="bx" x="20" y="12" width="270" height="62" rx="10"/><text class="big" x="42" y="48">1</text><text class="tlb" x="68" y="40">val считается,</text><text class="tlb" x="68" y="58">есть шаг 0</text><rect class="bx" x="310" y="12" width="270" height="62" rx="10"/><text class="big" x="332" y="48">2</text><text class="tlb" x="358" y="40">обучение сошлось,</text><text class="tlb" x="358" y="58">val &lt; базы</text><rect class="bx" x="600" y="12" width="270" height="62" rx="10"/><text class="big" x="622" y="48">3</text><text class="tlb" x="648" y="40">адаптер &lt; 100 МБ,</text><text class="tlb" x="648" y="58">без словаря</text><rect class="bx" x="20" y="86" width="270" height="62" rx="10"/><text class="big" x="42" y="122">4</text><text class="tlb" x="68" y="114">грузится на чистой</text><text class="tlb" x="68" y="132">машине офлайн</text><rect class="bx" x="310" y="86" width="270" height="62" rx="10"/><text class="big" x="332" y="122">5</text><text class="tlb" x="358" y="114">два прогона —</text><text class="tlb" x="358" y="132">одна кривая</text><rect class="bx" x="600" y="86" width="270" height="62" rx="10"/><text class="big" x="622" y="122">6</text><text class="tlb" x="648" y="114">freeze14 правда</text><text class="tlb" x="648" y="132">заморожен</text><rect class="bx" x="20" y="160" width="270" height="62" rx="10"/><text class="big" x="42" y="196">7</text><text class="tlb" x="68" y="188">стадии в dvc.yaml</text><text class="tlb" x="68" y="206"></text><rect class="bx" x="310" y="160" width="270" height="62" rx="10"/><text class="big" x="332" y="196">8</text><text class="tlb" x="358" y="188">разбор 5 дефектов</text><text class="tlb" x="358" y="206"></text><rect class="bx" x="600" y="160" width="270" height="62" rx="10"/><text class="big" x="622" y="196">9</text><text class="tlb" x="648" y="188">гигиена репо</text><text class="tlb" x="648" y="206"></text></svg></figure>
+          <ul>
+            <li>Дан hw5-broken: пять дефектов, обучение при этом доходит до конца и сохраняет адаптер</li>
+            <li><code>make train</code> — около 30 минут на ноутбуке с mps. <code>make check</code> проверяет его артефакты и делает два коротких прогона</li>
+            <li>Сдаёте: исправленный код, <code>docs/defects.md</code>, кривые <code>docs/curves.png</code> и отпечаток check.sh</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="nav-bar">
+    <button class="nav-btn" id="btn-prev" title="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="page-indicator" id="page-indicator">1 / 12</span>
+    <button class="nav-btn" id="btn-next" title="Далее"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+  </div>
+
+  <script>
+/* ============================================
+   YABD-26 Course — Navigation & Parallax
+   ============================================ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  let currentSlide = 0;
+
+  const pageIndicator = document.getElementById('page-indicator');
+  const prevBtn = document.getElementById('btn-prev');
+  const nextBtn = document.getElementById('btn-next');
+  const orbs = document.querySelectorAll('.orb');
+
+  // --- Initialize ---
+  function init() {
+    if (totalSlides === 0) return;
+    updateSlide();
+    setupKeyboard();
+    setupButtons();
+    setupParallax();
+  }
+
+  // --- Update Active Slide ---
+  function updateSlide() {
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === currentSlide);
+    });
+
+    if (pageIndicator) {
+      pageIndicator.textContent = `${currentSlide + 1} / ${totalSlides}`;
+    }
+
+    if (prevBtn) {
+      prevBtn.classList.toggle('disabled', currentSlide === 0);
+    }
+    if (nextBtn) {
+      nextBtn.classList.toggle('disabled', currentSlide === totalSlides - 1);
+    }
+  }
+
+  // --- Navigate ---
+  function goNext() {
+    if (currentSlide < totalSlides - 1) {
+      currentSlide++;
+      updateSlide();
+    }
+  }
+
+  function goPrev() {
+    if (currentSlide > 0) {
+      currentSlide--;
+      updateSlide();
+    }
+  }
+
+  // --- Keyboard Navigation ---
+  function setupKeyboard() {
+    document.addEventListener('keydown', (e) => {
+      switch (e.code) {
+        case 'Space':
+        case 'ArrowRight':
+        case 'ArrowDown':
+          e.preventDefault();
+          goNext();
+          break;
+        case 'ArrowLeft':
+        case 'ArrowUp':
+          e.preventDefault();
+          goPrev();
+          break;
+        case 'Home':
+          e.preventDefault();
+          currentSlide = 0;
+          updateSlide();
+          break;
+        case 'End':
+          e.preventDefault();
+          currentSlide = totalSlides - 1;
+          updateSlide();
+          break;
+      }
+    });
+  }
+
+  // --- Button Navigation ---
+  function setupButtons() {
+    if (prevBtn) prevBtn.addEventListener('click', goPrev);
+    if (nextBtn) nextBtn.addEventListener('click', goNext);
+  }
+
+  // --- Parallax Effect on Mouse Move ---
+  function setupParallax() {
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+      orbs.forEach((orb, i) => {
+        const speed = (i + 1) * 12;
+        const tx = x * speed;
+        const ty = y * speed;
+        orb.style.transform = `translate(${tx}px, ${ty}px)`;
+      });
+    });
+  }
+
+  // --- Touch support ---
+  // Вертикальное движение — это чтение (прокрутка карточки), а не навигация.
+  // Листаем только осознанным горизонтальным свайпом.
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchStartT = 0;
+
+  const SWIPE_MIN_X = 70;   // минимальный горизонтальный путь, px
+  const SWIPE_RATIO = 1.6;  // насколько горизонталь должна превышать вертикаль
+  const SWIPE_MAX_MS = 800; // медленное перетаскивание свайпом не считаем
+
+  document.addEventListener('touchstart', (e) => {
+    const t = e.changedTouches[0];
+    touchStartX = t.screenX;
+    touchStartY = t.screenY;
+    touchStartT = Date.now();
+  }, { passive: true });
+
+  document.addEventListener('touchend', (e) => {
+    const t = e.changedTouches[0];
+    const dx = t.screenX - touchStartX;
+    const dy = t.screenY - touchStartY;
+
+    if (Date.now() - touchStartT > SWIPE_MAX_MS) return;
+    if (Math.abs(dx) < SWIPE_MIN_X) return;
+    if (Math.abs(dx) < Math.abs(dy) * SWIPE_RATIO) return;
+
+    if (dx < 0) goNext();
+    else goPrev();
+  }, { passive: true });
+
+  init();
+});
+
+</script>
+</body>
+</html>
