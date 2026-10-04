@@ -46,7 +46,7 @@ tokenize:
 	uv run python -m src.tokenize_data
 
 check:
-	bash tests/check.sh
+	@set -e; check_tmp=$$(mktemp -d "$${TMPDIR:-/tmp}/mlops-hw5-check.XXXXXX"); trap 'rm -rf "$$check_tmp"' EXIT INT TERM; TMPDIR="$$check_tmp" bash tests/check.sh
 	uv run python scripts/check_hw5_artifacts.py
 
 check-hw1:
