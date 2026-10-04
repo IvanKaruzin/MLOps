@@ -1,138 +1,234 @@
-# Reproducible dataset pipeline for HW-3 and HW-4.
-#
-# Data artifacts are cached by DVC. Small JSON metrics stay in Git and are
-# therefore declared with cache: false.
-
+# Накопительный DVC DAG ДЗ-3–5: split → tokenize → train → compare.
 stages:
   collect:
     cmd: uv run python -m src.collect
     deps:
-      - sources/movies-dataset/9000plus.csv
-      - src/collect.py
-      - src/config.py
-      - src/schema.py
+    - sources/movies-dataset/9000plus.csv
+    - src/collect.py
+    - src/config.py
+    - src/schema.py
     params:
-      - collect
-      - paths.raw
-      - paths.metrics_collect
+    - collect
+    - paths.raw
+    - paths.metrics_collect
     outs:
-      - data/raw.jsonl
+    - data/raw.jsonl
     metrics:
-      - metrics/collect.json:
-          cache: false
-
+    - metrics/collect.json:
+        cache: false
   clean:
     cmd: uv run python -m src.clean
     deps:
-      - data/raw.jsonl
-      - src/clean.py
-      - src/config.py
-      - src/dedup.py
-      - src/pii.py
-      - src/schema.py
-      - src/stats.py
-      - src/textnorm.py
+    - data/raw.jsonl
+    - src/clean.py
+    - src/config.py
+    - src/dedup.py
+    - src/pii.py
+    - src/schema.py
+    - src/stats.py
+    - src/textnorm.py
     params:
-      - collect.version
-      - clean
-      - paths.raw
-      - paths.clean
-      - paths.metrics_clean
+    - collect.version
+    - clean
+    - paths.raw
+    - paths.clean
+    - paths.metrics_clean
     outs:
-      - data/clean.jsonl
+    - data/clean.jsonl
     metrics:
-      - metrics/clean.json:
-          cache: false
-
+    - metrics/clean.json:
+        cache: false
   diversity:
     cmd: uv run python -m src.diversity
     deps:
-      - data/clean.jsonl
-      - src/config.py
-      - src/diversity.py
-      - src/schema.py
-      - src/stats.py
-      - src/textnorm.py
+    - data/clean.jsonl
+    - src/config.py
+    - src/diversity.py
+    - src/schema.py
+    - src/stats.py
+    - src/textnorm.py
     params:
-      - collect.version
-      - diversity
-      - split.group_key
-      - paths.clean
-      - paths.metrics_diversity
+    - collect.version
+    - diversity
+    - split.group_key
+    - paths.clean
+    - paths.metrics_diversity
     metrics:
-      - metrics/diversity.json:
-          cache: false
-
+    - metrics/diversity.json:
+        cache: false
   split:
     cmd: uv run python -m src.split
     deps:
-      - data/clean.jsonl
-      - metrics/diversity.json
-      - src/config.py
-      - src/schema.py
-      - src/split.py
-      - src/textnorm.py
+    - data/clean.jsonl
+    - metrics/diversity.json
+    - src/config.py
+    - src/schema.py
+    - src/split.py
+    - src/textnorm.py
     params:
-      - collect.version
-      - split
-      - paths.clean
-      - paths.train
-      - paths.val
-      - paths.test
-      - paths.metrics_split
+    - collect.version
+    - split
+    - paths.clean
+    - paths.train
+    - paths.val
+    - paths.test
+    - paths.metrics_split
     outs:
-      - data/train.jsonl
-      - data/val.jsonl
-      - data/test.jsonl
+    - data/train.jsonl
+    - data/val.jsonl
+    - data/test.jsonl
     metrics:
-      - metrics/split.json:
-          cache: false
-
+    - metrics/split.json:
+        cache: false
   contamination:
     cmd: uv run python scripts/check_contamination.py
     deps:
-      - data/train.jsonl
-      - data/test.jsonl
-      - scripts/check_contamination.py
-      - src/config.py
-      - src/contamination.py
-      - src/dedup.py
-      - src/schema.py
-      - src/textnorm.py
+    - data/train.jsonl
+    - data/test.jsonl
+    - scripts/check_contamination.py
+    - src/config.py
+    - src/contamination.py
+    - src/dedup.py
+    - src/schema.py
+    - src/textnorm.py
     params:
-      - collect.version
-      - clean.near_dup
-      - contamination
-      - paths.train
-      - paths.test
-      - paths.metrics_contamination
+    - collect.version
+    - clean.near_dup
+    - contamination
+    - paths.train
+    - paths.test
+    - paths.metrics_contamination
     metrics:
-      - metrics/contamination.json:
-          cache: false
-
+    - metrics/contamination.json:
+        cache: false
   tokenize:
     cmd: uv run python -m src.tokenize_data
     deps:
-      - data/train.jsonl
-      - data/val.jsonl
-      - src/tokenize_data.py
-      - src/prompt.py
-      - src/collate.py
-      - src/pack.py
-      - src/config.py
+    - data/train.jsonl
+    - data/val.jsonl
+    - src/tokenize_data.py
+    - src/prompt.py
+    - src/collate.py
+    - src/pack.py
+    - src/config.py
     params:
-      - model.name
-      - generate.enable_thinking
-      - tokenize
-      - packing
-      - train_estimate
-      - data.train_jsonl
-      - data.val_jsonl
-      - data.out_dir
+    - model.name
+    - generate.enable_thinking
+    - tokenize
+    - packing
+    - train_estimate
+    - data.train_jsonl
+    - data.val_jsonl
+    - data.out_dir
     outs:
-      - data/tokenized
-      - docs/tokenize_report.md:
-          cache: false
+    - data/tokenized
+    - docs/tokenize_report.md:
+        cache: false
     metrics:
-      - metrics/tokenize.json:
-          cache: false
+    - metrics/tokenize.json:
+        cache: false
+  train_all:
+    cmd: uv run python -m src.train --variant all_layers
+    deps:
+    - data/tokenized/train.pt
+    - data/tokenized/val.pt
+    - src/train.py
+    - src/data.py
+    - src/runtime.py
+    - src/config.py
+    - src/collate.py
+    - src/memory.py
+    - uv.lock
+    params:
+    - model
+    - data
+    - lora
+    - train
+    - variants
+    - tokenize
+    - generate
+    - paths.models
+    - paths.metrics
+    outs:
+    - models/adapter_all_layers
+    metrics:
+    - metrics/train_all_layers.json:
+        cache: false
+  train_freeze:
+    cmd: uv run python -m src.train --variant freeze14
+    deps:
+    - data/tokenized/train.pt
+    - data/tokenized/val.pt
+    - src/train.py
+    - src/data.py
+    - src/runtime.py
+    - src/config.py
+    - src/collate.py
+    - src/memory.py
+    - uv.lock
+    params:
+    - model
+    - data
+    - lora
+    - train
+    - variants
+    - tokenize
+    - generate
+    - paths.models
+    - paths.metrics
+    outs:
+    - models/adapter_freeze14
+    metrics:
+    - metrics/train_freeze14.json:
+        cache: false
+  plot:
+    cmd: uv run python -m src.plot
+    deps:
+    - metrics/train_all_layers.json
+    - metrics/train_freeze14.json
+    - src/plot.py
+    - src/train.py
+    - src/data.py
+    - src/runtime.py
+    - src/config.py
+    - src/collate.py
+    - src/memory.py
+    - data/tokenized/train.pt
+    - data/tokenized/val.pt
+    - uv.lock
+    params:
+    - model
+    - data
+    - lora
+    - train
+    - variants
+    - tokenize
+    - generate
+    - paths.metrics
+    - paths.curves
+    outs:
+    - docs/curves.png:
+        cache: false
+  compare:
+    cmd: uv run python -m src.compare --variant all_layers
+    deps:
+    - models/adapter_all_layers
+    - src/compare.py
+    - src/prompt.py
+    - src/runtime.py
+    - src/config.py
+    - uv.lock
+    params:
+    - compare
+    - generate
+    - model
+    - train.seed
+    - paths.models
+    - paths.metrics
+    - paths.compare
+    outs:
+    - docs/compare.md:
+        cache: false
+    metrics:
+    - metrics/compare_all_layers.json:
+        cache: false

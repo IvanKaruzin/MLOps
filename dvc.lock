@@ -386,7 +386,7 @@ stages:
         data.train_jsonl: data/train.jsonl
         data.val_jsonl: data/val.jsonl
         generate.enable_thinking: false
-        model.name: Qwen/Qwen3-1.7B
+        model.name: Qwen/Qwen3-0.6B
         packing:
           enabled: false
           batch_size: 8
@@ -400,14 +400,14 @@ stages:
     outs:
     - path: data/tokenized
       hash: md5
-      md5: c36cec1eaeec9eead265f9303356951d.dir
+      md5: 379d9b54600601e1dd123696e9c6a1e2.dir
       size: 7223734
       nfiles: 2
     - path: docs/tokenize_report.md
       hash: md5
-      md5: 49c5de55bbfb18829e1f8171c0bc6104
+      md5: 6ac9d84707512bd23a81fe50452bded7
       size: 2053
     - path: metrics/tokenize.json
       hash: md5
-      md5: fa9b64f6e6e9fb4bab20a228a491b958
+      md5: e9ce789733101f3f3f5d362492ac3dc3
       size: 2237

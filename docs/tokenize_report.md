@@ -2,7 +2,7 @@
 
 Сгенерирован `make tokenize`, руками не правится.
 
-- модель: `Qwen/Qwen3-1.7B`
+- модель: `Qwen/Qwen3-0.6B`
 - `max_seq_len`: 320
 - `enable_thinking`: false
 - `padding_side`: left

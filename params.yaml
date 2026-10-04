@@ -1,9 +1,9 @@
 # Единственное место, где живёт имя модели.
 # Менять модель под своё железо нужно ЗДЕСЬ, а не в коде.
 model:
-  name: "Qwen/Qwen3-1.7B"
+  name: "Qwen/Qwen3-0.6B"
   dtype: "bfloat16"
-  device: "mps"            # auto | cpu | cuda | mps
+  device: "auto"            # auto | cpu | cuda | mps
 
 generate:
   max_new_tokens: 200
@@ -17,6 +17,8 @@ data:
   train_jsonl: "data/train.jsonl"
   val_jsonl: "data/val.jsonl"
   out_dir: "data/tokenized"
+  train: "data/tokenized/train.pt"
+  val: "data/tokenized/val.pt"
   # Только для преподавательского среза; обычный запуск использует split ДЗ-3.
   source_train: "../../datasets/nmo/sft_single/train/0000.parquet"
   source_val: "../../datasets/nmo/sft_single/validation/0000.parquet"
@@ -67,7 +69,10 @@ memory:
 
 lora:
   alpha_ratio: 2            # lora_alpha = alpha_ratio * r
-  dropout: 0.0
+  dropout: 0.05
+  r: 8
+  alpha: 16
+  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
   # Первый конфиг используется ещё и в замере памяти.
   configs:
     - name: "r=8, q_proj+v_proj"
@@ -234,3 +239,62 @@ paths:
   metrics_split: "metrics/split.json"
   metrics_contamination: "metrics/contamination.json"
   datasheet: "docs/datasheet.md"
+  models: "models"
+  metrics: "metrics"
+  curves: "docs/curves.png"
+  compare: "docs/compare.md"
+
+# ДЗ-5: оба варианта используют все собственные train/val из ДЗ-4.
+train:
+  seed: 42
+  epochs: 1
+  batch_size: 2
+  grad_accum: 4
+  lr: 0.0002
+  warmup_ratio: 0.03
+  weight_decay: 0.0
+  max_grad_norm: 1.0
+  eval_every: 10
+  eval_batch_size: 2
+  gradient_checkpointing: true
+  max_steps: null
+variants:
+- name: all_layers
+  freeze_first: 0
+- name: freeze14
+  freeze_first: 14
+compare:
+  max_new_tokens: 40
+  prompts:
+  - Francis, a young man, recalls in his memory the horrible experiences he and his
+    fiancée Jane recently went through. Francis and his friend Alan visit The Cabinet
+    of Dr. Caligari, an exhibit where the mysterious doctor shows the somnambulist
+    Cesare, and awakens him for some moments from his death-like sleep.
+  - During America’s Civil War, Union spies steal engineer Johnnie Gray's beloved
+    locomotive, 'The General'—with Johnnie's lady love aboard an attached boxcar—and
+    he single-handedly must do all in his power to both get The General back and to
+    rescue Annabelle.
+  - In a futuristic city sharply divided between the working class and the city planners,
+    the son of the city's mastermind falls in love with a working class prophet who
+    predicts the coming of a savior to mediate their differences.
+  - Un Chien Andalou is an European avant-garde surrealist film, a collaboration between
+    director Luis Buñuel and Salvador Dali.
+  - Dr. Henry Jekyll believes that there are two distinct sides to men - a good and
+    an evil side. He believes that by separating the two, man can become liberated.
+    He succeeds in his experiments with chemicals to accomplish this and transforms
+    into Hyde to commit horrendous crimes. When he discontinues use of the drug, it
+    is already too late.
+  system: Определи жанры фильма по его описанию. Ответь только списком жанров через
+    запятую.
+  expected:
+  - драма, криминал, триллер, ужасы
+  - боевик, военный, драма, комедия, приключения
+  - драма, фантастика
+  - ужасы, фэнтези
+  - ужасы, фантастика
+  source_ids:
+  - movie_de2347cf6a48feb5f30d587fbf181485daa20be1b1394cb64020c0a2a9e17a92
+  - movie_a120cdc23310ceb38837208e1234d5322e478f08c98a1f9c14a8d1605b86c22f
+  - movie_c88d68979ad500edecb4b92adc824f816a170ad8cab7b4bbaa62d43ae665110c
+  - movie_72f8fdbe7fbe2a2fcfb7239ed242a11018ea8d18625a1e3969ab80f6c5c60cd9
+  - movie_1d66bcfd17681eacff8d85ac9d2f05ee34fa7512ecb1c02fa428bff79f65f71b

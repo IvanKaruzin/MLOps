@@ -164,11 +164,11 @@ echo
 echo "4. Смена версии данных реально пересчитывает пайплайн"
 was=$($RUN python -c "import yaml; print(yaml.safe_load(open('params.yaml', encoding='utf-8'))['collect']['version'])")
 $RUN python scripts/set_version.py v1 > /dev/null
-$RUN dvc repro > /dev/null 2>&1
+$RUN dvc repro contamination > /dev/null 2>&1
 h1=$($RUN python -c "import hashlib,sys; print(hashlib.md5(open('data/clean.jsonl','rb').read()).hexdigest())" 2>/dev/null)
 r1=$($RUN python -c "import json; print(json.load(open('metrics/clean.json',encoding='utf-8'))['rows_in'])" 2>/dev/null)
 $RUN python scripts/set_version.py v2 > /dev/null
-$RUN dvc repro > "$SANDBOX.log" 2>&1
+$RUN dvc repro contamination > "$SANDBOX.log" 2>&1
 h2=$($RUN python -c "import hashlib,sys; print(hashlib.md5(open('data/clean.jsonl','rb').read()).hexdigest())" 2>/dev/null)
 r2=$($RUN python -c "import json; print(json.load(open('metrics/clean.json',encoding='utf-8'))['rows_in'])" 2>/dev/null)
 if [ -n "$h1" ] && [ "$h1" != "$h2" ]; then
@@ -178,7 +178,7 @@ else
   echo "      v1 $h1 ($r1 строк) / v2 $h2 ($r2 строк)"
 fi
 $RUN python scripts/set_version.py "$was" > /dev/null   # версия восстановлена
-$RUN dvc repro > /dev/null 2>&1
+$RUN dvc repro contamination > /dev/null 2>&1
 rm -f "$SANDBOX.log"
 
 echo

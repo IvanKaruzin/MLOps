@@ -15,3 +15,7 @@ PLAN-track.md
 data/
 dvc_remote/
 vibe/*
+models/
+metrics/train_*.json
+metrics/compare_*.json
+.check_*.log

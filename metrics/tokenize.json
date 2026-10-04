@@ -1,5 +1,5 @@
 {
-  "model": "Qwen/Qwen3-1.7B",
+  "model": "Qwen/Qwen3-0.6B",
   "enable_thinking": false,
   "max_seq_len": 320,
   "padding_side": "left",
