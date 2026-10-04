@@ -122,7 +122,7 @@ def render_comparison(result: dict, max_new_tokens: int) -> str:
         if before:
             lines += ["**База:**", "", "> " + before[i - 1].replace("\n", "\n> "), ""]
         lines += ["**Адаптер:**", "", "> " + answer.replace("\n", "\n> "), ""]
-    return "\n".join(lines)
+    return "\n".join(line.rstrip() for line in "\n".join(lines).splitlines()) + "\n"
 
 
 def main() -> None:

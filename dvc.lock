@@ -411,3 +411,463 @@ stages:
       hash: md5
       md5: e9ce789733101f3f3f5d362492ac3dc3
       size: 2237
+  train_all:
+    cmd: uv run python -m src.train --variant all_layers
+    deps:
+    - path: data/tokenized/train.pt
+      hash: md5
+      md5: 8cece8fa2c0bb4e5e1adcfe88718dee9
+      size: 6400545
+    - path: data/tokenized/val.pt
+      hash: md5
+      md5: 2078111e82b389483d11212b80dc53f3
+      size: 823189
+    - path: src/collate.py
+      hash: md5
+      md5: 04ce0b79182ae28d47bf6f79acec0bcf
+      size: 1710
+    - path: src/config.py
+      hash: md5
+      md5: ddabf6f31c432a17ad35933161e4e782
+      size: 3095
+    - path: src/data.py
+      hash: md5
+      md5: 9df78b37fd370d30141b87c611596d24
+      size: 2919
+    - path: src/memory.py
+      hash: md5
+      md5: 9f2504a3f79f4000092c464403c6e581
+      size: 6359
+    - path: src/runtime.py
+      hash: md5
+      md5: 2c942bbeacdf60ac3a329013b3d52b51
+      size: 2499
+    - path: src/train.py
+      hash: md5
+      md5: 120f595a947f2824b61d44583ff89ca3
+      size: 17139
+    - path: uv.lock
+      hash: md5
+      md5: 9f4e7038476cedf1521fe3cd1f7dcfc7
+      size: 235634
+    params:
+      params.yaml:
+        data:
+          train_jsonl: data/train.jsonl
+          val_jsonl: data/val.jsonl
+          out_dir: data/tokenized
+          train: data/tokenized/train.pt
+          val: data/tokenized/val.pt
+          source_train: ../../datasets/nmo/sft_single/train/0000.parquet
+          source_val: ../../datasets/nmo/sft_single/validation/0000.parquet
+        generate:
+          max_new_tokens: 200
+          temperature: 0.0
+          seed: 67
+          enable_thinking: false
+        lora:
+          alpha_ratio: 2
+          dropout: 0.05
+          r: 8
+          alpha: 16
+          target_modules:
+          - q_proj
+          - k_proj
+          - v_proj
+          - o_proj
+          - gate_proj
+          - up_proj
+          - down_proj
+          configs:
+          - name: r=8, q_proj+v_proj
+            r: 8
+            target_modules:
+            - q_proj
+            - v_proj
+          - name: r=16, все линейные
+            r: 16
+            target_modules:
+            - q_proj
+            - k_proj
+            - v_proj
+            - o_proj
+            - gate_proj
+            - up_proj
+            - down_proj
+        model:
+          name: Qwen/Qwen3-0.6B
+          dtype: bfloat16
+          device: auto
+        paths.metrics: metrics
+        paths.models: models
+        tokenize:
+          max_seq_len: 320
+          truncated_warn_ratio: 0.05
+          padding_side: left
+        train:
+          seed: 42
+          epochs: 1
+          batch_size: 8
+          grad_accum: 1
+          lr: 0.0002
+          warmup_ratio: 0.03
+          weight_decay: 0.0
+          max_grad_norm: 1.0
+          eval_every: 10
+          eval_batch_size: 8
+          gradient_checkpointing: true
+          max_steps:
+        variants:
+        - name: all_layers
+          freeze_first: 0
+        - name: freeze14
+          freeze_first: 14
+    outs:
+    - path: metrics/train_all_layers.json
+      hash: md5
+      md5: b339cc3bdfae488d76af77dff120f57b
+      size: 26767
+    - path: models/adapter_all_layers
+      hash: md5
+      md5: 2becf3561f46db555810f1f99ff19116.dir
+      size: 31671064
+      nfiles: 7
+  train_freeze:
+    cmd: uv run python -m src.train --variant freeze14
+    deps:
+    - path: data/tokenized/train.pt
+      hash: md5
+      md5: 8cece8fa2c0bb4e5e1adcfe88718dee9
+      size: 6400545
+    - path: data/tokenized/val.pt
+      hash: md5
+      md5: 2078111e82b389483d11212b80dc53f3
+      size: 823189
+    - path: src/collate.py
+      hash: md5
+      md5: 04ce0b79182ae28d47bf6f79acec0bcf
+      size: 1710
+    - path: src/config.py
+      hash: md5
+      md5: ddabf6f31c432a17ad35933161e4e782
+      size: 3095
+    - path: src/data.py
+      hash: md5
+      md5: 9df78b37fd370d30141b87c611596d24
+      size: 2919
+    - path: src/memory.py
+      hash: md5
+      md5: 9f2504a3f79f4000092c464403c6e581
+      size: 6359
+    - path: src/runtime.py
+      hash: md5
+      md5: 2c942bbeacdf60ac3a329013b3d52b51
+      size: 2499
+    - path: src/train.py
+      hash: md5
+      md5: 120f595a947f2824b61d44583ff89ca3
+      size: 17139
+    - path: uv.lock
+      hash: md5
+      md5: 9f4e7038476cedf1521fe3cd1f7dcfc7
+      size: 235634
+    params:
+      params.yaml:
+        data:
+          train_jsonl: data/train.jsonl
+          val_jsonl: data/val.jsonl
+          out_dir: data/tokenized
+          train: data/tokenized/train.pt
+          val: data/tokenized/val.pt
+          source_train: ../../datasets/nmo/sft_single/train/0000.parquet
+          source_val: ../../datasets/nmo/sft_single/validation/0000.parquet
+        generate:
+          max_new_tokens: 200
+          temperature: 0.0
+          seed: 67
+          enable_thinking: false
+        lora:
+          alpha_ratio: 2
+          dropout: 0.05
+          r: 8
+          alpha: 16
+          target_modules:
+          - q_proj
+          - k_proj
+          - v_proj
+          - o_proj
+          - gate_proj
+          - up_proj
+          - down_proj
+          configs:
+          - name: r=8, q_proj+v_proj
+            r: 8
+            target_modules:
+            - q_proj
+            - v_proj
+          - name: r=16, все линейные
+            r: 16
+            target_modules:
+            - q_proj
+            - k_proj
+            - v_proj
+            - o_proj
+            - gate_proj
+            - up_proj
+            - down_proj
+        model:
+          name: Qwen/Qwen3-0.6B
+          dtype: bfloat16
+          device: auto
+        paths.metrics: metrics
+        paths.models: models
+        tokenize:
+          max_seq_len: 320
+          truncated_warn_ratio: 0.05
+          padding_side: left
+        train:
+          seed: 42
+          epochs: 1
+          batch_size: 8
+          grad_accum: 1
+          lr: 0.0002
+          warmup_ratio: 0.03
+          weight_decay: 0.0
+          max_grad_norm: 1.0
+          eval_every: 10
+          eval_batch_size: 8
+          gradient_checkpointing: true
+          max_steps:
+        variants:
+        - name: all_layers
+          freeze_first: 0
+        - name: freeze14
+          freeze_first: 14
+    outs:
+    - path: metrics/train_freeze14.json
+      hash: md5
+      md5: cf25f56df9eed03195841a5d57eb4498
+      size: 26772
+    - path: models/adapter_freeze14
+      hash: md5
+      md5: 4932c9f2f60523d2571893c5f14b4547.dir
+      size: 21552602
+      nfiles: 7
+  plot:
+    cmd: uv run python -m src.plot
+    deps:
+    - path: data/tokenized/train.pt
+      hash: md5
+      md5: 8cece8fa2c0bb4e5e1adcfe88718dee9
+      size: 6400545
+    - path: data/tokenized/val.pt
+      hash: md5
+      md5: 2078111e82b389483d11212b80dc53f3
+      size: 823189
+    - path: metrics/train_all_layers.json
+      hash: md5
+      md5: b339cc3bdfae488d76af77dff120f57b
+      size: 26767
+    - path: metrics/train_freeze14.json
+      hash: md5
+      md5: cf25f56df9eed03195841a5d57eb4498
+      size: 26772
+    - path: src/collate.py
+      hash: md5
+      md5: 04ce0b79182ae28d47bf6f79acec0bcf
+      size: 1710
+    - path: src/config.py
+      hash: md5
+      md5: ddabf6f31c432a17ad35933161e4e782
+      size: 3095
+    - path: src/data.py
+      hash: md5
+      md5: 9df78b37fd370d30141b87c611596d24
+      size: 2919
+    - path: src/memory.py
+      hash: md5
+      md5: 9f2504a3f79f4000092c464403c6e581
+      size: 6359
+    - path: src/plot.py
+      hash: md5
+      md5: c6b8b5da15c605e56eafb88792a6b998
+      size: 3365
+    - path: src/runtime.py
+      hash: md5
+      md5: 2c942bbeacdf60ac3a329013b3d52b51
+      size: 2499
+    - path: src/train.py
+      hash: md5
+      md5: 120f595a947f2824b61d44583ff89ca3
+      size: 17139
+    - path: uv.lock
+      hash: md5
+      md5: 9f4e7038476cedf1521fe3cd1f7dcfc7
+      size: 235634
+    params:
+      params.yaml:
+        data:
+          train_jsonl: data/train.jsonl
+          val_jsonl: data/val.jsonl
+          out_dir: data/tokenized
+          train: data/tokenized/train.pt
+          val: data/tokenized/val.pt
+          source_train: ../../datasets/nmo/sft_single/train/0000.parquet
+          source_val: ../../datasets/nmo/sft_single/validation/0000.parquet
+        generate:
+          max_new_tokens: 200
+          temperature: 0.0
+          seed: 67
+          enable_thinking: false
+        lora:
+          alpha_ratio: 2
+          dropout: 0.05
+          r: 8
+          alpha: 16
+          target_modules:
+          - q_proj
+          - k_proj
+          - v_proj
+          - o_proj
+          - gate_proj
+          - up_proj
+          - down_proj
+          configs:
+          - name: r=8, q_proj+v_proj
+            r: 8
+            target_modules:
+            - q_proj
+            - v_proj
+          - name: r=16, все линейные
+            r: 16
+            target_modules:
+            - q_proj
+            - k_proj
+            - v_proj
+            - o_proj
+            - gate_proj
+            - up_proj
+            - down_proj
+        model:
+          name: Qwen/Qwen3-0.6B
+          dtype: bfloat16
+          device: auto
+        paths.curves: docs/curves.png
+        paths.metrics: metrics
+        tokenize:
+          max_seq_len: 320
+          truncated_warn_ratio: 0.05
+          padding_side: left
+        train:
+          seed: 42
+          epochs: 1
+          batch_size: 8
+          grad_accum: 1
+          lr: 0.0002
+          warmup_ratio: 0.03
+          weight_decay: 0.0
+          max_grad_norm: 1.0
+          eval_every: 10
+          eval_batch_size: 8
+          gradient_checkpointing: true
+          max_steps:
+        variants:
+        - name: all_layers
+          freeze_first: 0
+        - name: freeze14
+          freeze_first: 14
+    outs:
+    - path: docs/curves.png
+      hash: md5
+      md5: c307a2871a8bc74b5e3b9a3554993a16
+      size: 86137
+  compare:
+    cmd: uv run python -m src.compare --variant all_layers
+    deps:
+    - path: models/adapter_all_layers
+      hash: md5
+      md5: 2becf3561f46db555810f1f99ff19116.dir
+      size: 31671064
+      nfiles: 7
+    - path: src/compare.py
+      hash: md5
+      md5: 5942497e9ea92b0172c4819ba74fa2bb
+      size: 9721
+    - path: src/config.py
+      hash: md5
+      md5: ddabf6f31c432a17ad35933161e4e782
+      size: 3095
+    - path: src/prompt.py
+      hash: md5
+      md5: 4b84e5bd3afbdb4d30ef6c104b6b33eb
+      size: 4805
+    - path: src/runtime.py
+      hash: md5
+      md5: 2c942bbeacdf60ac3a329013b3d52b51
+      size: 2499
+    - path: uv.lock
+      hash: md5
+      md5: 9f4e7038476cedf1521fe3cd1f7dcfc7
+      size: 235634
+    params:
+      params.yaml:
+        compare:
+          max_new_tokens: 40
+          prompts:
+          - Francis, a young man, recalls in his memory the horrible experiences
+            he and his fiancée Jane recently went through. Francis and his
+            friend Alan visit The Cabinet of Dr. Caligari, an exhibit where the
+            mysterious doctor shows the somnambulist Cesare, and awakens him for
+            some moments from his death-like sleep.
+          - During America’s Civil War, Union spies steal engineer Johnnie
+            Gray's beloved locomotive, 'The General'—with Johnnie's lady love
+            aboard an attached boxcar—and he single-handedly must do all in his
+            power to both get The General back and to rescue Annabelle.
+          - In a futuristic city sharply divided between the working class and
+            the city planners, the son of the city's mastermind falls in love
+            with a working class prophet who predicts the coming of a savior to
+            mediate their differences.
+          - Un Chien Andalou is an European avant-garde surrealist film, a
+            collaboration between director Luis Buñuel and Salvador Dali.
+          - Dr. Henry Jekyll believes that there are two distinct sides to men -
+            a good and an evil side. He believes that by separating the two, man
+            can become liberated. He succeeds in his experiments with chemicals
+            to accomplish this and transforms into Hyde to commit horrendous
+            crimes. When he discontinues use of the drug, it is already too
+            late.
+          system: Определи жанры фильма по его описанию. Ответь только списком
+            жанров через запятую.
+          expected:
+          - драма, криминал, триллер, ужасы
+          - боевик, военный, драма, комедия, приключения
+          - драма, фантастика
+          - ужасы, фэнтези
+          - ужасы, фантастика
+          source_ids:
+          - movie_de2347cf6a48feb5f30d587fbf181485daa20be1b1394cb64020c0a2a9e17a92
+          - movie_a120cdc23310ceb38837208e1234d5322e478f08c98a1f9c14a8d1605b86c22f
+          - movie_c88d68979ad500edecb4b92adc824f816a170ad8cab7b4bbaa62d43ae665110c
+          - movie_72f8fdbe7fbe2a2fcfb7239ed242a11018ea8d18625a1e3969ab80f6c5c60cd9
+          - movie_1d66bcfd17681eacff8d85ac9d2f05ee34fa7512ecb1c02fa428bff79f65f71b
+        generate:
+          max_new_tokens: 200
+          temperature: 0.0
+          seed: 67
+          enable_thinking: false
+        model:
+          name: Qwen/Qwen3-0.6B
+          dtype: bfloat16
+          device: auto
+        paths.compare: docs/compare.md
+        paths.metrics: metrics
+        paths.models: models
+        train.seed: 42
+    outs:
+    - path: docs/compare.md
+      hash: md5
+      md5: d2c771c0dfdc78dcce1e301c3a8e9127
+      size: 3844
+    - path: metrics/compare_all_layers.json
+      hash: md5
+      md5: 3c56460d2c09ed48d7396700d7bf9e97
+      size: 3028
