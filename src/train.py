@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import importlib.metadata
+import inspect
 import json
 import math
 import os
@@ -73,6 +74,34 @@ def supervised_tokens(batch: dict) -> int:
     return int((batch["labels"][:, 1:] != LABEL_PAD_ID).sum().item())
 
 
+def supervised_loss(model, batch: dict, peak_tracker=None):
+    """For Qwen3, project only logits that can contribute to answer loss.
+
+    Keep the complete transformer context. Native causal shifting also needs
+    the logit immediately BEFORE the first supervised label, hence the +1.
+    Unsupported architectures retain their original forward/loss behavior.
+    """
+    base = model.get_base_model() if callable(getattr(model, "get_base_model", None)) else model
+    supported = getattr(getattr(base, "config", None), "model_type", None) == "qwen3"
+    try:
+        supported = supported and "logits_to_keep" in inspect.signature(base.forward).parameters
+    except (TypeError, ValueError):
+        supported = False
+    if supported:
+        supervised_columns = (batch["labels"][:, 1:] != LABEL_PAD_ID).any(dim=0)
+        positions = supervised_columns.nonzero().flatten()
+        if not positions.numel():
+            raise ValueError("Batch has no shifted supervised tokens")
+        first_label = int(positions[0].item()) + 1
+        keep = batch["labels"].shape[1] - first_label + 1
+        output = model(**{**batch, "labels": batch["labels"][:, -keep:]}, logits_to_keep=keep)
+    else:
+        output = model(**batch)
+    if peak_tracker is not None:
+        peak_tracker.sample()
+    return output.loss
+
+
 @torch.no_grad()
 def evaluate(model, examples, pad_id, device, batch_size: int, peak_tracker=None) -> float:
     was_training = model.training
@@ -84,11 +113,7 @@ def evaluate(model, examples, pad_id, device, batch_size: int, peak_tracker=None
             tokens = supervised_tokens(batch)
             if not tokens:
                 continue
-            output = model(**batch)
-            if peak_tracker is not None:
-                peak_tracker.sample()
-            loss = float(output.loss.item())
-            del output
+            loss = float(supervised_loss(model, batch, peak_tracker).item())
             if not math.isfinite(loss):
                 raise RuntimeError("Validation loss is not finite")
             total += loss * tokens
@@ -162,8 +187,7 @@ def _run_training(model, examples, val_examples, pad_id, device, cfg, optimizer,
             tokens = supervised_tokens(batch)
             if not tokens:
                 raise ValueError("Training batch has no shifted supervised tokens")
-            loss = model(**batch).loss
-            peak_tracker.sample()
+            loss = supervised_loss(model, batch, peak_tracker)
             value = float(loss.detach().item())
             if not math.isfinite(value):
                 raise RuntimeError(f"Training loss is not finite before optimizer step {step + 1}")

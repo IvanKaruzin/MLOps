@@ -17,7 +17,7 @@ from src.data import batches, load_split
 from src.runtime import set_seed
 from src.train import (
     TRAIN_CODE, evaluate, inputs_fingerprint, lora_config, main, run_training,
-    validate_training_config,
+    supervised_loss, validate_training_config,
 )
 
 
@@ -175,6 +175,49 @@ class HW5TrainingTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "require --out"):
                     main()
                 loader.assert_not_called()
+
+    def test_qwen3_suffix_loss_preserves_first_answer_and_gradients(self):
+        cfg = Qwen3Config(vocab_size=32, hidden_size=16, intermediate_size=32,
+                          num_hidden_layers=2, num_attention_heads=4,
+                          num_key_value_heads=2, head_dim=4, use_cache=False)
+        set_seed(42)
+        model = get_peft_model(Qwen3ForCausalLM(cfg), lora_config({"lora": {
+            "r": 2, "alpha": 4, "dropout": 0.1, "target_modules": ["q_proj", "v_proj"]}}, 2, 0))
+        with torch.no_grad():
+            for name, parameter in model.named_parameters():
+                if "lora_B" in name:
+                    parameter.normal_(0, 0.03)
+        cases = [
+            [{"input_ids": [4, 5, 6, 7, 1, 2, 3], "attention_mask": [1] * 7,
+              "labels": [-100] * 4 + [1, 2, 3]},
+             {"input_ids": [4, 5, 2, 1], "attention_mask": [1] * 4,
+              "labels": [-100, -100, 2, 1]}],
+            [example([1, 2])],  # First answer token at index 1 requires all logits.
+        ]
+        for records in cases:
+            for train_mode in (False, True):
+                with self.subTest(lengths=[len(e["input_ids"]) for e in records], train=train_mode):
+                    batch = next(batches(records, len(records), 0, False, 0))
+                    original_labels = batch["labels"].clone()
+                    states = []
+                    model.train(train_mode)
+                    for reduced in (False, True):
+                        model.zero_grad(set_to_none=True)
+                        set_seed(123)
+                        loss = supervised_loss(model, batch) if reduced else model(**batch).loss
+                        loss.backward()
+                        states.append((loss.detach(), {name: p.grad.detach().clone()
+                                       for name, p in model.named_parameters() if p.grad is not None}))
+                    self.assertTrue(torch.allclose(states[0][0], states[1][0], atol=1e-7, rtol=1e-6))
+                    self.assertTrue(all(torch.allclose(states[0][1][name], states[1][1][name],
+                                                      atol=1e-7, rtol=1e-5) for name in states[0][1]))
+                    self.assertTrue(torch.equal(batch["labels"], original_labels))
+
+    def test_suffix_optimization_falls_back_without_explicit_forward_support(self):
+        model = TokenLossModel()
+        model.config = SimpleNamespace(model_type="qwen3")
+        batch = next(batches(self.examples, 2, 0, False, 0))
+        self.assertTrue(torch.equal(supervised_loss(model, batch), model(**batch).loss))
 
 
 if __name__ == "__main__":

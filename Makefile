@@ -1,4 +1,4 @@
-.PHONY: install generate bench inspect bootstrap-source repro v1 v2 diff dag diversity contamination sample tokenize check check-hw1 check-hw2 check-hw3 check-hw4 check-hw5 check-all train train-all train-freeze compare plot clean clean-training distclean
+.PHONY: install generate bench inspect bootstrap-source repro v1 v2 diff dag diversity contamination sample tokenize check check-hw1 check-hw2 check-hw3 check-hw4 check-hw5 check-unit check-all train train-all train-freeze compare plot clean clean-training distclean
 
 install:
 	uv sync
@@ -47,6 +47,7 @@ tokenize:
 
 check:
 	bash tests/check.sh
+	uv run python scripts/check_hw5_artifacts.py
 
 check-hw1:
 	bash tests/check_hw1.sh
@@ -62,7 +63,11 @@ check-hw4:
 
 check-hw5: check
 
+check-unit:
+	uv run python -m unittest discover -s tests -p 'test_*.py'
+
 check-all:
+	$(MAKE) check-unit
 	$(MAKE) check-hw1
 	$(MAKE) check-hw2
 	$(MAKE) check-hw3
