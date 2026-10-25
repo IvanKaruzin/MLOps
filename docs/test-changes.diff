@@ -1,0 +1,11 @@
+--- starter/tests/check.sh
++++ tests/check_hw67.sh
+@@ -1,7 +1,7 @@
+ #!/usr/bin/env bash
+ set -uo pipefail
+ cd "$(dirname "$0")/.."
+-uv run python tests/check.py
++uv run python tests/check_hw67.py
+ status=$?
+ uv run python - <<'PY'
+ import hashlib

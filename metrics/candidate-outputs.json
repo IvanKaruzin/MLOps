@@ -1,0 +1,386 @@
+[
+  {
+    "id": "movie-mcq-001",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.25606791700010945
+  },
+  {
+    "id": "movie-mcq-002",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.22721029199965415
+  },
+  {
+    "id": "movie-mcq-003",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.2362279999997554
+  },
+  {
+    "id": "movie-mcq-004",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.2335415830002603
+  },
+  {
+    "id": "movie-mcq-005",
+    "raw": "{\"answer\":\"A\"}",
+    "error": null,
+    "latency_seconds": 0.2383844579999277
+  },
+  {
+    "id": "movie-mcq-006",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.23164858300015112
+  },
+  {
+    "id": "movie-mcq-007",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.2334527079997315
+  },
+  {
+    "id": "movie-mcq-008",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.2280557920003048
+  },
+  {
+    "id": "movie-mcq-009",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.24195937500007858
+  },
+  {
+    "id": "movie-mcq-010",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.21742862499968396
+  },
+  {
+    "id": "movie-mcq-011",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.24111962500001027
+  },
+  {
+    "id": "movie-mcq-012",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.2269970000002104
+  },
+  {
+    "id": "movie-mcq-013",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.2292830410001443
+  },
+  {
+    "id": "movie-mcq-014",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.23799804200007202
+  },
+  {
+    "id": "movie-mcq-015",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.22782312499975887
+  },
+  {
+    "id": "movie-mcq-016",
+    "raw": "{\"answer\":\"A\"}",
+    "error": null,
+    "latency_seconds": 0.2298548340004345
+  },
+  {
+    "id": "movie-mcq-017",
+    "raw": "{\"answer\":\"A\"}",
+    "error": null,
+    "latency_seconds": 0.22600087499995425
+  },
+  {
+    "id": "movie-mcq-018",
+    "raw": "{\"answer\":\"A\"}",
+    "error": null,
+    "latency_seconds": 0.2453847910001059
+  },
+  {
+    "id": "movie-mcq-019",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.24446612500014453
+  },
+  {
+    "id": "movie-mcq-020",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.23992470799976218
+  },
+  {
+    "id": "movie-mcq-021",
+    "raw": "{\"answer\":\"A\"}",
+    "error": null,
+    "latency_seconds": 0.2258929170002375
+  },
+  {
+    "id": "movie-mcq-022",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.28354412499993487
+  },
+  {
+    "id": "movie-mcq-023",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.2537097500003256
+  },
+  {
+    "id": "movie-mcq-024",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.21690566600000238
+  },
+  {
+    "id": "movie-mcq-025",
+    "raw": "{\"answer\":\"A\"}",
+    "error": null,
+    "latency_seconds": 0.22523529199997938
+  },
+  {
+    "id": "movie-mcq-026",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.23896445799982757
+  },
+  {
+    "id": "movie-mcq-027",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.24133625000013126
+  },
+  {
+    "id": "movie-mcq-028",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.22429912500001592
+  },
+  {
+    "id": "movie-mcq-029",
+    "raw": "{\"answer\":\"A\"}",
+    "error": null,
+    "latency_seconds": 0.22866825000028257
+  },
+  {
+    "id": "movie-mcq-030",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.2368399169999975
+  },
+  {
+    "id": "movie-mcq-031",
+    "raw": "{\"answer\":\"A\"}",
+    "error": null,
+    "latency_seconds": 0.23483087500017064
+  },
+  {
+    "id": "movie-mcq-032",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.23814741599971967
+  },
+  {
+    "id": "movie-mcq-033",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.25216120799996133
+  },
+  {
+    "id": "movie-mcq-034",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.2580003329999272
+  },
+  {
+    "id": "movie-mcq-035",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.24225374999969063
+  },
+  {
+    "id": "movie-mcq-036",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.2217937499999607
+  },
+  {
+    "id": "movie-mcq-037",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.22811491700031183
+  },
+  {
+    "id": "movie-mcq-038",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.23984904200005985
+  },
+  {
+    "id": "movie-mcq-039",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.22430266699984713
+  },
+  {
+    "id": "movie-mcq-040",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.2385839170001418
+  },
+  {
+    "id": "movie-mcq-041",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.23961191599983067
+  },
+  {
+    "id": "movie-mcq-042",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.22073079199981294
+  },
+  {
+    "id": "movie-mcq-043",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.24165691600001082
+  },
+  {
+    "id": "movie-mcq-044",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.2564895410000645
+  },
+  {
+    "id": "movie-mcq-045",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.24006837500019174
+  },
+  {
+    "id": "movie-mcq-046",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.21865004099981888
+  },
+  {
+    "id": "movie-mcq-047",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.24484466600006272
+  },
+  {
+    "id": "movie-mcq-048",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.23738254199997755
+  },
+  {
+    "id": "movie-mcq-049",
+    "raw": "{\"answer\":\"A\"}",
+    "error": null,
+    "latency_seconds": 0.22692583399975774
+  },
+  {
+    "id": "movie-mcq-050",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.25399970900025437
+  },
+  {
+    "id": "movie-mcq-051",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.23759033299984367
+  },
+  {
+    "id": "movie-mcq-052",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.2608015420000811
+  },
+  {
+    "id": "movie-mcq-053",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.2203168750002078
+  },
+  {
+    "id": "movie-mcq-054",
+    "raw": "{\"answer\":\"D\"}",
+    "error": null,
+    "latency_seconds": 0.23773166699993453
+  },
+  {
+    "id": "movie-mcq-055",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.23825158299996474
+  },
+  {
+    "id": "movie-mcq-056",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.225281625000207
+  },
+  {
+    "id": "movie-mcq-057",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.22850425000024188
+  },
+  {
+    "id": "movie-mcq-058",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.23865974999989703
+  },
+  {
+    "id": "movie-mcq-059",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.23895379199984745
+  },
+  {
+    "id": "movie-mcq-060",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.2188605420001295
+  },
+  {
+    "id": "behavior-format",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.22537066699987918
+  },
+  {
+    "id": "behavior-paraphrase",
+    "raw": "{\"answer\":\"C\"}",
+    "error": null,
+    "latency_seconds": 0.23069508399976257
+  },
+  {
+    "id": "behavior-refusal",
+    "raw": "{\"answer\":\"A\"}",
+    "error": null,
+    "latency_seconds": 0.20809195799984082
+  },
+  {
+    "id": "behavior-format-known",
+    "raw": "{\"answer\":\"B\"}",
+    "error": null,
+    "latency_seconds": 0.218272333999721
+  }
+]

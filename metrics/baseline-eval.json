@@ -1,0 +1,1011 @@
+{
+  "overall": {
+    "n": 60,
+    "correct": 30,
+    "valid": 60,
+    "errors": 0,
+    "accuracy": 0.5,
+    "format_rate": 1.0
+  },
+  "slices": {
+    "long_description": {
+      "n": 14,
+      "correct": 7,
+      "valid": 14,
+      "errors": 0,
+      "accuracy": 0.5,
+      "format_rate": 1.0
+    },
+    "short_description": {
+      "n": 46,
+      "correct": 23,
+      "valid": 46,
+      "errors": 0,
+      "accuracy": 0.5,
+      "format_rate": 1.0
+    },
+    "single_genre": {
+      "n": 20,
+      "correct": 11,
+      "valid": 20,
+      "errors": 0,
+      "accuracy": 0.55,
+      "format_rate": 1.0
+    },
+    "three_plus_genres": {
+      "n": 20,
+      "correct": 9,
+      "valid": 20,
+      "errors": 0,
+      "accuracy": 0.45,
+      "format_rate": 1.0
+    },
+    "two_genres": {
+      "n": 20,
+      "correct": 10,
+      "valid": 20,
+      "errors": 0,
+      "accuracy": 0.5,
+      "format_rate": 1.0
+    }
+  },
+  "per_item": [
+    {
+      "id": "movie-mcq-001",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-002",
+      "raw": "{\"answer\": \"B\"}",
+      "parsed": {
+        "answer": "B"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-003",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-004",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-005",
+      "raw": "{\"answer\": \"A\"}",
+      "parsed": {
+        "answer": "A"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-006",
+      "raw": "{\"answer\": \"B\"}",
+      "parsed": {
+        "answer": "B"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-007",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-008",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-009",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-010",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-011",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-012",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-013",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-014",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-015",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-016",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-017",
+      "raw": "{\"answer\": \"A\"}",
+      "parsed": {
+        "answer": "A"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-018",
+      "raw": "{\"answer\": \"A\"}",
+      "parsed": {
+        "answer": "A"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-019",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-020",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-021",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-022",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-023",
+      "raw": "{\"answer\": \"B\"}",
+      "parsed": {
+        "answer": "B"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-024",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-025",
+      "raw": "{\"answer\": \"A\"}",
+      "parsed": {
+        "answer": "A"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-026",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-027",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-028",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-029",
+      "raw": "{\"answer\": \"A\"}",
+      "parsed": {
+        "answer": "A"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-030",
+      "raw": "{\"answer\": \"B\"}",
+      "parsed": {
+        "answer": "B"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-031",
+      "raw": "{\"answer\": \"A\"}",
+      "parsed": {
+        "answer": "A"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-032",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-033",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-034",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-035",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-036",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-037",
+      "raw": "{\"answer\": \"A\"}",
+      "parsed": {
+        "answer": "A"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-038",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-039",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-040",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-041",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-042",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-043",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-044",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-045",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-046",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-047",
+      "raw": "{\"answer\": \"B\"}",
+      "parsed": {
+        "answer": "B"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "three_plus_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-048",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-049",
+      "raw": "{\"answer\": \"A\"}",
+      "parsed": {
+        "answer": "A"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-050",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-051",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-052",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-053",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "single_genre",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-054",
+      "raw": "{\"answer\": \"D\"}",
+      "parsed": {
+        "answer": "D"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-055",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-056",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-057",
+      "raw": "{\"answer\": \"B\"}",
+      "parsed": {
+        "answer": "B"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-058",
+      "raw": "{\"answer\": \"B\"}",
+      "parsed": {
+        "answer": "B"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "long_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-059",
+      "raw": "{\"answer\": \"C\"}",
+      "parsed": {
+        "answer": "C"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    },
+    {
+      "id": "movie-mcq-060",
+      "raw": "{\"answer\": \"B\"}",
+      "parsed": {
+        "answer": "B"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "two_genres",
+        "short_description"
+      ]
+    }
+  ],
+  "status": "complete",
+  "model": {
+    "kind": "base",
+    "name": "Qwen/Qwen3-0.6B",
+    "revision": "c1899de289a04d12100db370d81485cdf75e47ca"
+  },
+  "protocol_sha256": "12dba70796aae94663b9f35d59c86370e477d85fd2a646c19bfbba5d3486086b",
+  "golden_sha256": "b4862d5665e8d5f3cee65198ea8ee2467fc9736395cbd5ce0e7ffd8c43760936",
+  "baseline_spec_sha256": "f71269b95f6b4e1e160fa25e9af6c973517cfebad15880b75b56c8184680b163",
+  "behavioral": {
+    "overall": {
+      "n": 4,
+      "correct": 2,
+      "valid": 4,
+      "errors": 0,
+      "accuracy": 0.5,
+      "format_rate": 1.0
+    },
+    "slices": {
+      "obvious_animation": {
+        "n": 1,
+        "correct": 1,
+        "valid": 1,
+        "errors": 0,
+        "accuracy": 1.0,
+        "format_rate": 1.0
+      },
+      "short_description": {
+        "n": 2,
+        "correct": 1,
+        "valid": 2,
+        "errors": 0,
+        "accuracy": 0.5,
+        "format_rate": 1.0
+      },
+      "two_genres": {
+        "n": 2,
+        "correct": 1,
+        "valid": 2,
+        "errors": 0,
+        "accuracy": 0.5,
+        "format_rate": 1.0
+      },
+      "unsupported_domain": {
+        "n": 1,
+        "correct": 0,
+        "valid": 1,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 1.0
+      }
+    },
+    "per_item": [
+      {
+        "id": "behavior-format",
+        "raw": "{\"answer\": \"B\"}",
+        "parsed": {
+          "answer": "B"
+        },
+        "valid": true,
+        "correct": true,
+        "error": null,
+        "slices": [
+          "two_genres",
+          "short_description"
+        ]
+      },
+      {
+        "id": "behavior-paraphrase",
+        "raw": "{\"answer\": \"C\"}",
+        "parsed": {
+          "answer": "C"
+        },
+        "valid": true,
+        "correct": false,
+        "error": null,
+        "slices": [
+          "two_genres",
+          "short_description"
+        ]
+      },
+      {
+        "id": "behavior-refusal",
+        "raw": "{\"answer\": \"A\"}",
+        "parsed": {
+          "answer": "A"
+        },
+        "valid": true,
+        "correct": false,
+        "error": null,
+        "slices": [
+          "unsupported_domain"
+        ]
+      },
+      {
+        "id": "behavior-format-known",
+        "raw": "{\"answer\": \"B\"}",
+        "parsed": {
+          "answer": "B"
+        },
+        "valid": true,
+        "correct": true,
+        "error": null,
+        "slices": [
+          "obvious_animation"
+        ]
+      }
+    ]
+  },
+  "leakage": {
+    "exact_or_group_intersections": 0,
+    "n_train_index": 4800,
+    "n_golden": 60,
+    "n_behavioral": 4
+  },
+  "outputs_sha256": "bddcdacceb6187397a8f273863980ef9e522b58de3571f27b3bf917ec92bf0aa",
+  "evaluation_run_id": "fdc7f8526e454b199eeafae306fcc7d1"
+}

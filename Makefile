@@ -73,6 +73,8 @@ check-all:
 	$(MAKE) check-hw3
 	$(MAKE) check-hw4
 	$(MAKE) check
+	$(MAKE) check-hw67
+	$(MAKE) check-eval
 
 clean: clean-training
 	rm -f docs/bench.json docs/report.json out1.txt out2.txt params.yaml.bak
@@ -102,3 +104,57 @@ clean-training:
 
 distclean: clean-training
 	rm -rf .venv
+
+# ДЗ 6+7 продолжает общий проект; conf/hw67.yaml не меняет параметры ДЗ1–5.
+.PHONY: up down sweep report candidate baseline-init evaluate eval check-eval check-negative promote check-storage check-hw67 baseline-update predict predict-candidate
+up:
+	docker compose -p mlops-hw6 up --build -d --wait
+
+down:
+	docker compose -p mlops-hw6 down
+
+sweep:
+	uv run python -m src.sweep
+
+report:
+	uv run python -m src.experiment_report
+
+candidate:
+	uv run python -m evaluation.cli candidate
+
+baseline-init:
+	uv run python -m evaluation.cli baseline-init
+
+evaluate:
+	uv run python -m evaluation.cli evaluate
+
+eval:
+	uv run python -m evaluation.cli gate
+
+check-eval:
+	uv run python -m unittest discover -s tests -p 'test_eval*.py' -v
+	uv run python -m unittest discover -s tests -p 'test_pipeline*.py' -v
+
+check-negative:
+	uv run python -m evaluation.cli negative
+
+promote:
+	uv run python -m evaluation.cli promote
+
+check-storage:
+	uv run python tests/check_storage.py
+
+check-hw67:
+	bash tests/check_hw67.sh
+
+baseline-update:
+	uv run python -m evaluation.cli baseline-update
+
+predict:
+	uv run python -m src.predict --uri models:/my-qwen-adapter@champion --prompt "Выберите жанр фильма: история о путешествии космонавтов."
+
+predict-candidate:
+	uv run python -m src.predict --uri models:/my-qwen-adapter@candidate --prompt "Выберите жанр фильма: история о путешествии космонавтов."
+
+.PHONY: check-hw67-all
+check-hw67-all: check-hw67 check-eval

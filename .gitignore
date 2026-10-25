@@ -19,3 +19,10 @@ models/
 metrics/train_*.json
 metrics/compare_*.json
 .check_*.log
+
+# Runtime state and generated caches
+mlruns/
+mlartifacts/
+*.db
+*.db-shm
+*.db-wal
