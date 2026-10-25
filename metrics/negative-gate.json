@@ -2,10 +2,10 @@
   "rejected": true,
   "passed": false,
   "reason": "Регрессия общей accuracy",
-  "source_outputs_sha256": "f091b317e56da8745363773992af7a37faeced94d7ff7cc05266e2d54182bc6a",
+  "source_outputs_sha256": "2b14f16a10fd4aa75a35ccfbfcd6e10850f166876951b835b75bbbdcbbe921e3",
   "corrupted_outputs_sha256": "49d661f7122a680a5236506b907e2963e4c6ef87d2b3f91ec3f8d65ccd039d27",
   "reports_verified": true,
-  "evaluation_run_id": "add3fbe58ada41a9b87dde71cc5580ca",
+  "evaluation_run_id": "ef925fe3d3cc4a5f881beea453e3a463",
   "baseline_model": {
     "kind": "base",
     "name": "Qwen/Qwen3-0.6B",
@@ -18,12 +18,11 @@
     "run_id": "724f89d55d204ee1a24b6373fb6539dd",
     "uri": "models:/my-qwen-adapter/5"
   },
-  "protocol_sha256": "cfdec1c4964147aa6ce62ac17e956fbc6e4446255d45f9b57823cff9e00bafd7",
-  "golden_sha256": "c205c9bfaaeba2a06ec8f66478093517b4826c205beea145082590ae56f4a115",
+  "protocol_sha256": "59cf5865bd47bf3a9faa885832e0c22ba95b555354044d05a5371c5d3bb11ab0",
+  "golden_sha256": "1a726c9218aa0400e054293d481bb008071d3eb1acb00f46aa6b358fad07ada2",
   "baseline_spec_sha256": "f71269b95f6b4e1e160fa25e9af6c973517cfebad15880b75b56c8184680b163",
-  "baseline_outputs_sha256": "2efe29368998aec0a64ba55e2363bb5e765fb90407b1f1b7fa18913f182490db",
-  "candidate_outputs_sha256": "f091b317e56da8745363773992af7a37faeced94d7ff7cc05266e2d54182bc6a",
-  "comparison_models_sha256": "a54eb5147d037139ac1e6d4e4b289eed244ab493b4f70d24f949debe71fb2286",
+  "baseline_outputs_sha256": "327b9ec549fc061969600229af2c8e5f2046b623334e2d3d3017c7cd6ba07c5a",
+  "candidate_outputs_sha256": "2b14f16a10fd4aa75a35ccfbfcd6e10850f166876951b835b75bbbdcbbe921e3",
   "note": "Испорчена копия raw; реальные веса и alias не менялись",
-  "gate_run_id": "15046bb35f334e61819ac4eafe4cb59b"
+  "gate_run_id": "3ab4bd6da8154753addb899723b6afdb"
 }

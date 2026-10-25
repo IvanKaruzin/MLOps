@@ -2,7 +2,7 @@
 
 import math
 
-from evaluation.contract import strict_json_loads, target_for, parse_genre_answer, normalize_genre
+from evaluation.contract import strict_json_loads, target_for, parse_genre_answer, multilabel_taxonomy
 
 
 def _index(items, label):
@@ -27,10 +27,11 @@ def _names(value, label):
 
 
 MULTILABEL_CONVENTION = {
-    'accuracy': 'exact equality of canonical genre sets; REFUSE is separate atomic behavior',
+    'accuracy': 'literal answer string equals expected; both strings must be exact members of choices',
     'invalid_prediction': 'empty genre set, format failure and incorrect exact answer',
     'macro_f1': 'all taxonomy genres, including zero-support genres; zero_division=0',
     'refusal': 'REFUSE is not a genre; correct refusal is measured by behavioral exact accuracy',
+    'format': 'strict JSON with answer:str exactly in the shared canonical-combination choices catalog',
 }
 
 
@@ -67,7 +68,7 @@ def _metrics(items, labels=None):
 
 
 def score(rows, outputs):
-    """Строгий JSON; MCQ либо свободное множество канонических жанров.
+    """Строгий JSON и точная строка из choices для каждой задачи.
 
     Невалидная multilabel-генерация остаётся в знаменателе, даёт пустое
     predicted_labels и все FN эталона. REFUSE не входит в жанровой F1.
@@ -85,6 +86,8 @@ def score(rows, outputs):
     labels = targets[0]['labels'] if multilabel else None
     if multilabel and any(target['labels'] != labels for target in targets):
         raise ValueError('Таксономия жанров должна совпадать для всех вопросов')
+    if multilabel and any(row['choices'] != rows[0]['choices'] for row in rows):
+        raise ValueError('Каталог choices должен быть одинаковым для всех вопросов')
     per_item = []
     for row, target in zip(rows, targets):
         slices = _names(row.get('slices'), 'slices')
@@ -103,7 +106,7 @@ def score(rows, outputs):
             except (ValueError, TypeError, RecursionError):
                 pass
         valid = (error is None and isinstance(parsed, dict) and set(parsed) == {'answer'}
-                 and isinstance(parsed['answer'], str))
+                 and isinstance(parsed['answer'], str) and parsed['answer'] in row['choices'])
         extras = {}
         if multilabel:
             predicted, refused = [], False
@@ -115,14 +118,14 @@ def score(rows, outputs):
             if not valid:
                 predicted, refused = [], False
             expected, expected_refusal = target['expected_labels'], target['expected_refusal']
-            correct = valid and expected == predicted and expected_refusal == refused
+            correct = valid and parsed['answer'] == row['expected']
             expected_set, predicted_set = set(expected), set(predicted)
             extras = dict(task='multilabel', expected_labels=expected, predicted_labels=predicted,
+                          expected=row['expected'],
                           expected_refusal=expected_refusal, predicted_refusal=refused,
                           tp=len(expected_set & predicted_set), fp=len(predicted_set - expected_set),
                           fn=len(expected_set - predicted_set), support=len(expected_set))
         else:
-            valid = valid and parsed['answer'] in row['choices']
             correct = valid and parsed['answer'] == row['expected']
         per_item.append(dict(id=row['id'], raw=raw, parsed=parsed, valid=bool(valid),
                              correct=bool(correct), error=error, slices=list(slices), **extras))
@@ -131,7 +134,8 @@ def score(rows, outputs):
                   slices={s: _metrics([item for item in per_item if s in item['slices']], labels) for s in slice_names},
                   per_item=per_item)
     if multilabel:
-        result.update(task='multilabel', labels=list(labels), metric_convention=dict(MULTILABEL_CONVENTION))
+        result.update(task='multilabel', labels=list(labels), choices=list(rows[0]['choices']),
+                      metric_convention=dict(MULTILABEL_CONVENTION))
     return result
 
 def _validate_counts(actual, expected, label):
@@ -188,7 +192,8 @@ def _validate_score(report, label):
     labels = None
     if report.get('task') == 'multilabel':
         labels = _names(report.get('labels'), label + '.labels')
-        if labels != sorted(normalize_genre(genre) for genre in labels) or 'refuse' in labels:
+        choices = _names(report.get('choices'), label + '.choices')
+        if labels != multilabel_taxonomy(choices):
             raise ValueError(f'{label}: таксономия не каноническая')
         reconstructed = []
         for item in items:
@@ -205,8 +210,8 @@ def _validate_score(report, label):
             for key in ('tp', 'fp', 'fn', 'support'):
                 if type(item.get(key)) is not int:
                     raise ValueError(f'{label}: некорректный per_item.{key}')
-            reconstructed.append(dict(id=item['id'], task='multilabel', choices=labels + ['REFUSE'],
-                                      expected='REFUSE' if item['expected_refusal'] else ', '.join(item['expected_labels']),
+            reconstructed.append(dict(id=item['id'], task='multilabel', choices=list(choices),
+                                      expected=item.get('expected'),
                                       slices=item['slices']))
         recalculated = score(reconstructed, [dict(id=item['id'], raw=item['raw'], error=item['error']) for item in items])
         if report.get('metric_convention') != recalculated['metric_convention'] or report['per_item'] != recalculated['per_item']:
@@ -267,11 +272,13 @@ def quality_gate(baseline, candidate, critical_slices):
             if report['overall']['errors'] or report['behavioral']['overall']['errors']:
                 raise ValueError(f'{label}: есть ошибки генерации')
         if (baseline.get('task', 'mcq') != candidate.get('task', 'mcq')
-                or baseline.get('labels') != candidate.get('labels')):
+                or baseline.get('labels') != candidate.get('labels')
+                or baseline.get('choices') != candidate.get('choices')):
             raise ValueError('Несовместимая задача или таксономия жанров')
         multilabel = candidate.get('task') == 'multilabel'
         if any(report.get('behavioral', {}).get('task', 'mcq') != report.get('task', 'mcq')
-               or report.get('behavioral', {}).get('labels') != report.get('labels') for report in (baseline, candidate)):
+               or report.get('behavioral', {}).get('labels') != report.get('labels')
+               or report.get('behavioral', {}).get('choices') != report.get('choices') for report in (baseline, candidate)):
             raise ValueError('Behavioral использует другую задачу или таксономию')
         for key in ('protocol_sha256', 'golden_sha256', 'baseline_spec_sha256'):
             if baseline[key] != candidate[key]:
@@ -280,7 +287,8 @@ def quality_gate(baseline, candidate, critical_slices):
             if set(a) != set(b) or any(set(a[i]['slices']) != set(b[i]['slices']) for i in a):
                 raise ValueError(f'{label}: различаются id или принадлежность срезам')
             if multilabel and any(a[i]['expected_labels'] != b[i]['expected_labels']
-                                  or a[i]['expected_refusal'] != b[i]['expected_refusal'] for i in a):
+                                  or a[i]['expected_refusal'] != b[i]['expected_refusal']
+                                  or a[i]['expected'] != b[i]['expected'] for i in a):
                 raise ValueError(f'{label}: различаются эталонные жанры/отказ')
         if not set(critical_slices) <= set(candidate['slices']):
             raise ValueError('Критический срез отсутствует')

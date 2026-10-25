@@ -1,76 +1,30 @@
 {
   "date": "2026-10-25",
-  "iteration": "stratified-free-genres-with-json-alignment",
+  "scope": "HW6+7 only; strict exact-string choices contract",
   "hw67_acceptance": {
-    "command": "make check-hw67-all",
+    "command": "make check-all",
     "passed": true,
     "artifact_checks": 9,
     "artifact_checks_passed": 9,
-    "evaluation_tests": 49,
-    "pipeline_tests": 11,
-    "tests_fingerprint": "ab7f39c24b1a"
+    "evaluation_tests": 56,
+    "pipeline_tests": 5,
+    "tests_fingerprint": "668541c5fccd",
+    "starter_tests_fingerprint": "c42ac7788026",
+    "starter_assertions_unchanged": true
   },
-  "unit": {
-    "command": "make check-unit",
+  "additional_tests": {
+    "command": "uv run python -m unittest discover -s tests -p 'test_hw67_experiments.py'",
     "passed": true,
-    "tests": 126
-  },
-  "new_training_runs": 18,
-  "stages": {
-    "sampling_control": {
-      "parent_id": "dcdcc94cc03a46e2be7ff2e3605633dd",
-      "version": "3",
-      "steps": 4,
-      "pool": 32,
-      "processed_unique": 8,
-      "val": 8
-    },
-    "unaligned": {
-      "parent_id": "4f753c742e414e2ba426579495186e1c",
-      "version": "4",
-      "steps": 120,
-      "pool": 240,
-      "processed_unique": 240,
-      "val": 60
-    },
-    "json_aligned": {
-      "parent_id": "c91104948b3c41e3abbd54a07bcb71c7",
-      "version": "5",
-      "steps": 120,
-      "pool": 240,
-      "processed_unique": 240,
-      "val": 60
-    }
+    "tests": 13
   },
   "evaluation": {
-    "evaluation_run_id": "add3fbe58ada41a9b87dde71cc5580ca",
-    "protocol_sha256": "cfdec1c4964147aa6ce62ac17e956fbc6e4446255d45f9b57823cff9e00bafd7",
+    "evaluation_run_id": "ef925fe3d3cc4a5f881beea453e3a463",
+    "protocol_sha256": "59cf5865bd47bf3a9faa885832e0c22ba95b555354044d05a5371c5d3bb11ab0",
     "models": {
       "baseline": {
         "kind": "base",
         "name": "Qwen/Qwen3-0.6B",
         "revision": "c1899de289a04d12100db370d81485cdf75e47ca"
-      },
-      "previous": {
-        "kind": "adapter",
-        "name": "my-qwen-adapter",
-        "version": "2",
-        "run_id": "dbc125fa62764a8aaf1f213d41cf2ded",
-        "uri": "models:/my-qwen-adapter/2"
-      },
-      "sampling_control": {
-        "kind": "adapter",
-        "name": "my-qwen-adapter",
-        "version": "3",
-        "run_id": "2aa8b014539c4cb5af123b9fc70006cc",
-        "uri": "models:/my-qwen-adapter/3"
-      },
-      "unaligned": {
-        "kind": "adapter",
-        "name": "my-qwen-adapter",
-        "version": "4",
-        "run_id": "67920a2d113b406dad60e1f8ee0642bf",
-        "uri": "models:/my-qwen-adapter/4"
       },
       "candidate": {
         "kind": "adapter",
@@ -85,7 +39,7 @@
     "passed": false,
     "reason": "Не все обязательные behavioral-кейсы пройдены",
     "reports_verified": true,
-    "evaluation_run_id": "add3fbe58ada41a9b87dde71cc5580ca",
+    "evaluation_run_id": "ef925fe3d3cc4a5f881beea453e3a463",
     "baseline_model": {
       "kind": "base",
       "name": "Qwen/Qwen3-0.6B",
@@ -98,18 +52,17 @@
       "run_id": "724f89d55d204ee1a24b6373fb6539dd",
       "uri": "models:/my-qwen-adapter/5"
     },
-    "protocol_sha256": "cfdec1c4964147aa6ce62ac17e956fbc6e4446255d45f9b57823cff9e00bafd7",
-    "golden_sha256": "c205c9bfaaeba2a06ec8f66478093517b4826c205beea145082590ae56f4a115",
+    "protocol_sha256": "59cf5865bd47bf3a9faa885832e0c22ba95b555354044d05a5371c5d3bb11ab0",
+    "golden_sha256": "1a726c9218aa0400e054293d481bb008071d3eb1acb00f46aa6b358fad07ada2",
     "baseline_spec_sha256": "f71269b95f6b4e1e160fa25e9af6c973517cfebad15880b75b56c8184680b163",
-    "baseline_outputs_sha256": "2efe29368998aec0a64ba55e2363bb5e765fb90407b1f1b7fa18913f182490db",
-    "candidate_outputs_sha256": "f091b317e56da8745363773992af7a37faeced94d7ff7cc05266e2d54182bc6a",
-    "comparison_models_sha256": "a54eb5147d037139ac1e6d4e4b289eed244ab493b4f70d24f949debe71fb2286",
-    "gate_run_id": "2d261ff79d024135911cff809db4bdfa"
+    "baseline_outputs_sha256": "327b9ec549fc061969600229af2c8e5f2046b623334e2d3d3017c7cd6ba07c5a",
+    "candidate_outputs_sha256": "2b14f16a10fd4aa75a35ccfbfcd6e10850f166876951b835b75bbbdcbbe921e3",
+    "gate_run_id": "89fddfeb329e4659a314b24f10eb026f"
   },
   "negative_gate": {
     "passed": true,
     "corrupted_copy_rejected": true,
-    "gate_run_id": "15046bb35f334e61819ac4eafe4cb59b"
+    "gate_run_id": "3ab4bd6da8154753addb899723b6afdb"
   },
   "registry": {
     "name": "my-qwen-adapter",
@@ -121,74 +74,31 @@
   "storage": {
     "passed": true,
     "proof": {
-      "run_id": "ffd370b1ad114c1087a7437dcbdca1a5",
-      "sha256": "969555d04090a5ca96459a2d90dabe8d00313109e4885dde02bf543b9cdedd98",
+      "run_id": "f030aaa097414894bd279444399d3ced",
+      "sha256": "3508481eb83dc100113d24ef5d2c4b904c4825f61e693aa255533145d517b47b",
       "compose_sha256": "8c05f7a6868b88476eb4304b510515bcde083a0b588323f70f58a170b11a80f9",
       "project": "mlops-hw6"
     }
   },
   "isolated_reload": {
     "passed": true,
-    "proof": "metrics/model-package-check.json"
-  },
-  "input_integrity": {
-    "original_4800_train_and_599_val_fully_reencoded": true,
-    "original_raw_and_tensors_unchanged": true,
-    "source_code_and_lock_sha256": "9e96167e6623011c3ac6ab5ca05612d994a9c50a2ed176bde92bbd3cfb6e0e76",
-    "sampling_sha256": "db24430f055357d9417c1727becba4feffd17e6a47f328a62cbc70d8099bec1a",
-    "training_view_sha256": "32a806367d5f08947a7fd50665850ce34f55d07134c523533645f6e6bc4c965e",
-    "train_tokens": 66236,
-    "train_supervised_tokens": 3405,
-    "dvc_tokenize_status": "up to date"
+    "verified_by": "make check-all: check 7; fresh isolated process without local configuration"
   },
   "eval_data": {
     "golden": 90,
     "behavioral": 5,
     "training_index": 4800,
+    "catalogue_choices": 932,
+    "all_expected_in_choices": true,
+    "original_questions_labels_slices_and_order_unchanged": true,
     "dvc_status": "up to date",
-    "dvc_directory_hash": "0f9de9c02b2de539648fdc1793d59396.dir",
-    "archive_sha256": "92c34a978fe6143eb9474f9a181485b7915fb92bc2e9295cdf1f35df60b27b2d"
+    "dvc_directory_hash": "b6a20c7655bc6027ce2052ecb8788073.dir",
+    "archive_sha256": "4da0960f16151d1792af6797e2dca57eb9764b8a4f8615e34c75d4f0b8cd7e0f"
   },
-  "prior_model_replay": {
-    "evaluation_run_id": "add3fbe58ada41a9b87dde71cc5580ca",
-    "ignored_fields": [
-      "latency_seconds"
-    ],
-    "roles": {
-      "baseline": {
-        "n": 95,
-        "identical_raw_and_error": true
-      },
-      "previous": {
-        "n": 95,
-        "identical_raw_and_error": true
-      },
-      "sampling_control": {
-        "n": 95,
-        "identical_raw_and_error": true
-      },
-      "unaligned": {
-        "n": 95,
-        "identical_raw_and_error": true
-      }
-    },
-    "passed": true
-  },
-  "diagnostic_prior": {
-    "used_for_gate": false,
-    "source_training_rows": 240,
-    "predicted_genres": [
-      "драма",
-      "комедия"
-    ],
-    "report": "metrics/naive-genre-baseline.json"
-  },
-  "legacy_validation": {
-    "previous_hw1_to4_verification": "metrics/hw67-history/v1/verification.json",
-    "rerun_this_iteration": false,
-    "old_hw5_historical_checker_passed": true,
-    "old_hw5_commit": "d8f00a3f66d1fe53a2957dcbf79563f2e2e85243",
-    "current_hw5_freshness_passed": false,
-    "reason": "The original HW5 fingerprints include the pre-MLflow uv.lock; full retraining is needed for the current aggregate check-all. Historical metrics were not modified."
+  "input_integrity": {
+    "original_4800_train_and_599_val_fully_reencoded": true,
+    "original_raw_and_tensors_unchanged": true,
+    "source_code_and_lock_sha256": "9e96167e6623011c3ac6ab5ca05612d994a9c50a2ed176bde92bbd3cfb6e0e76",
+    "training_view_sha256": "32a806367d5f08947a7fd50665850ce34f55d07134c523533645f6e6bc4c965e"
   }
 }

@@ -6,15 +6,16 @@ import unittest
 from sklearn.metrics import f1_score, precision_score, recall_score
 from sklearn.preprocessing import MultiLabelBinarizer
 
-from evaluation.contract import validate_golden
+from evaluation.contract import multilabel_taxonomy, validate_golden
 from evaluation.solution import quality_gate, score
 
 LABELS = ['боевик', 'драма', 'комедия', 'триллер']
+CHOICES = LABELS + ['боевик, драма', 'драма, комедия', 'REFUSE']
 
 
 def items(n=60):
     return [dict(id=f'm{i}', task='multilabel', input=f'Plot {i}', group_id=f'g{i}',
-                 expected=['драма', 'комедия', 'триллер'][i % 3], choices=LABELS + ['REFUSE'],
+                 expected=['драма', 'комедия', 'триллер'][i % 3], choices=list(CHOICES),
                  slices=[f's{i % 3}'], source='synthetic fixture') for i in range(n)]
 
 
@@ -24,7 +25,7 @@ def answers(rows):
 
 def behavior():
     return [dict(id=f'b{i}', task='multilabel', input=f'Behavior plot {i}', group_id=f'behavior-{i}',
-                 expected='REFUSE' if i == 2 else 'драма', choices=LABELS + ['REFUSE'],
+                 expected='REFUSE' if i == 2 else 'драма', choices=list(CHOICES),
                  slices=['behavior'], source='fixture', type=kind)
             for i, kind in enumerate(['format', 'paraphrase', 'refusal'])]
 
@@ -43,7 +44,7 @@ class MultilabelScore(unittest.TestCase):
         rows = items(4)
         for row, expected in zip(rows, ['драма, комедия', 'триллер', 'драма', 'комедия']):
             row['expected'] = expected
-        raw = ['{"answer":"  КОМЕДИЯ  ,  дРаМа  "}', '{"answer":"драма"}', 'INVALID', '{"answer":"REFUSE"}']
+        raw = ['{"answer":"драма, комедия"}', '{"answer":"драма"}', 'INVALID', '{"answer":"REFUSE"}']
         out = [dict(id=row['id'], raw=value, error=None) for row, value in zip(rows, raw)]
         actual = score(rows, out)
         expected_sets = [['драма', 'комедия'], ['триллер'], ['драма'], ['комедия']]
@@ -75,7 +76,7 @@ class MultilabelScore(unittest.TestCase):
 
     def test_refusal_is_not_a_genre_or_credit_for_missing_answer(self):
         row = behavior()[-1]
-        good = score([row], [dict(id=row['id'], raw='{"answer":" refuse "}', error=None)])
+        good = score([row], [dict(id=row['id'], raw='{"answer":"REFUSE"}', error=None)])
         bad = score([row], [dict(id=row['id'], raw='', error=None)])
         self.assertEqual(good['overall']['correct'], 1)
         self.assertEqual((good['overall']['support'], good['overall']['tp'], good['overall']['micro_f1']), (0, 0, 0.0))
@@ -95,15 +96,89 @@ class MultilabelScore(unittest.TestCase):
         result = score(items(), answers(items()))
         self.assertEqual({key: value['n'] for key, value in result['slices'].items()}, {'s0': 20, 's1': 20, 's2': 20})
         self.assertEqual(result['overall']['exact_set_accuracy'], result['overall']['accuracy'])
+        self.assertEqual(result['choices'], CHOICES)
+        self.assertTrue(all('choices' not in item for item in result['per_item']))
         changed = items()
         changed[0]['choices'] = LABELS[:-1] + ['REFUSE']
         with self.assertRaises(ValueError):
             score(changed, answers(changed))
 
+    def test_expected_must_be_an_exact_choice_for_all_tasks(self):
+        for task, choices, expected in [('multilabel', CHOICES, 'боевик, комедия'),
+                                        ('multilabel', CHOICES, 'Драма'),
+                                        ('mcq', ['A', 'B'], 'b')]:
+            row = dict(items(1)[0], task=task, choices=list(choices), expected=expected)
+            with self.subTest(task=task, expected=expected), self.assertRaises(ValueError):
+                score([row], answers([row]))
+        golden = items()
+        golden[0]['expected'] = 'боевик, комедия'
+        with self.assertRaises(ValueError):
+            validate_golden(golden, [dict(id='train', input='Train only', group_id='train')], behavior())
+
+    def test_unlisted_combination_is_invalid_even_when_all_genres_are_known(self):
+        row = items(1)[0]
+        result = score([row], [dict(id=row['id'], raw='{"answer":"боевик, комедия"}', error=None)])
+        self.assertEqual((result['overall']['valid'], result['overall']['correct']), (0, 0))
+        self.assertEqual(result['per_item'][0]['predicted_labels'], [])
+        self.assertEqual(result['overall']['fn'], 1)
+
+    def test_case_order_whitespace_and_nonliteral_refusal_are_invalid(self):
+        row = dict(items(1)[0], expected='драма, комедия')
+        for answer in ('комедия, драма', 'Драма, комедия', 'драма,комедия', ' драма, комедия',
+                       'драма,  комедия', 'refuse', ' REFUSE ', 'REFUSE, драма'):
+            out = [dict(id=row['id'], raw=json.dumps({'answer': answer}, ensure_ascii=False), error=None)]
+            with self.subTest(answer=answer):
+                result = score([row], out)
+                self.assertEqual((result['overall']['valid'], result['overall']['correct']), (0, 0))
+                self.assertEqual(result['per_item'][0]['predicted_labels'], [])
+
+    def test_taxonomy_flattens_canonical_choices_and_rejects_malformed_catalog(self):
+        self.assertEqual(multilabel_taxonomy(['боевик, драма', 'драма, комедия', 'REFUSE']),
+                         ['боевик', 'драма', 'комедия'])
+        for choice in ('комедия, драма', 'Драма', 'драма, драма', 'драма,комедия',
+                       'драма, REFUSE', 'драма, refuse', 'refuse'):
+            with self.subTest(choice=choice), self.assertRaises(ValueError):
+                multilabel_taxonomy(['драма', choice, 'REFUSE'])
+
+    def test_shared_atomic_taxonomy_does_not_allow_different_choice_catalogs(self):
+        changed = items()
+        changed[0]['choices'] = LABELS + ['REFUSE']
+        with self.assertRaisesRegex(ValueError, 'Каталог choices'):
+            score(changed, answers(changed))
+        with self.assertRaisesRegex(ValueError, 'Каталог choices'):
+            validate_golden(changed, [dict(id='train', input='Train only', group_id='train')], behavior())
+
 
 class MultilabelGate(unittest.TestCase):
     def test_equal_reports_pass(self):
         self.assertTrue(quality_gate(report(), report(), ['s0'])['passed'])
+
+    def test_reconstructed_score_keeps_literal_expected_and_full_choices(self):
+        rows = items()
+        rows[0]['expected'] = 'драма, комедия'
+        baseline, candidate = report(rows), report(rows)
+        self.assertEqual(candidate['per_item'][0]['expected'], 'драма, комедия')
+        self.assertEqual(candidate['choices'], CHOICES)
+        self.assertTrue(quality_gate(baseline, candidate, ['s0'])['passed'])
+        for change in ('expected', 'choices', 'valid-unlisted'):
+            changed = report(rows)
+            if change == 'expected':
+                changed['per_item'][0]['expected'] = 'комедия, драма'
+            elif change == 'choices':
+                changed['choices'] = LABELS + ['REFUSE']
+            else:
+                changed['per_item'][0]['raw'] = '{"answer":"боевик, комедия"}'
+                changed['per_item'][0]['parsed'] = {'answer': 'боевик, комедия'}
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                quality_gate(baseline, changed, ['s0'])
+
+    def test_different_recomputed_catalogs_with_same_taxonomy_are_incompatible(self):
+        changed = items()
+        for row in changed:
+            row['choices'] = LABELS + ['REFUSE']
+        candidate = report(changed)
+        with self.assertRaises(ValueError):
+            quality_gate(report(), candidate, ['s0'])
 
     def test_micro_f1_regression_is_rejected_when_accuracy_and_format_are_equal(self):
         rows = items()
