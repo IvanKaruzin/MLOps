@@ -1,0 +1,772 @@
+{
+  "passed": true,
+  "scope": "CPU/server package integrity; fresh isolated inference pending",
+  "parent_id": "4f753c742e414e2ba426579495186e1c",
+  "candidate": {
+    "kind": "adapter",
+    "name": "my-qwen-adapter",
+    "version": "4",
+    "run_id": "67920a2d113b406dad60e1f8ee0642bf",
+    "uri": "models:/my-qwen-adapter/4"
+  },
+  "weights_sha256": "abe388c2a5339d09473d8c964923e81dcd135f4d2314d86e5d15b2a4fd2ba925",
+  "bundled_prompt_identical": true,
+  "isolated_reload_matches": null,
+  "isolated_reload_status": "pending root GPU approval after evaluation",
+  "sample": {
+    "prompt": "A spaceship crew explores an unknown planet and discovers an alien civilization.",
+    "expected": "анимация, фантастика, приключения, семейный,"
+  },
+  "selected_package": {
+    "role": "main",
+    "name": "all-r8-high",
+    "run_id": "67920a2d113b406dad60e1f8ee0642bf",
+    "weights_sha256": "abe388c2a5339d09473d8c964923e81dcd135f4d2314d86e5d15b2a4fd2ba925",
+    "weight_bytes": 20236472,
+    "lora_tensors": 392,
+    "lora_parameters": 5046272,
+    "projection_shapes": {
+      "down_proj.lora_A": [
+        8,
+        3072
+      ],
+      "down_proj.lora_B": [
+        1024,
+        8
+      ],
+      "gate_proj.lora_A": [
+        8,
+        1024
+      ],
+      "gate_proj.lora_B": [
+        3072,
+        8
+      ],
+      "up_proj.lora_A": [
+        8,
+        1024
+      ],
+      "up_proj.lora_B": [
+        3072,
+        8
+      ],
+      "k_proj.lora_A": [
+        8,
+        1024
+      ],
+      "k_proj.lora_B": [
+        1024,
+        8
+      ],
+      "o_proj.lora_A": [
+        8,
+        2048
+      ],
+      "o_proj.lora_B": [
+        1024,
+        8
+      ],
+      "q_proj.lora_A": [
+        8,
+        1024
+      ],
+      "q_proj.lora_B": [
+        2048,
+        8
+      ],
+      "v_proj.lora_A": [
+        8,
+        1024
+      ],
+      "v_proj.lora_B": [
+        1024,
+        8
+      ]
+    },
+    "signature_checked": true,
+    "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+    "bundled_prompt_identical": true,
+    "bundled_model_code_identical": true,
+    "requirements": [
+      "accelerate==1.14.0",
+      "mlflow==2.22.2",
+      "numpy==2.5.3",
+      "pandas==2.3.3",
+      "peft==0.20.0",
+      "safetensors==0.8.0",
+      "torch==2.14.0",
+      "transformers==5.16.1"
+    ],
+    "manifest_and_sampling_checked": true,
+    "sample": {
+      "prompt": "A spaceship crew explores an unknown planet and discovers an alien civilization.",
+      "expected": "анимация, фантастика, приключения, семейный,"
+    }
+  },
+  "packages": [
+    {
+      "role": "control",
+      "name": "all-r8-high",
+      "run_id": "80adda95080744e6b3ce90b5b1ba5fa3",
+      "weights_sha256": "886478ef51b232701525123be9998d6cafd43dd454ebc8af05be838e46c4279c",
+      "weight_bytes": 20236472,
+      "lora_tensors": 392,
+      "lora_parameters": 5046272,
+      "projection_shapes": {
+        "down_proj.lora_A": [
+          8,
+          3072
+        ],
+        "down_proj.lora_B": [
+          1024,
+          8
+        ],
+        "gate_proj.lora_A": [
+          8,
+          1024
+        ],
+        "gate_proj.lora_B": [
+          3072,
+          8
+        ],
+        "up_proj.lora_A": [
+          8,
+          1024
+        ],
+        "up_proj.lora_B": [
+          3072,
+          8
+        ],
+        "k_proj.lora_A": [
+          8,
+          1024
+        ],
+        "k_proj.lora_B": [
+          1024,
+          8
+        ],
+        "o_proj.lora_A": [
+          8,
+          2048
+        ],
+        "o_proj.lora_B": [
+          1024,
+          8
+        ],
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true
+    },
+    {
+      "role": "control",
+      "name": "all-r8-low",
+      "run_id": "1379c34facd7410683c9397f55175a0c",
+      "weights_sha256": "1c4d85222128255828c2aade0f1d8c50a6296b08ffc14d06a9a7367ebb5bdb55",
+      "weight_bytes": 20236472,
+      "lora_tensors": 392,
+      "lora_parameters": 5046272,
+      "projection_shapes": {
+        "down_proj.lora_A": [
+          8,
+          3072
+        ],
+        "down_proj.lora_B": [
+          1024,
+          8
+        ],
+        "gate_proj.lora_A": [
+          8,
+          1024
+        ],
+        "gate_proj.lora_B": [
+          3072,
+          8
+        ],
+        "up_proj.lora_A": [
+          8,
+          1024
+        ],
+        "up_proj.lora_B": [
+          3072,
+          8
+        ],
+        "k_proj.lora_A": [
+          8,
+          1024
+        ],
+        "k_proj.lora_B": [
+          1024,
+          8
+        ],
+        "o_proj.lora_A": [
+          8,
+          2048
+        ],
+        "o_proj.lora_B": [
+          1024,
+          8
+        ],
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true
+    },
+    {
+      "role": "control",
+      "name": "qv-r4-high",
+      "run_id": "9e3289cd45844a41954450cf7091b2aa",
+      "weights_sha256": "803687be8c3da6c2cee89793e0909832781cecbe117bc5d383c6f038ce353d8b",
+      "weight_bytes": 2308432,
+      "lora_tensors": 112,
+      "lora_parameters": 573440,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          4,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          4
+        ],
+        "v_proj.lora_A": [
+          4,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          4
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true
+    },
+    {
+      "role": "control",
+      "name": "qv-r4-low",
+      "run_id": "83fa290d60c349aabfa2165d7d69cf94",
+      "weights_sha256": "2eaec8a619cc97abb5e0e4f91e94c249810b4a8de805d0be18daa21f6ac7f5f3",
+      "weight_bytes": 2308432,
+      "lora_tensors": 112,
+      "lora_parameters": 573440,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          4,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          4
+        ],
+        "v_proj.lora_A": [
+          4,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          4
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true
+    },
+    {
+      "role": "control",
+      "name": "qv-r8-high",
+      "run_id": "0d504303187f4a11963f9e4e00a0f953",
+      "weights_sha256": "61cf96e853ad83a9ca699de3d650e6838dde0b5e7f5ea3126d817256c956b27c",
+      "weight_bytes": 4602248,
+      "lora_tensors": 112,
+      "lora_parameters": 1146880,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true
+    },
+    {
+      "role": "control",
+      "name": "qv-r8-low",
+      "run_id": "2aa8b014539c4cb5af123b9fc70006cc",
+      "weights_sha256": "daf73fb3b9d3240050ad5ed3fe298d3d9832a7ae0a14efd48e1623300d010b71",
+      "weight_bytes": 4602248,
+      "lora_tensors": 112,
+      "lora_parameters": 1146880,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true
+    },
+    {
+      "role": "main",
+      "name": "all-r8-high",
+      "run_id": "67920a2d113b406dad60e1f8ee0642bf",
+      "weights_sha256": "abe388c2a5339d09473d8c964923e81dcd135f4d2314d86e5d15b2a4fd2ba925",
+      "weight_bytes": 20236472,
+      "lora_tensors": 392,
+      "lora_parameters": 5046272,
+      "projection_shapes": {
+        "down_proj.lora_A": [
+          8,
+          3072
+        ],
+        "down_proj.lora_B": [
+          1024,
+          8
+        ],
+        "gate_proj.lora_A": [
+          8,
+          1024
+        ],
+        "gate_proj.lora_B": [
+          3072,
+          8
+        ],
+        "up_proj.lora_A": [
+          8,
+          1024
+        ],
+        "up_proj.lora_B": [
+          3072,
+          8
+        ],
+        "k_proj.lora_A": [
+          8,
+          1024
+        ],
+        "k_proj.lora_B": [
+          1024,
+          8
+        ],
+        "o_proj.lora_A": [
+          8,
+          2048
+        ],
+        "o_proj.lora_B": [
+          1024,
+          8
+        ],
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true
+    },
+    {
+      "role": "main",
+      "name": "all-r8-low",
+      "run_id": "7afd074952404009ad834bcab70f5db8",
+      "weights_sha256": "547c2cacb704765be4a4707c3557f612182b0bb4f97db5283c6bb9df28846dd1",
+      "weight_bytes": 20236472,
+      "lora_tensors": 392,
+      "lora_parameters": 5046272,
+      "projection_shapes": {
+        "down_proj.lora_A": [
+          8,
+          3072
+        ],
+        "down_proj.lora_B": [
+          1024,
+          8
+        ],
+        "gate_proj.lora_A": [
+          8,
+          1024
+        ],
+        "gate_proj.lora_B": [
+          3072,
+          8
+        ],
+        "up_proj.lora_A": [
+          8,
+          1024
+        ],
+        "up_proj.lora_B": [
+          3072,
+          8
+        ],
+        "k_proj.lora_A": [
+          8,
+          1024
+        ],
+        "k_proj.lora_B": [
+          1024,
+          8
+        ],
+        "o_proj.lora_A": [
+          8,
+          2048
+        ],
+        "o_proj.lora_B": [
+          1024,
+          8
+        ],
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true
+    },
+    {
+      "role": "main",
+      "name": "qv-r4-high",
+      "run_id": "b4a9f06bd65e493892205ade2639fc3e",
+      "weights_sha256": "40fed2525508aecbb8598417eda5b35146b13f039fa233d87ae888037fd17bae",
+      "weight_bytes": 2308432,
+      "lora_tensors": 112,
+      "lora_parameters": 573440,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          4,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          4
+        ],
+        "v_proj.lora_A": [
+          4,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          4
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true
+    },
+    {
+      "role": "main",
+      "name": "qv-r4-low",
+      "run_id": "6c8e4de126a94ce1a72878d5b39384af",
+      "weights_sha256": "6cce6424a80ceb68d2acc87754dd05510c9131094a43b373aa846ac5e7a1faa0",
+      "weight_bytes": 2308432,
+      "lora_tensors": 112,
+      "lora_parameters": 573440,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          4,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          4
+        ],
+        "v_proj.lora_A": [
+          4,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          4
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true
+    },
+    {
+      "role": "main",
+      "name": "qv-r8-high",
+      "run_id": "fcd9cd9acedc44d68671fb3c9bed8ae9",
+      "weights_sha256": "2abad4b1e995710c6e3bd4518abaad168ef737aae67ca8bf388b78f17ac41628",
+      "weight_bytes": 4602248,
+      "lora_tensors": 112,
+      "lora_parameters": 1146880,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true
+    },
+    {
+      "role": "main",
+      "name": "qv-r8-low",
+      "run_id": "b5aa3685e0a748edb8b666a0888b1731",
+      "weights_sha256": "81b851d530de3abf187763415c35ad60cb06f969ef1ea43f20a91fa6c0bcf1e1",
+      "weight_bytes": 4602248,
+      "lora_tensors": 112,
+      "lora_parameters": 1146880,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true
+    }
+  ]
+}

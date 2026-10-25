@@ -1,1013 +1,5888 @@
 {
   "overall": {
-    "n": 60,
-    "correct": 29,
-    "valid": 60,
+    "n": 90,
+    "correct": 3,
+    "valid": 90,
     "errors": 0,
-    "accuracy": 0.48333333333333334,
-    "format_rate": 1.0
+    "accuracy": 0.03333333333333333,
+    "format_rate": 1.0,
+    "tp": 82,
+    "fp": 156,
+    "fn": 111,
+    "support": 193,
+    "precision": 0.3445378151260504,
+    "recall": 0.42487046632124353,
+    "exact_set_accuracy": 0.03333333333333333,
+    "micro_f1": 0.3805104408352668,
+    "macro_f1": 0.2180357357689278,
+    "per_label": {
+      "анимация": {
+        "tp": 1,
+        "fp": 0,
+        "fn": 9,
+        "support": 10,
+        "precision": 1.0,
+        "recall": 0.1,
+        "f1": 0.18181818181818182
+      },
+      "боевик": {
+        "tp": 9,
+        "fp": 5,
+        "fn": 9,
+        "support": 18,
+        "precision": 0.6428571428571429,
+        "recall": 0.5,
+        "f1": 0.5625
+      },
+      "вестерн": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "support": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "военный": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 2,
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "детектив": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 5,
+        "support": 5,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "документальный": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 3,
+        "support": 3,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "драма": {
+        "tp": 28,
+        "fp": 60,
+        "fn": 1,
+        "support": 29,
+        "precision": 0.3181818181818182,
+        "recall": 0.9655172413793104,
+        "f1": 0.47863247863247865
+      },
+      "история": {
+        "tp": 3,
+        "fp": 8,
+        "fn": 2,
+        "support": 5,
+        "precision": 0.2727272727272727,
+        "recall": 0.6,
+        "f1": 0.375
+      },
+      "комедия": {
+        "tp": 16,
+        "fp": 23,
+        "fn": 12,
+        "support": 28,
+        "precision": 0.41025641025641024,
+        "recall": 0.5714285714285714,
+        "f1": 0.47761194029850745
+      },
+      "криминал": {
+        "tp": 5,
+        "fp": 12,
+        "fn": 7,
+        "support": 12,
+        "precision": 0.29411764705882354,
+        "recall": 0.4166666666666667,
+        "f1": 0.3448275862068966
+      },
+      "мелодрама": {
+        "tp": 1,
+        "fp": 10,
+        "fn": 8,
+        "support": 9,
+        "precision": 0.09090909090909091,
+        "recall": 0.1111111111111111,
+        "f1": 0.1
+      },
+      "музыка": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 1,
+        "support": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "приключения": {
+        "tp": 5,
+        "fp": 5,
+        "fn": 7,
+        "support": 12,
+        "precision": 0.5,
+        "recall": 0.4166666666666667,
+        "f1": 0.45454545454545453
+      },
+      "семейный": {
+        "tp": 7,
+        "fp": 15,
+        "fn": 6,
+        "support": 13,
+        "precision": 0.3181818181818182,
+        "recall": 0.5384615384615384,
+        "f1": 0.4
+      },
+      "триллер": {
+        "tp": 1,
+        "fp": 1,
+        "fn": 16,
+        "support": 17,
+        "precision": 0.5,
+        "recall": 0.058823529411764705,
+        "f1": 0.10526315789473684
+      },
+      "ужасы": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 10,
+        "support": 10,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      },
+      "фантастика": {
+        "tp": 6,
+        "fp": 13,
+        "fn": 2,
+        "support": 8,
+        "precision": 0.3157894736842105,
+        "recall": 0.75,
+        "f1": 0.4444444444444444
+      },
+      "фэнтези": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 10,
+        "support": 10,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0
+      }
+    }
   },
   "slices": {
-    "long_description": {
-      "n": 14,
-      "correct": 8,
-      "valid": 14,
+    "before2000": {
+      "n": 45,
+      "correct": 0,
+      "valid": 45,
       "errors": 0,
-      "accuracy": 0.5714285714285714,
-      "format_rate": 1.0
+      "accuracy": 0.0,
+      "format_rate": 1.0,
+      "tp": 42,
+      "fp": 81,
+      "fn": 54,
+      "support": 96,
+      "precision": 0.34146341463414637,
+      "recall": 0.4375,
+      "exact_set_accuracy": 0.0,
+      "micro_f1": 0.3835616438356164,
+      "macro_f1": 0.24006681885938852,
+      "per_label": {
+        "анимация": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 3,
+          "support": 4,
+          "precision": 1.0,
+          "recall": 0.25,
+          "f1": 0.4
+        },
+        "боевик": {
+          "tp": 6,
+          "fp": 3,
+          "fn": 3,
+          "support": 9,
+          "precision": 0.6666666666666666,
+          "recall": 0.6666666666666666,
+          "f1": 0.6666666666666666
+        },
+        "вестерн": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "военный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "детектив": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3,
+          "support": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "документальный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "драма": {
+          "tp": 13,
+          "fp": 30,
+          "fn": 1,
+          "support": 14,
+          "precision": 0.3023255813953488,
+          "recall": 0.9285714285714286,
+          "f1": 0.45614035087719296
+        },
+        "история": {
+          "tp": 1,
+          "fp": 3,
+          "fn": 0,
+          "support": 1,
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4
+        },
+        "комедия": {
+          "tp": 8,
+          "fp": 17,
+          "fn": 7,
+          "support": 15,
+          "precision": 0.32,
+          "recall": 0.5333333333333333,
+          "f1": 0.4
+        },
+        "криминал": {
+          "tp": 3,
+          "fp": 6,
+          "fn": 5,
+          "support": 8,
+          "precision": 0.3333333333333333,
+          "recall": 0.375,
+          "f1": 0.35294117647058826
+        },
+        "мелодрама": {
+          "tp": 1,
+          "fp": 6,
+          "fn": 2,
+          "support": 3,
+          "precision": 0.14285714285714285,
+          "recall": 0.3333333333333333,
+          "f1": 0.2
+        },
+        "музыка": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "приключения": {
+          "tp": 2,
+          "fp": 2,
+          "fn": 5,
+          "support": 7,
+          "precision": 0.5,
+          "recall": 0.2857142857142857,
+          "f1": 0.36363636363636365
+        },
+        "семейный": {
+          "tp": 3,
+          "fp": 3,
+          "fn": 3,
+          "support": 6,
+          "precision": 0.5,
+          "recall": 0.5,
+          "f1": 0.5
+        },
+        "триллер": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 8,
+          "support": 9,
+          "precision": 0.5,
+          "recall": 0.1111111111111111,
+          "f1": 0.18181818181818182
+        },
+        "ужасы": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 7,
+          "support": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "фантастика": {
+          "tp": 3,
+          "fp": 8,
+          "fn": 1,
+          "support": 4,
+          "precision": 0.2727272727272727,
+          "recall": 0.75,
+          "f1": 0.4
+        },
+        "фэнтези": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 4,
+          "support": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      }
+    },
+    "long_description": {
+      "n": 22,
+      "correct": 0,
+      "valid": 22,
+      "errors": 0,
+      "accuracy": 0.0,
+      "format_rate": 1.0,
+      "tp": 20,
+      "fp": 38,
+      "fn": 26,
+      "support": 46,
+      "precision": 0.3448275862068966,
+      "recall": 0.43478260869565216,
+      "exact_set_accuracy": 0.0,
+      "micro_f1": 0.38461538461538464,
+      "macro_f1": 0.1951490679560855,
+      "per_label": {
+        "анимация": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3,
+          "support": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "боевик": {
+          "tp": 5,
+          "fp": 1,
+          "fn": 0,
+          "support": 5,
+          "precision": 0.8333333333333334,
+          "recall": 1.0,
+          "f1": 0.9090909090909091
+        },
+        "вестерн": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "военный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "детектив": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "документальный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "драма": {
+          "tp": 6,
+          "fp": 14,
+          "fn": 1,
+          "support": 7,
+          "precision": 0.3,
+          "recall": 0.8571428571428571,
+          "f1": 0.4444444444444444
+        },
+        "история": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 1,
+          "support": 2,
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666
+        },
+        "комедия": {
+          "tp": 4,
+          "fp": 7,
+          "fn": 4,
+          "support": 8,
+          "precision": 0.36363636363636365,
+          "recall": 0.5,
+          "f1": 0.42105263157894735
+        },
+        "криминал": {
+          "tp": 2,
+          "fp": 4,
+          "fn": 0,
+          "support": 2,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5
+        },
+        "мелодрама": {
+          "tp": 0,
+          "fp": 3,
+          "fn": 2,
+          "support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "музыка": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "приключения": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 2,
+          "support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "семейный": {
+          "tp": 1,
+          "fp": 4,
+          "fn": 1,
+          "support": 2,
+          "precision": 0.2,
+          "recall": 0.5,
+          "f1": 0.2857142857142857
+        },
+        "триллер": {
+          "tp": 1,
+          "fp": 1,
+          "fn": 4,
+          "support": 5,
+          "precision": 0.5,
+          "recall": 0.2,
+          "f1": 0.2857142857142857
+        },
+        "ужасы": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3,
+          "support": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "фантастика": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "фэнтези": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 2,
+          "support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      }
     },
     "short_description": {
-      "n": 46,
-      "correct": 21,
-      "valid": 46,
+      "n": 68,
+      "correct": 3,
+      "valid": 68,
       "errors": 0,
-      "accuracy": 0.45652173913043476,
-      "format_rate": 1.0
+      "accuracy": 0.04411764705882353,
+      "format_rate": 1.0,
+      "tp": 62,
+      "fp": 118,
+      "fn": 85,
+      "support": 147,
+      "precision": 0.34444444444444444,
+      "recall": 0.4217687074829932,
+      "exact_set_accuracy": 0.04411764705882353,
+      "micro_f1": 0.37920489296636084,
+      "macro_f1": 0.21119268970146163,
+      "per_label": {
+        "анимация": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 6,
+          "support": 7,
+          "precision": 1.0,
+          "recall": 0.14285714285714285,
+          "f1": 0.25
+        },
+        "боевик": {
+          "tp": 4,
+          "fp": 4,
+          "fn": 9,
+          "support": 13,
+          "precision": 0.5,
+          "recall": 0.3076923076923077,
+          "f1": 0.38095238095238093
+        },
+        "вестерн": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "военный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "детектив": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 4,
+          "support": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "документальный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3,
+          "support": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "драма": {
+          "tp": 22,
+          "fp": 46,
+          "fn": 0,
+          "support": 22,
+          "precision": 0.3235294117647059,
+          "recall": 1.0,
+          "f1": 0.4888888888888889
+        },
+        "история": {
+          "tp": 2,
+          "fp": 8,
+          "fn": 1,
+          "support": 3,
+          "precision": 0.2,
+          "recall": 0.6666666666666666,
+          "f1": 0.3076923076923077
+        },
+        "комедия": {
+          "tp": 12,
+          "fp": 16,
+          "fn": 8,
+          "support": 20,
+          "precision": 0.42857142857142855,
+          "recall": 0.6,
+          "f1": 0.5
+        },
+        "криминал": {
+          "tp": 3,
+          "fp": 8,
+          "fn": 7,
+          "support": 10,
+          "precision": 0.2727272727272727,
+          "recall": 0.3,
+          "f1": 0.2857142857142857
+        },
+        "мелодрама": {
+          "tp": 1,
+          "fp": 7,
+          "fn": 6,
+          "support": 7,
+          "precision": 0.125,
+          "recall": 0.14285714285714285,
+          "f1": 0.13333333333333333
+        },
+        "музыка": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "приключения": {
+          "tp": 5,
+          "fp": 4,
+          "fn": 5,
+          "support": 10,
+          "precision": 0.5555555555555556,
+          "recall": 0.5,
+          "f1": 0.5263157894736842
+        },
+        "семейный": {
+          "tp": 6,
+          "fp": 11,
+          "fn": 5,
+          "support": 11,
+          "precision": 0.35294117647058826,
+          "recall": 0.5454545454545454,
+          "f1": 0.42857142857142855
+        },
+        "триллер": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 12,
+          "support": 12,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "ужасы": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 7,
+          "support": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "фантастика": {
+          "tp": 6,
+          "fp": 11,
+          "fn": 1,
+          "support": 7,
+          "precision": 0.35294117647058826,
+          "recall": 0.8571428571428571,
+          "f1": 0.5
+        },
+        "фэнтези": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 8,
+          "support": 8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      }
+    },
+    "since2000": {
+      "n": 45,
+      "correct": 3,
+      "valid": 45,
+      "errors": 0,
+      "accuracy": 0.06666666666666667,
+      "format_rate": 1.0,
+      "tp": 40,
+      "fp": 75,
+      "fn": 57,
+      "support": 97,
+      "precision": 0.34782608695652173,
+      "recall": 0.41237113402061853,
+      "exact_set_accuracy": 0.06666666666666667,
+      "micro_f1": 0.37735849056603776,
+      "macro_f1": 0.20063413058582139,
+      "per_label": {
+        "анимация": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 6,
+          "support": 6,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "боевик": {
+          "tp": 3,
+          "fp": 2,
+          "fn": 6,
+          "support": 9,
+          "precision": 0.6,
+          "recall": 0.3333333333333333,
+          "f1": 0.42857142857142855
+        },
+        "вестерн": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "военный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "детектив": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "документальный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3,
+          "support": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "драма": {
+          "tp": 15,
+          "fp": 30,
+          "fn": 0,
+          "support": 15,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5
+        },
+        "история": {
+          "tp": 2,
+          "fp": 5,
+          "fn": 2,
+          "support": 4,
+          "precision": 0.2857142857142857,
+          "recall": 0.5,
+          "f1": 0.36363636363636365
+        },
+        "комедия": {
+          "tp": 8,
+          "fp": 6,
+          "fn": 5,
+          "support": 13,
+          "precision": 0.5714285714285714,
+          "recall": 0.6153846153846154,
+          "f1": 0.5925925925925926
+        },
+        "криминал": {
+          "tp": 2,
+          "fp": 6,
+          "fn": 2,
+          "support": 4,
+          "precision": 0.25,
+          "recall": 0.5,
+          "f1": 0.3333333333333333
+        },
+        "мелодрама": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 6,
+          "support": 6,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "музыка": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "приключения": {
+          "tp": 3,
+          "fp": 3,
+          "fn": 2,
+          "support": 5,
+          "precision": 0.5,
+          "recall": 0.6,
+          "f1": 0.5454545454545454
+        },
+        "семейный": {
+          "tp": 4,
+          "fp": 12,
+          "fn": 3,
+          "support": 7,
+          "precision": 0.25,
+          "recall": 0.5714285714285714,
+          "f1": 0.34782608695652173
+        },
+        "триллер": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 8,
+          "support": 8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "ужасы": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 3,
+          "support": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "фантастика": {
+          "tp": 3,
+          "fp": 5,
+          "fn": 1,
+          "support": 4,
+          "precision": 0.375,
+          "recall": 0.75,
+          "f1": 0.5
+        },
+        "фэнтези": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 6,
+          "support": 6,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      }
     },
     "single_genre": {
-      "n": 20,
-      "correct": 10,
-      "valid": 20,
+      "n": 30,
+      "correct": 1,
+      "valid": 30,
       "errors": 0,
-      "accuracy": 0.5,
-      "format_rate": 1.0
+      "accuracy": 0.03333333333333333,
+      "format_rate": 1.0,
+      "tp": 12,
+      "fp": 57,
+      "fn": 18,
+      "support": 30,
+      "precision": 0.17391304347826086,
+      "recall": 0.4,
+      "exact_set_accuracy": 0.03333333333333333,
+      "micro_f1": 0.24242424242424243,
+      "macro_f1": 0.07946127946127945,
+      "per_label": {
+        "анимация": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "боевик": {
+          "tp": 1,
+          "fp": 2,
+          "fn": 1,
+          "support": 2,
+          "precision": 0.3333333333333333,
+          "recall": 0.5,
+          "f1": 0.4
+        },
+        "вестерн": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "военный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "детектив": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "документальный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3,
+          "support": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "драма": {
+          "tp": 6,
+          "fp": 24,
+          "fn": 0,
+          "support": 6,
+          "precision": 0.2,
+          "recall": 1.0,
+          "f1": 0.3333333333333333
+        },
+        "история": {
+          "tp": 1,
+          "fp": 4,
+          "fn": 0,
+          "support": 1,
+          "precision": 0.2,
+          "recall": 1.0,
+          "f1": 0.3333333333333333
+        },
+        "комедия": {
+          "tp": 4,
+          "fp": 6,
+          "fn": 8,
+          "support": 12,
+          "precision": 0.4,
+          "recall": 0.3333333333333333,
+          "f1": 0.36363636363636365
+        },
+        "криминал": {
+          "tp": 0,
+          "fp": 5,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "мелодрама": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "музыка": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "приключения": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "семейный": {
+          "tp": 0,
+          "fp": 6,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "триллер": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "ужасы": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 3,
+          "support": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "фантастика": {
+          "tp": 0,
+          "fp": 4,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "фэнтези": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      }
     },
     "three_plus_genres": {
-      "n": 20,
-      "correct": 8,
-      "valid": 20,
+      "n": 30,
+      "correct": 1,
+      "valid": 30,
       "errors": 0,
-      "accuracy": 0.4,
-      "format_rate": 1.0
+      "accuracy": 0.03333333333333333,
+      "format_rate": 1.0,
+      "tp": 41,
+      "fp": 45,
+      "fn": 62,
+      "support": 103,
+      "precision": 0.47674418604651164,
+      "recall": 0.39805825242718446,
+      "exact_set_accuracy": 0.03333333333333333,
+      "micro_f1": 0.43386243386243384,
+      "macro_f1": 0.2530993697660364,
+      "per_label": {
+        "анимация": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 8,
+          "support": 9,
+          "precision": 1.0,
+          "recall": 0.1111111111111111,
+          "f1": 0.2
+        },
+        "боевик": {
+          "tp": 4,
+          "fp": 0,
+          "fn": 5,
+          "support": 9,
+          "precision": 1.0,
+          "recall": 0.4444444444444444,
+          "f1": 0.6153846153846154
+        },
+        "вестерн": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "военный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "детектив": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 5,
+          "support": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "документальный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "драма": {
+          "tp": 14,
+          "fp": 15,
+          "fn": 1,
+          "support": 15,
+          "precision": 0.4827586206896552,
+          "recall": 0.9333333333333333,
+          "f1": 0.6363636363636364
+        },
+        "история": {
+          "tp": 1,
+          "fp": 2,
+          "fn": 2,
+          "support": 3,
+          "precision": 0.3333333333333333,
+          "recall": 0.3333333333333333,
+          "f1": 0.3333333333333333
+        },
+        "комедия": {
+          "tp": 4,
+          "fp": 10,
+          "fn": 2,
+          "support": 6,
+          "precision": 0.2857142857142857,
+          "recall": 0.6666666666666666,
+          "f1": 0.4
+        },
+        "криминал": {
+          "tp": 3,
+          "fp": 1,
+          "fn": 3,
+          "support": 6,
+          "precision": 0.75,
+          "recall": 0.5,
+          "f1": 0.6
+        },
+        "мелодрама": {
+          "tp": 1,
+          "fp": 5,
+          "fn": 4,
+          "support": 5,
+          "precision": 0.16666666666666666,
+          "recall": 0.2,
+          "f1": 0.18181818181818182
+        },
+        "музыка": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "приключения": {
+          "tp": 4,
+          "fp": 3,
+          "fn": 5,
+          "support": 9,
+          "precision": 0.5714285714285714,
+          "recall": 0.4444444444444444,
+          "f1": 0.5
+        },
+        "семейный": {
+          "tp": 7,
+          "fp": 3,
+          "fn": 4,
+          "support": 11,
+          "precision": 0.7,
+          "recall": 0.6363636363636364,
+          "f1": 0.6666666666666666
+        },
+        "триллер": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 8,
+          "support": 9,
+          "precision": 1.0,
+          "recall": 0.1111111111111111,
+          "f1": 0.2
+        },
+        "ужасы": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 3,
+          "support": 3,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "фантастика": {
+          "tp": 1,
+          "fp": 6,
+          "fn": 1,
+          "support": 2,
+          "precision": 0.14285714285714285,
+          "recall": 0.5,
+          "f1": 0.2222222222222222
+        },
+        "фэнтези": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 8,
+          "support": 8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      }
     },
     "two_genres": {
-      "n": 20,
-      "correct": 11,
-      "valid": 20,
+      "n": 30,
+      "correct": 1,
+      "valid": 30,
       "errors": 0,
-      "accuracy": 0.55,
-      "format_rate": 1.0
+      "accuracy": 0.03333333333333333,
+      "format_rate": 1.0,
+      "tp": 29,
+      "fp": 54,
+      "fn": 31,
+      "support": 60,
+      "precision": 0.3493975903614458,
+      "recall": 0.48333333333333334,
+      "exact_set_accuracy": 0.03333333333333333,
+      "micro_f1": 0.40559440559440557,
+      "macro_f1": 0.2054892254892255,
+      "per_label": {
+        "анимация": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "боевик": {
+          "tp": 4,
+          "fp": 3,
+          "fn": 3,
+          "support": 7,
+          "precision": 0.5714285714285714,
+          "recall": 0.5714285714285714,
+          "f1": 0.5714285714285714
+        },
+        "вестерн": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "военный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "детектив": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "документальный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "драма": {
+          "tp": 8,
+          "fp": 21,
+          "fn": 0,
+          "support": 8,
+          "precision": 0.27586206896551724,
+          "recall": 1.0,
+          "f1": 0.43243243243243246
+        },
+        "история": {
+          "tp": 1,
+          "fp": 2,
+          "fn": 0,
+          "support": 1,
+          "precision": 0.3333333333333333,
+          "recall": 1.0,
+          "f1": 0.5
+        },
+        "комедия": {
+          "tp": 8,
+          "fp": 7,
+          "fn": 2,
+          "support": 10,
+          "precision": 0.5333333333333333,
+          "recall": 0.8,
+          "f1": 0.64
+        },
+        "криминал": {
+          "tp": 2,
+          "fp": 6,
+          "fn": 4,
+          "support": 6,
+          "precision": 0.25,
+          "recall": 0.3333333333333333,
+          "f1": 0.2857142857142857
+        },
+        "мелодрама": {
+          "tp": 0,
+          "fp": 3,
+          "fn": 4,
+          "support": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "музыка": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "приключения": {
+          "tp": 1,
+          "fp": 0,
+          "fn": 2,
+          "support": 3,
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5
+        },
+        "семейный": {
+          "tp": 0,
+          "fp": 6,
+          "fn": 2,
+          "support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "триллер": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 7,
+          "support": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "ужасы": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 4,
+          "support": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "фантастика": {
+          "tp": 5,
+          "fp": 3,
+          "fn": 0,
+          "support": 5,
+          "precision": 0.625,
+          "recall": 1.0,
+          "f1": 0.7692307692307693
+        },
+        "фэнтези": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 2,
+          "support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      }
     }
   },
   "per_item": [
     {
-      "id": "movie-mcq-001",
-      "raw": "{\"answer\":\"D\"}",
+      "id": "movie-free-001",
+      "raw": "{\"answer\": \"драма, история, семейный\"}",
       "parsed": {
-        "answer": "D"
+        "answer": "драма, история, семейный"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
-        "two_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-002",
-      "raw": "{\"answer\":\"B\"}",
-      "parsed": {
-        "answer": "B"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "two_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-003",
-      "raw": "{\"answer\":\"D\"}",
-      "parsed": {
-        "answer": "D"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
-        "three_plus_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-004",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
-        "three_plus_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-005",
-      "raw": "{\"answer\":\"A\"}",
-      "parsed": {
-        "answer": "A"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "three_plus_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-006",
-      "raw": "{\"answer\":\"B\"}",
-      "parsed": {
-        "answer": "B"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "two_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-007",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "three_plus_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-008",
-      "raw": "{\"answer\":\"B\"}",
-      "parsed": {
-        "answer": "B"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
-        "three_plus_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-009",
-      "raw": "{\"answer\":\"B\"}",
-      "parsed": {
-        "answer": "B"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
-        "three_plus_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-010",
-      "raw": "{\"answer\":\"D\"}",
-      "parsed": {
-        "answer": "D"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
+        "since2000",
         "single_genre",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "история"
+      ],
+      "predicted_labels": [
+        "драма",
+        "история",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 0,
+      "support": 1
     },
     {
-      "id": "movie-mcq-011",
-      "raw": "{\"answer\":\"C\"}",
+      "id": "movie-free-002",
+      "raw": "{\"answer\": \"боевик, драма, комедия\"}",
       "parsed": {
-        "answer": "C"
+        "answer": "боевик, драма, комедия"
       },
       "valid": true,
-      "correct": true,
+      "correct": false,
       "error": null,
       "slices": [
+        "before2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "вестерн"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 3,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-003",
+      "raw": "{\"answer\": \"боевик, криминал, триллер\"}",
+      "parsed": {
+        "answer": "боевик, криминал, триллер"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
         "three_plus_genres",
         "long_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "драма",
+        "криминал",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "криминал",
+        "триллер"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 3,
+      "fp": 0,
+      "fn": 1,
+      "support": 4
     },
     {
-      "id": "movie-mcq-012",
-      "raw": "{\"answer\":\"B\"}",
+      "id": "movie-free-004",
+      "raw": "{\"answer\": \"драма, история, семейный\"}",
       "parsed": {
-        "answer": "B"
+        "answer": "драма, история, семейный"
       },
       "valid": true,
-      "correct": false,
+      "correct": true,
       "error": null,
       "slices": [
-        "single_genre",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-013",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
+        "since2000",
         "three_plus_genres",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "история",
+        "семейный"
+      ],
+      "predicted_labels": [
+        "драма",
+        "история",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "support": 3
     },
     {
-      "id": "movie-mcq-014",
-      "raw": "{\"answer\":\"B\"}",
+      "id": "movie-free-005",
+      "raw": "{\"answer\": \"драма, мелодрама\"}",
       "parsed": {
-        "answer": "B"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "single_genre",
-        "long_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-015",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "single_genre",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-016",
-      "raw": "{\"answer\":\"A\"}",
-      "parsed": {
-        "answer": "A"
+        "answer": "драма, мелодрама"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
-        "two_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-017",
-      "raw": "{\"answer\":\"A\"}",
-      "parsed": {
-        "answer": "A"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "single_genre",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-018",
-      "raw": "{\"answer\":\"A\"}",
-      "parsed": {
-        "answer": "A"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
+        "before2000",
         "three_plus_genres",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "мелодрама",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "мелодрама"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 0,
+      "fn": 1,
+      "support": 3
     },
     {
-      "id": "movie-mcq-019",
-      "raw": "{\"answer\":\"C\"}",
+      "id": "movie-free-006",
+      "raw": "{\"answer\": \"драма, комедия\"}",
       "parsed": {
-        "answer": "C"
+        "answer": "драма, комедия"
       },
       "valid": true,
-      "correct": true,
+      "correct": false,
       "error": null,
       "slices": [
+        "before2000",
         "three_plus_genres",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия",
+        "семейный",
+        "фэнтези"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 2,
+      "support": 3
     },
     {
-      "id": "movie-mcq-020",
-      "raw": "{\"answer\":\"D\"}",
+      "id": "movie-free-007",
+      "raw": "{\"answer\": \"драма, история, фантастика\"}",
       "parsed": {
-        "answer": "D"
+        "answer": "драма, история, фантастика"
       },
       "valid": true,
-      "correct": true,
+      "correct": false,
       "error": null,
       "slices": [
+        "since2000",
         "three_plus_genres",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "анимация",
+        "боевик",
+        "фэнтези"
+      ],
+      "predicted_labels": [
+        "драма",
+        "история",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 3,
+      "fn": 3,
+      "support": 3
     },
     {
-      "id": "movie-mcq-021",
-      "raw": "{\"answer\":\"A\"}",
+      "id": "movie-free-008",
+      "raw": "{\"answer\": \"драма\"}",
       "parsed": {
-        "answer": "A"
+        "answer": "драма"
       },
       "valid": true,
-      "correct": true,
+      "correct": false,
       "error": null,
       "slices": [
-        "two_genres",
+        "before2000",
+        "single_genre",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "support": 1
     },
     {
-      "id": "movie-mcq-022",
-      "raw": "{\"answer\":\"C\"}",
+      "id": "movie-free-009",
+      "raw": "{\"answer\": \"боевик, драма, комедия\"}",
       "parsed": {
-        "answer": "C"
+        "answer": "боевик, драма, комедия"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
-        "two_genres",
-        "long_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-023",
-      "raw": "{\"answer\":\"B\"}",
-      "parsed": {
-        "answer": "B"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
+        "since2000",
         "three_plus_genres",
         "long_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "военный",
+        "драма",
+        "история",
+        "приключения"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 1,
+      "fn": 3,
+      "support": 5
     },
     {
-      "id": "movie-mcq-024",
-      "raw": "{\"answer\":\"D\"}",
+      "id": "movie-free-010",
+      "raw": "{\"answer\": \"драма, комедия\"}",
       "parsed": {
-        "answer": "D"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "single_genre",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-025",
-      "raw": "{\"answer\":\"A\"}",
-      "parsed": {
-        "answer": "A"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "single_genre",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-026",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
+        "answer": "драма, комедия"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
+        "since2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "support": 1
+    },
+    {
+      "id": "movie-free-011",
+      "raw": "{\"answer\": \"драма, криминал, ужасы\"}",
+      "parsed": {
+        "answer": "драма, криминал, ужасы"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "документальный"
+      ],
+      "predicted_labels": [
+        "драма",
+        "криминал",
+        "ужасы"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 3,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-012",
+      "raw": "{\"answer\": \"драма, семейный\"}",
+      "parsed": {
+        "answer": "драма, семейный"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "анимация",
+        "мелодрама"
+      ],
+      "predicted_labels": [
+        "драма",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 2,
+      "fn": 2,
+      "support": 2
+    },
+    {
+      "id": "movie-free-013",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-014",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "support": 1
+    },
+    {
+      "id": "movie-free-015",
+      "raw": "{\"answer\": \"драма, комедия, мелодрама\"}",
+      "parsed": {
+        "answer": "драма, комедия, мелодрама"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
         "three_plus_genres",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "ужасы",
+        "фэнтези"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия",
+        "мелодрама"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 2,
+      "support": 3
     },
     {
-      "id": "movie-mcq-027",
-      "raw": "{\"answer\":\"C\"}",
+      "id": "movie-free-016",
+      "raw": "{\"answer\": \"боевик, драма, комедия\"}",
       "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "single_genre",
-        "long_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-028",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
+        "answer": "боевик, драма, комедия"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
-        "two_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-029",
-      "raw": "{\"answer\":\"A\"}",
-      "parsed": {
-        "answer": "A"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
+        "before2000",
         "single_genre",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 0,
+      "support": 1
     },
     {
-      "id": "movie-mcq-030",
-      "raw": "{\"answer\":\"B\"}",
+      "id": "movie-free-017",
+      "raw": "{\"answer\": \"драма, комедия, мелодрама, приключения, семейный, фантастика\"}",
       "parsed": {
-        "answer": "B"
+        "answer": "драма, комедия, мелодрама, приключения, семейный, фантастика"
       },
       "valid": true,
-      "correct": true,
+      "correct": false,
       "error": null,
       "slices": [
+        "before2000",
         "three_plus_genres",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "анимация",
+        "приключения",
+        "семейный"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия",
+        "мелодрама",
+        "приключения",
+        "семейный",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 4,
+      "fn": 1,
+      "support": 3
     },
     {
-      "id": "movie-mcq-031",
-      "raw": "{\"answer\":\"A\"}",
+      "id": "movie-free-018",
+      "raw": "{\"answer\": \"драма, семейный\"}",
       "parsed": {
-        "answer": "A"
+        "answer": "драма, семейный"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
+        "since2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-019",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "support": 1
+    },
+    {
+      "id": "movie-free-020",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
         "three_plus_genres",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "криминал",
+        "мелодрама"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 2,
+      "support": 3
     },
     {
-      "id": "movie-mcq-032",
-      "raw": "{\"answer\":\"D\"}",
+      "id": "movie-free-021",
+      "raw": "{\"answer\": \"драма\"}",
       "parsed": {
-        "answer": "D"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "three_plus_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-033",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
-        "three_plus_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-034",
-      "raw": "{\"answer\":\"D\"}",
-      "parsed": {
-        "answer": "D"
+        "answer": "драма"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
+        "since2000",
         "three_plus_genres",
         "long_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "анимация",
+        "драма",
+        "фэнтези"
+      ],
+      "predicted_labels": [
+        "драма"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 2,
+      "support": 3
     },
     {
-      "id": "movie-mcq-035",
-      "raw": "{\"answer\":\"C\"}",
+      "id": "movie-free-022",
+      "raw": "{\"answer\": \"драма, история, семейный\"}",
       "parsed": {
-        "answer": "C"
+        "answer": "драма, история, семейный"
       },
       "valid": true,
-      "correct": true,
+      "correct": false,
       "error": null,
       "slices": [
+        "since2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма"
+      ],
+      "predicted_labels": [
+        "драма",
+        "история",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 0,
+      "support": 1
+    },
+    {
+      "id": "movie-free-023",
+      "raw": "{\"answer\": \"драма, комедия, криминал, мелодрама\"}",
+      "parsed": {
+        "answer": "драма, комедия, криминал, мелодрама"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
         "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия",
+        "ужасы"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия",
+        "криминал",
+        "мелодрама"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 3,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-024",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия",
+        "фэнтези"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-025",
+      "raw": "{\"answer\": \"драма, комедия, мелодрама\"}",
+      "parsed": {
+        "answer": "драма, комедия, мелодрама"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "three_plus_genres",
         "long_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия",
+        "ужасы",
+        "фантастика",
+        "фэнтези"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия",
+        "мелодрама"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 3,
+      "support": 4
     },
     {
-      "id": "movie-mcq-036",
-      "raw": "{\"answer\":\"C\"}",
+      "id": "movie-free-026",
+      "raw": "{\"answer\": \"драма, комедия, приключения, семейный\"}",
       "parsed": {
-        "answer": "C"
+        "answer": "драма, комедия, приключения, семейный"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
-        "single_genre",
-        "short_description"
-      ]
+        "before2000",
+        "three_plus_genres",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "анимация",
+        "драма",
+        "семейный"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия",
+        "приключения",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 2,
+      "fn": 1,
+      "support": 3
     },
     {
-      "id": "movie-mcq-037",
-      "raw": "{\"answer\":\"C\"}",
+      "id": "movie-free-027",
+      "raw": "{\"answer\": \"драма, комедия\"}",
       "parsed": {
-        "answer": "C"
+        "answer": "драма, комедия"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
-        "single_genre",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-038",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
-        "single_genre",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-039",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "single_genre",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-040",
-      "raw": "{\"answer\":\"D\"}",
-      "parsed": {
-        "answer": "D"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
+        "since2000",
         "three_plus_genres",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "драма",
+        "криминал",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 3,
+      "support": 4
     },
     {
-      "id": "movie-mcq-041",
-      "raw": "{\"answer\":\"C\"}",
+      "id": "movie-free-028",
+      "raw": "{\"answer\": \"драма, комедия\"}",
       "parsed": {
-        "answer": "C"
+        "answer": "драма, комедия"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
-        "single_genre",
-        "long_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-042",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
-        "two_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-043",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "two_genres",
-        "long_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-044",
-      "raw": "{\"answer\":\"D\"}",
-      "parsed": {
-        "answer": "D"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "two_genres",
-        "long_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-045",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
-        "single_genre",
-        "long_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-046",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
-        "single_genre",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-047",
-      "raw": "{\"answer\":\"B\"}",
-      "parsed": {
-        "answer": "B"
-      },
-      "valid": true,
-      "correct": false,
-      "error": null,
-      "slices": [
+        "since2000",
         "three_plus_genres",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия",
+        "мелодрама",
+        "музыка",
+        "фэнтези"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 3,
+      "support": 4
     },
     {
-      "id": "movie-mcq-048",
-      "raw": "{\"answer\":\"D\"}",
+      "id": "movie-free-029",
+      "raw": "{\"answer\": \"драма, приключения, семейный\"}",
       "parsed": {
-        "answer": "D"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "two_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-049",
-      "raw": "{\"answer\":\"A\"}",
-      "parsed": {
-        "answer": "A"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "single_genre",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-050",
-      "raw": "{\"answer\":\"D\"}",
-      "parsed": {
-        "answer": "D"
+        "answer": "драма, приключения, семейный"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
-        "single_genre",
-        "long_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-051",
-      "raw": "{\"answer\":\"C\"}",
-      "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "two_genres",
+        "since2000",
+        "three_plus_genres",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "приключения",
+        "семейный",
+        "фэнтези"
+      ],
+      "predicted_labels": [
+        "драма",
+        "приключения",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 1,
+      "fn": 1,
+      "support": 3
     },
     {
-      "id": "movie-mcq-052",
-      "raw": "{\"answer\":\"D\"}",
+      "id": "movie-free-030",
+      "raw": "{\"answer\": \"драма, комедия\"}",
       "parsed": {
-        "answer": "D"
+        "answer": "драма, комедия"
       },
       "valid": true,
-      "correct": true,
+      "correct": false,
       "error": null,
       "slices": [
+        "before2000",
         "single_genre",
         "long_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 2,
+      "fn": 1,
+      "support": 1
     },
     {
-      "id": "movie-mcq-053",
-      "raw": "{\"answer\":\"C\"}",
+      "id": "movie-free-031",
+      "raw": "{\"answer\": \"драма, комедия\"}",
       "parsed": {
-        "answer": "C"
+        "answer": "драма, комедия"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
+        "before2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "криминал"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-032",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "драма",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 2,
+      "support": 3
+    },
+    {
+      "id": "movie-free-033",
+      "raw": "{\"answer\": \"драма, семейный\"}",
+      "parsed": {
+        "answer": "драма, семейный"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "three_plus_genres",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "детектив",
+        "драма",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 2,
+      "support": 3
+    },
+    {
+      "id": "movie-free-034",
+      "raw": "{\"answer\": \"драма, приключения, семейный\"}",
+      "parsed": {
+        "answer": "драма, приключения, семейный"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "анимация",
+        "приключения",
+        "семейный"
+      ],
+      "predicted_labels": [
+        "драма",
+        "приключения",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 1,
+      "fn": 1,
+      "support": 3
+    },
+    {
+      "id": "movie-free-035",
+      "raw": "{\"answer\": \"боевик, драма, история, фэнтези\"}",
+      "parsed": {
+        "answer": "боевик, драма, история, фэнтези"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
         "single_genre",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "документальный"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "драма",
+        "история",
+        "фэнтези"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 4,
+      "fn": 1,
+      "support": 1
     },
     {
-      "id": "movie-mcq-054",
-      "raw": "{\"answer\":\"D\"}",
+      "id": "movie-free-036",
+      "raw": "{\"answer\": \"драма, комедия, семейный\"}",
       "parsed": {
-        "answer": "D"
+        "answer": "драма, комедия, семейный"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
-        "two_genres",
+        "before2000",
+        "three_plus_genres",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "детектив",
+        "драма",
+        "криминал",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 3,
+      "support": 4
     },
     {
-      "id": "movie-mcq-055",
-      "raw": "{\"answer\":\"C\"}",
+      "id": "movie-free-037",
+      "raw": "{\"answer\": \"боевик, драма, фантастика\"}",
       "parsed": {
-        "answer": "C"
+        "answer": "боевик, драма, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "фантастика"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "драма",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 1,
+      "fn": 0,
+      "support": 2
+    },
+    {
+      "id": "movie-free-038",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "single_genre",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "support": 1
+    },
+    {
+      "id": "movie-free-039",
+      "raw": "{\"answer\": \"драма\"}",
+      "parsed": {
+        "answer": "драма"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-040",
+      "raw": "{\"answer\": \"драма, приключения, семейный\"}",
+      "parsed": {
+        "answer": "драма, приключения, семейный"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "фантастика"
+      ],
+      "predicted_labels": [
+        "драма",
+        "приключения",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 3,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-041",
+      "raw": "{\"answer\": \"драма, приключения, семейный\"}",
+      "parsed": {
+        "answer": "драма, приключения, семейный"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "анимация",
+        "комедия",
+        "приключения",
+        "семейный"
+      ],
+      "predicted_labels": [
+        "драма",
+        "приключения",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 1,
+      "fn": 2,
+      "support": 4
+    },
+    {
+      "id": "movie-free-042",
+      "raw": "{\"answer\": \"боевик, драма, криминал\"}",
+      "parsed": {
+        "answer": "боевик, драма, криминал"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "криминал",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "драма",
+        "криминал"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-043",
+      "raw": "{\"answer\": \"боевик, драма, фантастика\"}",
+      "parsed": {
+        "answer": "боевик, драма, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "приключения",
+        "триллер",
+        "фантастика"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "драма",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 1,
+      "fn": 2,
+      "support": 4
+    },
+    {
+      "id": "movie-free-044",
+      "raw": "{\"answer\": \"драма, история, приключения\"}",
+      "parsed": {
+        "answer": "драма, история, приключения"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "военный",
+        "драма",
+        "мелодрама"
+      ],
+      "predicted_labels": [
+        "драма",
+        "история",
+        "приключения"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 2,
+      "support": 3
+    },
+    {
+      "id": "movie-free-045",
+      "raw": "{\"answer\": \"драма, приключения, семейный\"}",
+      "parsed": {
+        "answer": "драма, приключения, семейный"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма"
+      ],
+      "predicted_labels": [
+        "драма",
+        "приключения",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 0,
+      "support": 1
+    },
+    {
+      "id": "movie-free-046",
+      "raw": "{\"answer\": \"драма\"}",
+      "parsed": {
+        "answer": "драма"
       },
       "valid": true,
       "correct": true,
       "error": null,
       "slices": [
-        "two_genres",
+        "since2000",
+        "single_genre",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма"
+      ],
+      "predicted_labels": [
+        "драма"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "support": 1
     },
     {
-      "id": "movie-mcq-056",
-      "raw": "{\"answer\":\"C\"}",
+      "id": "movie-free-047",
+      "raw": "{\"answer\": \"драма, комедия, семейный\"}",
       "parsed": {
-        "answer": "C"
+        "answer": "драма, комедия, семейный"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
-        "two_genres",
-        "short_description"
-      ]
+        "since2000",
+        "single_genre",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 0,
+      "support": 1
     },
     {
-      "id": "movie-mcq-057",
-      "raw": "{\"answer\":\"B\"}",
+      "id": "movie-free-048",
+      "raw": "{\"answer\": \"драма, комедия, криминал, мелодрама\"}",
       "parsed": {
-        "answer": "B"
+        "answer": "драма, комедия, криминал, мелодрама"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
-        "two_genres",
-        "short_description"
-      ]
+        "before2000",
+        "single_genre",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия",
+        "криминал",
+        "мелодрама"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 3,
+      "fn": 0,
+      "support": 1
     },
     {
-      "id": "movie-mcq-058",
-      "raw": "{\"answer\":\"B\"}",
+      "id": "movie-free-049",
+      "raw": "{\"answer\": \"драма, комедия\"}",
       "parsed": {
-        "answer": "B"
+        "answer": "драма, комедия"
       },
       "valid": true,
-      "correct": true,
+      "correct": false,
       "error": null,
       "slices": [
+        "before2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "криминал"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-050",
+      "raw": "{\"answer\": \"драма, комедия, криминал, мелодрама\"}",
+      "parsed": {
+        "answer": "драма, комедия, криминал, мелодрама"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия",
+        "криминал",
+        "мелодрама"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 3,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-051",
+      "raw": "{\"answer\": \"боевик, драма, криминал, фэнтези\"}",
+      "parsed": {
+        "answer": "боевик, драма, криминал, фэнтези"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
         "two_genres",
         "long_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "драма",
+        "криминал",
+        "фэнтези"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 3,
+      "fn": 1,
+      "support": 2
     },
     {
-      "id": "movie-mcq-059",
-      "raw": "{\"answer\":\"C\"}",
+      "id": "movie-free-052",
+      "raw": "{\"answer\": \"драма\"}",
       "parsed": {
-        "answer": "C"
-      },
-      "valid": true,
-      "correct": true,
-      "error": null,
-      "slices": [
-        "two_genres",
-        "short_description"
-      ]
-    },
-    {
-      "id": "movie-mcq-060",
-      "raw": "{\"answer\":\"B\"}",
-      "parsed": {
-        "answer": "B"
+        "answer": "драма"
       },
       "valid": true,
       "correct": false,
       "error": null,
       "slices": [
+        "before2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-053",
+      "raw": "{\"answer\": \"драма, криминал, фантастика\"}",
+      "parsed": {
+        "answer": "драма, криминал, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
         "two_genres",
         "short_description"
-      ]
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "приключения",
+        "фантастика"
+      ],
+      "predicted_labels": [
+        "драма",
+        "криминал",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-054",
+      "raw": "{\"answer\": \"драма, комедия, семейный, фэнтези\"}",
+      "parsed": {
+        "answer": "драма, комедия, семейный, фэнтези"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "криминал",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия",
+        "семейный",
+        "фэнтези"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 4,
+      "fn": 2,
+      "support": 2
+    },
+    {
+      "id": "movie-free-055",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "анимация",
+        "комедия",
+        "приключения",
+        "семейный"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 3,
+      "support": 4
+    },
+    {
+      "id": "movie-free-056",
+      "raw": "{\"answer\": \"драма, история, фантастика\"}",
+      "parsed": {
+        "answer": "драма, история, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "two_genres",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "история"
+      ],
+      "predicted_labels": [
+        "драма",
+        "история",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 1,
+      "fn": 0,
+      "support": 2
+    },
+    {
+      "id": "movie-free-057",
+      "raw": "{\"answer\": \"анимация, драма, фантастика\"}",
+      "parsed": {
+        "answer": "анимация, драма, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "анимация",
+        "комедия",
+        "приключения",
+        "семейный"
+      ],
+      "predicted_labels": [
+        "анимация",
+        "драма",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 3,
+      "support": 4
+    },
+    {
+      "id": "movie-free-058",
+      "raw": "{\"answer\": \"драма\"}",
+      "parsed": {
+        "answer": "драма"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "single_genre",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-059",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 0,
+      "support": 1
+    },
+    {
+      "id": "movie-free-060",
+      "raw": "{\"answer\": \"драма, история, фантастика\"}",
+      "parsed": {
+        "answer": "драма, история, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "мелодрама"
+      ],
+      "predicted_labels": [
+        "драма",
+        "история",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-061",
+      "raw": "{\"answer\": \"драма, история, семейный\"}",
+      "parsed": {
+        "answer": "драма, история, семейный"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "история",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-062",
+      "raw": "{\"answer\": \"драма\"}",
+      "parsed": {
+        "answer": "драма"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "документальный"
+      ],
+      "predicted_labels": [
+        "драма"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-063",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия",
+        "семейный"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-064",
+      "raw": "{\"answer\": \"драма, история, фантастика\"}",
+      "parsed": {
+        "answer": "драма, история, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "ужасы"
+      ],
+      "predicted_labels": [
+        "драма",
+        "история",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 3,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-065",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 2,
+      "fn": 2,
+      "support": 2
+    },
+    {
+      "id": "movie-free-066",
+      "raw": "{\"answer\": \"драма, семейный\"}",
+      "parsed": {
+        "answer": "драма, семейный"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "мелодрама"
+      ],
+      "predicted_labels": [
+        "драма",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-067",
+      "raw": "{\"answer\": \"боевик, драма, комедия\"}",
+      "parsed": {
+        "answer": "боевик, драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия",
+        "криминал"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-068",
+      "raw": "{\"answer\": \"драма, комедия, фантастика\"}",
+      "parsed": {
+        "answer": "драма, комедия, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия",
+        "фантастика"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 1,
+      "fn": 0,
+      "support": 2
+    },
+    {
+      "id": "movie-free-069",
+      "raw": "{\"answer\": \"драма\"}",
+      "parsed": {
+        "answer": "драма"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия",
+        "семейный"
+      ],
+      "predicted_labels": [
+        "драма"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 1,
+      "fn": 2,
+      "support": 2
+    },
+    {
+      "id": "movie-free-070",
+      "raw": "{\"answer\": \"драма, фантастика\"}",
+      "parsed": {
+        "answer": "драма, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "ужасы",
+        "фантастика"
+      ],
+      "predicted_labels": [
+        "драма",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-071",
+      "raw": "{\"answer\": \"драма\"}",
+      "parsed": {
+        "answer": "драма"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-072",
+      "raw": "{\"answer\": \"драма\"}",
+      "parsed": {
+        "answer": "драма"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "single_genre",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 1,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-073",
+      "raw": "{\"answer\": \"боевик, драма, комедия, криминал, мелодрама, приключения, семейный, фантастика\"}",
+      "parsed": {
+        "answer": "боевик, драма, комедия, криминал, мелодрама, приключения, семейный, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "анимация",
+        "боевик",
+        "семейный"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "драма",
+        "комедия",
+        "криминал",
+        "мелодрама",
+        "приключения",
+        "семейный",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 6,
+      "fn": 1,
+      "support": 3
+    },
+    {
+      "id": "movie-free-074",
+      "raw": "{\"answer\": \"драма, фантастика\"}",
+      "parsed": {
+        "answer": "драма, фантастика"
+      },
+      "valid": true,
+      "correct": true,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "фантастика"
+      ],
+      "predicted_labels": [
+        "драма",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "support": 2
+    },
+    {
+      "id": "movie-free-075",
+      "raw": "{\"answer\": \"драма, фантастика\"}",
+      "parsed": {
+        "answer": "драма, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "приключения",
+        "семейный",
+        "фэнтези"
+      ],
+      "predicted_labels": [
+        "драма",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 2,
+      "fn": 3,
+      "support": 3
+    },
+    {
+      "id": "movie-free-076",
+      "raw": "{\"answer\": \"боевик, драма, комедия\"}",
+      "parsed": {
+        "answer": "боевик, драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "two_genres",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "приключения",
+        "ужасы"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 3,
+      "fn": 2,
+      "support": 2
+    },
+    {
+      "id": "movie-free-077",
+      "raw": "{\"answer\": \"драма, криминал, фантастика\"}",
+      "parsed": {
+        "answer": "драма, криминал, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "детектив",
+        "криминал",
+        "ужасы"
+      ],
+      "predicted_labels": [
+        "драма",
+        "криминал",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 2,
+      "support": 3
+    },
+    {
+      "id": "movie-free-078",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "детектив",
+        "драма",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 3,
+      "support": 4
+    },
+    {
+      "id": "movie-free-079",
+      "raw": "{\"answer\": \"драма, криминал, мелодрама\"}",
+      "parsed": {
+        "answer": "драма, криминал, мелодрама"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "ужасы"
+      ],
+      "predicted_labels": [
+        "драма",
+        "криминал",
+        "мелодрама"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 3,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-080",
+      "raw": "{\"answer\": \"драма, комедия\"}",
+      "parsed": {
+        "answer": "драма, комедия"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "мелодрама",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "комедия"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 2,
+      "fn": 2,
+      "support": 2
+    },
+    {
+      "id": "movie-free-081",
+      "raw": "{\"answer\": \"драма, семейный\"}",
+      "parsed": {
+        "answer": "драма, семейный"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "драма",
+        "история",
+        "мелодрама"
+      ],
+      "predicted_labels": [
+        "драма",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 1,
+      "fn": 2,
+      "support": 3
+    },
+    {
+      "id": "movie-free-082",
+      "raw": "{\"answer\": \"драма, криминал, фантастика\"}",
+      "parsed": {
+        "answer": "драма, криминал, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "single_genre",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "ужасы"
+      ],
+      "predicted_labels": [
+        "драма",
+        "криминал",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 3,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-083",
+      "raw": "{\"answer\": \"драма, семейный\"}",
+      "parsed": {
+        "answer": "драма, семейный"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "single_genre",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 2,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-084",
+      "raw": "{\"answer\": \"драма, криминал, фантастика\"}",
+      "parsed": {
+        "answer": "драма, криминал, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия",
+        "ужасы"
+      ],
+      "predicted_labels": [
+        "драма",
+        "криминал",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 3,
+      "fn": 2,
+      "support": 2
+    },
+    {
+      "id": "movie-free-085",
+      "raw": "{\"answer\": \"драма, криминал, фантастика\"}",
+      "parsed": {
+        "answer": "драма, криминал, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик"
+      ],
+      "predicted_labels": [
+        "драма",
+        "криминал",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 3,
+      "fn": 1,
+      "support": 1
+    },
+    {
+      "id": "movie-free-086",
+      "raw": "{\"answer\": \"драма, приключения, семейный\"}",
+      "parsed": {
+        "answer": "драма, приключения, семейный"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "two_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "приключения",
+        "фэнтези"
+      ],
+      "predicted_labels": [
+        "драма",
+        "приключения",
+        "семейный"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 1,
+      "support": 2
+    },
+    {
+      "id": "movie-free-087",
+      "raw": "{\"answer\": \"боевик, комедия, драма, криминал, триллер\"}",
+      "parsed": {
+        "answer": "боевик, комедия, драма, криминал, триллер"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "two_genres",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "криминал"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "драма",
+        "комедия",
+        "криминал",
+        "триллер"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 3,
+      "fn": 0,
+      "support": 2
+    },
+    {
+      "id": "movie-free-088",
+      "raw": "{\"answer\": \"драма, криминал, мелодрама\"}",
+      "parsed": {
+        "answer": "драма, криминал, мелодрама"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "since2000",
+        "three_plus_genres",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "детектив",
+        "криминал",
+        "триллер"
+      ],
+      "predicted_labels": [
+        "драма",
+        "криминал",
+        "мелодрама"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 1,
+      "fp": 2,
+      "fn": 3,
+      "support": 4
+    },
+    {
+      "id": "movie-free-089",
+      "raw": "{\"answer\": \"боевик, комедия, криминал, мелодрама\"}",
+      "parsed": {
+        "answer": "боевик, комедия, криминал, мелодрама"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "two_genres",
+        "long_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "боевик",
+        "комедия"
+      ],
+      "predicted_labels": [
+        "боевик",
+        "комедия",
+        "криминал",
+        "мелодрама"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 2,
+      "fp": 2,
+      "fn": 0,
+      "support": 2
+    },
+    {
+      "id": "movie-free-090",
+      "raw": "{\"answer\": \"драма, история, фантастика\"}",
+      "parsed": {
+        "answer": "драма, история, фантастика"
+      },
+      "valid": true,
+      "correct": false,
+      "error": null,
+      "slices": [
+        "before2000",
+        "single_genre",
+        "short_description"
+      ],
+      "task": "multilabel",
+      "expected_labels": [
+        "комедия"
+      ],
+      "predicted_labels": [
+        "драма",
+        "история",
+        "фантастика"
+      ],
+      "expected_refusal": false,
+      "predicted_refusal": false,
+      "tp": 0,
+      "fp": 3,
+      "fn": 1,
+      "support": 1
     }
   ],
+  "task": "multilabel",
+  "labels": [
+    "анимация",
+    "боевик",
+    "вестерн",
+    "военный",
+    "детектив",
+    "документальный",
+    "драма",
+    "история",
+    "комедия",
+    "криминал",
+    "мелодрама",
+    "музыка",
+    "приключения",
+    "семейный",
+    "триллер",
+    "ужасы",
+    "фантастика",
+    "фэнтези"
+  ],
+  "metric_convention": {
+    "accuracy": "exact equality of canonical genre sets; REFUSE is separate atomic behavior",
+    "invalid_prediction": "empty genre set, format failure and incorrect exact answer",
+    "macro_f1": "all taxonomy genres, including zero-support genres; zero_division=0",
+    "refusal": "REFUSE is not a genre; correct refusal is measured by behavioral exact accuracy"
+  },
   "status": "complete",
+  "role": "candidate",
   "model": {
     "kind": "adapter",
     "name": "my-qwen-adapter",
-    "version": "2",
-    "run_id": "dbc125fa62764a8aaf1f213d41cf2ded",
-    "uri": "models:/my-qwen-adapter/2"
+    "version": "5",
+    "run_id": "724f89d55d204ee1a24b6373fb6539dd",
+    "uri": "models:/my-qwen-adapter/5"
   },
-  "protocol_sha256": "12dba70796aae94663b9f35d59c86370e477d85fd2a646c19bfbba5d3486086b",
-  "golden_sha256": "b4862d5665e8d5f3cee65198ea8ee2467fc9736395cbd5ce0e7ffd8c43760936",
+  "protocol_sha256": "cfdec1c4964147aa6ce62ac17e956fbc6e4446255d45f9b57823cff9e00bafd7",
+  "golden_sha256": "c205c9bfaaeba2a06ec8f66478093517b4826c205beea145082590ae56f4a115",
   "baseline_spec_sha256": "f71269b95f6b4e1e160fa25e9af6c973517cfebad15880b75b56c8184680b163",
+  "comparison_models_sha256": "a54eb5147d037139ac1e6d4e4b289eed244ab493b4f70d24f949debe71fb2286",
   "behavioral": {
     "overall": {
-      "n": 4,
-      "correct": 2,
-      "valid": 4,
+      "n": 5,
+      "correct": 0,
+      "valid": 3,
       "errors": 0,
-      "accuracy": 0.5,
-      "format_rate": 1.0
+      "accuracy": 0.0,
+      "format_rate": 0.6,
+      "tp": 0,
+      "fp": 9,
+      "fn": 3,
+      "support": 3,
+      "precision": 0.0,
+      "recall": 0.0,
+      "exact_set_accuracy": 0.0,
+      "micro_f1": 0.0,
+      "macro_f1": 0.0,
+      "per_label": {
+        "анимация": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 1,
+          "support": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "боевик": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "вестерн": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 2,
+          "support": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "военный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "детектив": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "документальный": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "драма": {
+          "tp": 0,
+          "fp": 3,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "история": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "комедия": {
+          "tp": 0,
+          "fp": 2,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "криминал": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "мелодрама": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "музыка": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "приключения": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "семейный": {
+          "tp": 0,
+          "fp": 1,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "триллер": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "ужасы": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "фантастика": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        },
+        "фэнтези": {
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "support": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0
+        }
+      }
     },
     "slices": {
+      "before2000": {
+        "n": 2,
+        "correct": 0,
+        "valid": 2,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 1.0,
+        "tp": 0,
+        "fp": 6,
+        "fn": 2,
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
       "obvious_animation": {
-        "n": 1,
-        "correct": 1,
-        "valid": 1,
-        "errors": 0,
-        "accuracy": 1.0,
-        "format_rate": 1.0
-      },
-      "short_description": {
-        "n": 2,
-        "correct": 1,
-        "valid": 2,
-        "errors": 0,
-        "accuracy": 0.5,
-        "format_rate": 1.0
-      },
-      "two_genres": {
-        "n": 2,
-        "correct": 1,
-        "valid": 2,
-        "errors": 0,
-        "accuracy": 0.5,
-        "format_rate": 1.0
-      },
-      "unsupported_domain": {
         "n": 1,
         "correct": 0,
         "valid": 1,
         "errors": 0,
         "accuracy": 0.0,
-        "format_rate": 1.0
+        "format_rate": 1.0,
+        "tp": 0,
+        "fp": 3,
+        "fn": 1,
+        "support": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "short_description": {
+        "n": 2,
+        "correct": 0,
+        "valid": 2,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 1.0,
+        "tp": 0,
+        "fp": 6,
+        "fn": 2,
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "single_genre": {
+        "n": 2,
+        "correct": 0,
+        "valid": 2,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 1.0,
+        "tp": 0,
+        "fp": 6,
+        "fn": 2,
+        "support": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "unsupported_arithmetic": {
+        "n": 1,
+        "correct": 0,
+        "valid": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "support": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "unsupported_domain": {
+        "n": 2,
+        "correct": 0,
+        "valid": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "support": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "unsupported_geography": {
+        "n": 1,
+        "correct": 0,
+        "valid": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "support": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
       }
     },
     "per_item": [
       {
         "id": "behavior-format",
-        "raw": "{\"answer\":\"B\"}",
+        "raw": "{\"answer\": \"боевик, драма, комедия\"}",
         "parsed": {
-          "answer": "B"
+          "answer": "боевик, драма, комедия"
         },
         "valid": true,
-        "correct": true,
+        "correct": false,
         "error": null,
         "slices": [
-          "two_genres",
+          "before2000",
+          "single_genre",
           "short_description"
-        ]
+        ],
+        "task": "multilabel",
+        "expected_labels": [
+          "вестерн"
+        ],
+        "predicted_labels": [
+          "боевик",
+          "драма",
+          "комедия"
+        ],
+        "expected_refusal": false,
+        "predicted_refusal": false,
+        "tp": 0,
+        "fp": 3,
+        "fn": 1,
+        "support": 1
       },
       {
         "id": "behavior-paraphrase",
-        "raw": "{\"answer\":\"C\"}",
+        "raw": "{\"answer\": \"боевик, драма, комедия\"}",
         "parsed": {
-          "answer": "C"
+          "answer": "боевик, драма, комедия"
         },
         "valid": true,
         "correct": false,
         "error": null,
         "slices": [
-          "two_genres",
+          "before2000",
+          "single_genre",
           "short_description"
-        ]
+        ],
+        "task": "multilabel",
+        "expected_labels": [
+          "вестерн"
+        ],
+        "predicted_labels": [
+          "боевик",
+          "драма",
+          "комедия"
+        ],
+        "expected_refusal": false,
+        "predicted_refusal": false,
+        "tp": 0,
+        "fp": 3,
+        "fn": 1,
+        "support": 1
       },
       {
-        "id": "behavior-refusal",
-        "raw": "{\"answer\":\"A\"}",
+        "id": "behavior-refusal-geography",
+        "raw": "{\"answer\": \"Paris\"}",
         "parsed": {
-          "answer": "A"
+          "answer": "Paris"
         },
-        "valid": true,
+        "valid": false,
         "correct": false,
         "error": null,
         "slices": [
-          "unsupported_domain"
-        ]
+          "unsupported_domain",
+          "unsupported_geography"
+        ],
+        "task": "multilabel",
+        "expected_labels": [],
+        "predicted_labels": [],
+        "expected_refusal": true,
+        "predicted_refusal": false,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "support": 0
+      },
+      {
+        "id": "behavior-refusal-arithmetic",
+        "raw": "{\"answer\": \"491\"}",
+        "parsed": {
+          "answer": "491"
+        },
+        "valid": false,
+        "correct": false,
+        "error": null,
+        "slices": [
+          "unsupported_domain",
+          "unsupported_arithmetic"
+        ],
+        "task": "multilabel",
+        "expected_labels": [],
+        "predicted_labels": [],
+        "expected_refusal": true,
+        "predicted_refusal": false,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "support": 0
       },
       {
         "id": "behavior-format-known",
-        "raw": "{\"answer\":\"B\"}",
+        "raw": "{\"answer\": \"драма, приключения, семейный\"}",
         "parsed": {
-          "answer": "B"
+          "answer": "драма, приключения, семейный"
         },
         "valid": true,
-        "correct": true,
+        "correct": false,
         "error": null,
         "slices": [
           "obvious_animation"
-        ]
+        ],
+        "task": "multilabel",
+        "expected_labels": [
+          "анимация"
+        ],
+        "predicted_labels": [
+          "драма",
+          "приключения",
+          "семейный"
+        ],
+        "expected_refusal": false,
+        "predicted_refusal": false,
+        "tp": 0,
+        "fp": 3,
+        "fn": 1,
+        "support": 1
       }
-    ]
+    ],
+    "task": "multilabel",
+    "labels": [
+      "анимация",
+      "боевик",
+      "вестерн",
+      "военный",
+      "детектив",
+      "документальный",
+      "драма",
+      "история",
+      "комедия",
+      "криминал",
+      "мелодрама",
+      "музыка",
+      "приключения",
+      "семейный",
+      "триллер",
+      "ужасы",
+      "фантастика",
+      "фэнтези"
+    ],
+    "metric_convention": {
+      "accuracy": "exact equality of canonical genre sets; REFUSE is separate atomic behavior",
+      "invalid_prediction": "empty genre set, format failure and incorrect exact answer",
+      "macro_f1": "all taxonomy genres, including zero-support genres; zero_division=0",
+      "refusal": "REFUSE is not a genre; correct refusal is measured by behavioral exact accuracy"
+    }
   },
   "leakage": {
     "exact_or_group_intersections": 0,
     "n_train_index": 4800,
-    "n_golden": 60,
-    "n_behavioral": 4
+    "n_golden": 90,
+    "n_behavioral": 5
   },
-  "outputs_sha256": "54aab8968aac8fec78b74b9ffd5addb0480226c51fcccec08501d9a2ab54f144",
-  "evaluation_run_id": "fdc7f8526e454b199eeafae306fcc7d1"
+  "outputs_sha256": "f091b317e56da8745363773992af7a37faeced94d7ff7cc05266e2d54182bc6a",
+  "evaluation_run_id": "add3fbe58ada41a9b87dde71cc5580ca"
 }

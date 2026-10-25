@@ -3,7 +3,10 @@
 import contextlib
 import copy
 import io
+import hashlib
+import json
 import os
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -14,11 +17,12 @@ import mlflow
 import torch
 import yaml
 from mlflow import MlflowClient
+from transformers import Qwen3Config, Qwen3ForCausalLM
 
-from src import sweep
-from src.common import validate_params
-from src.experiment_train import evaluate
-from src.promote import gate, promote, select
+from src import experiment_report, experiment_train, sweep
+from src.common import provenance, validate_params, verify_provenance
+from src.experiment_train import evaluate, expected_sampling_manifest, prepare_data, processed_summary
+from src.promote import gate, promote, select, validate_sampling
 
 
 PARAMS = yaml.safe_load((Path(__file__).resolve().parents[1] / "conf/hw67.yaml").read_text())
@@ -87,7 +91,8 @@ class ExperimentContract(unittest.TestCase):
             self.client.set_registered_model_alias.assert_called_once_with("model", "candidate", "2")
 
     def test_selection_rejects_stale_summary_config_budget_or_base(self):
-        with patch("src.promote.provenance", return_value=VERSIONS):
+        with (patch("src.promote.provenance", return_value=VERSIONS), patch("src.promote.validate_sampling"),
+              patch("src.promote.validate_training_view")):
             self.assertEqual(select(self.client, PARAMS, self.summary).info.run_id, "run-5")
             for mutation in ("summary", "provenance", "budget", "parameters", "revision", "base_loss"):
                 with self.subTest(mutation=mutation):
@@ -111,14 +116,18 @@ class ExperimentContract(unittest.TestCase):
                         select(self.client, PARAMS, summary)
 
     def test_validation_rejects_duplicate_configs_and_invalid_budget(self):
-        for mutation in ("duplicate", "budget", "revision"):
+        for mutation in ("duplicate", "budget", "revision", "sampling", "source"):
             params = copy.deepcopy(PARAMS)
             if mutation == "duplicate":
                 params["sweep"][1] = {**params["sweep"][0], "name": "different-name"}
             elif mutation == "budget":
                 params["train"]["max_steps"] = True
-            else:
+            elif mutation == "revision":
                 params["model"]["revision"] = "main"
+            elif mutation == "sampling":
+                params["sampling"]["method"] = "prefix"
+            else:
+                params["data"]["source_val"] = params["data"]["source_train"]
             with self.assertRaises(ValueError):
                 validate_params(params)
 
@@ -142,15 +151,31 @@ class ExperimentContract(unittest.TestCase):
                 os.chdir(directory)
                 mlflow.set_tracking_uri(Path(directory, "tracking").as_uri())
                 mlflow.set_experiment("isolated-hw67-regression")
-                def candidate(params, config, versions):
-                    mlflow.set_tags({**versions, "kind": "candidate", "candidate": config["name"]})
-                    return {"run_id": mlflow.active_run().info.run_id, "name": config["name"]}
+                worker_code = '''
+import os
+import sys
+from src import sweep
+def fixture(params, config, versions, proof, view_proof):
+    sweep.mlflow.set_tags({**versions, "kind": "candidate", "candidate": config["name"]})
+    return {"run_id": sweep.mlflow.active_run().info.run_id, "name": config["name"],
+            "sampling_sha256": "fixture-sampling", "training_view_sha256": sweep.fingerprint(view_proof),
+            "worker_pid": os.getpid()}
+sweep.run_candidate = fixture
+sweep.main(sys.argv[1:])
+'''
+                actual_run = subprocess.run
+                repository = Path(__file__).resolve().parents[1]
+                def launch(command, **kwargs):
+                    worker_command = [command[0], "-c", worker_code, *command[3:]]
+                    return actual_run(worker_command, cwd=repository, **kwargs)
                 with (patch.object(sweep, "load_params", return_value=PARAMS),
                       patch.object(sweep, "connect"), patch.object(sweep, "provenance", return_value=VERSIONS),
-                      patch.object(sweep, "run_candidate", side_effect=candidate),
+                      patch.object(sweep, "verify_provenance"),
+                      patch.object(sweep, "verify_tensor_sources", return_value={"passed": True}),
+                      patch.object(experiment_train, "prepare_training_data", return_value=([], [], 0, {}, {"fixture": True})),
+                      patch.object(sweep.subprocess, "run", side_effect=launch),
                       contextlib.redirect_stdout(io.StringIO())):
-                    sweep.main()
-                import json
+                    sweep.main([])
                 result = json.loads(Path("metrics/sweep.json").read_text())
                 parent = MlflowClient().get_run(result["parent_id"])
                 children = MlflowClient().search_runs(
@@ -161,6 +186,8 @@ class ExperimentContract(unittest.TestCase):
                                  {config["name"] for config in PARAMS["sweep"]})
                 self.assertTrue(all(run.info.status == "FINISHED" for run in children))
                 self.assertEqual(len({row["run_id"] for row in result["rows"]}), 6)
+                self.assertEqual(len({row["worker_pid"] for row in result["rows"]}), 6)
+                self.assertNotIn(os.getpid(), {row["worker_pid"] for row in result["rows"]})
             finally:
                 os.chdir(cwd)
                 mlflow.set_tracking_uri(previous_uri)
@@ -179,10 +206,141 @@ class ExperimentContract(unittest.TestCase):
             self.assertEqual(kwargs["python_model"], "src/adapter_model.py")
 
         client.pyfunc.log_model.side_effect = log_model
-        with (patch.object(sweep, "mlflow", client),
-              patch.object(sweep, "train", return_value=({}, {}, ["answer", "answer"]))):
-            sweep.run_candidate(PARAMS, PARAMS["sweep"][0], VERSIONS)
+        with (patch.object(sweep, "mlflow", client), patch.object(sweep, "verify_provenance"),
+              patch.object(sweep, "verify_source_proof"),
+              patch.object(sweep, "train", return_value=({}, {"sampling_sha256": "fixture", "training_view_sha256": "view"},
+                                                           ["answer", "answer"]))):
+            sweep.run_candidate(PARAMS, PARAMS["sweep"][0], VERSIONS, {}, {})
         client.pyfunc.log_model.assert_called_once()
+
+    def test_sampling_uses_complete_splits_and_main_processes_every_selected_id(self):
+        params = copy.deepcopy(PARAMS)
+        examples, val, _, proof = prepare_data(params)
+        self.assertEqual((len(examples), len(val)), (240, 60))
+        self.assertEqual(set(proof["train"]["strata_counts"].values()), {40})
+        self.assertEqual(set(proof["val"]["strata_counts"].values()), {10})
+        identities = [example["id"] for example in examples]
+        consumed = params["train"]["max_steps"] * params["train"]["batch_size"] * params["train"]["grad_accum"]
+        report = processed_summary(identities[:consumed], proof["train"]["selected_records"])
+        self.assertEqual((report["count"], report["unique_count"]), (240, 240))
+        self.assertEqual(report["ids"], proof["train"]["ids"])
+        control = yaml.safe_load((Path(__file__).resolve().parents[1] / "conf/hw67-control.yaml").read_text())
+        small_train, small_val, _, small_proof = prepare_data(control)
+        self.assertEqual((len(small_train), len(small_val)), (32, 8))
+        self.assertTrue(set(small_proof["train"]["ids"]) <= set(proof["train"]["ids"]))
+        self.assertTrue(set(small_proof["val"]["ids"]) <= set(proof["val"]["ids"]))
+        control_count = control["train"]["max_steps"] * control["train"]["batch_size"] * control["train"]["grad_accum"]
+        self.assertEqual(control_count, 8)
+
+    def test_provenance_detects_metadata_change_with_identical_tensor_hashes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory, "metadata.jsonl")
+            path.write_text("first metadata\n")
+            params = copy.deepcopy(PARAMS)
+            params["data"]["source_train"] = str(path)
+            before = provenance(params)
+            path.write_text("changed metadata\n")
+            after = provenance(params)
+            self.assertEqual(before["data_train_sha256"], after["data_train_sha256"])
+            self.assertNotEqual(before["config_sha256"], after["config_sha256"])
+            with self.assertRaises(ValueError):
+                verify_provenance(params, before)
+
+    def test_real_tiny_training_records_exact_main_and_control_consumption(self):
+        control = yaml.safe_load((Path(__file__).resolve().parents[1] / "conf/hw67-control.yaml").read_text())
+        for config, expected_count in ((PARAMS, 240), (control, 8)):
+            params = copy.deepcopy(config)
+            params["model"].update(device="cpu", dtype="float32")
+            params["train"]["response_format"] = "source"
+            selected, val, _, sampling = prepare_data(params)
+            def tiny_examples(items):
+                return [{"id": item["id"], "input_ids": [0, 1, 2],
+                         "attention_mask": [1, 1, 1], "labels": [-100, -100, 2]} for item in items]
+            tokenizer = Mock(pad_token_id=0)
+            tokenizer.save_pretrained.side_effect = lambda path: Path(path, "tokenizer_config.json").write_text("{}\n")
+            def tiny_model(*args, **kwargs):
+                cfg = Qwen3Config(vocab_size=8, hidden_size=16, intermediate_size=32,
+                                  num_hidden_layers=1, num_attention_heads=2, num_key_value_heads=1, head_dim=8)
+                cfg._commit_hash = params["model"]["revision"]
+                return Qwen3ForCausalLM(cfg)
+            observed = []
+            with tempfile.TemporaryDirectory() as directory:
+                with (patch.object(experiment_train, "prepare_data", return_value=(
+                        tiny_examples(selected), tiny_examples(val), 0, copy.deepcopy(sampling))),
+                      patch.object(experiment_train.AutoModelForCausalLM, "from_pretrained", side_effect=tiny_model),
+                      patch.object(experiment_train.AutoTokenizer, "from_pretrained", return_value=tokenizer),
+                      patch("src.adapter_model.AdapterModel.predict", return_value=["fixture", "fixture"]),
+                      contextlib.redirect_stdout(io.StringIO())):
+                    metrics, _, _ = experiment_train.train(params, params["sweep"][0], directory,
+                                                           lambda values, step: observed.append((step, dict(values))))
+                proof = json.loads(Path(directory, "sampling.json").read_text())
+                self.assertEqual(metrics["steps"], params["train"]["max_steps"])
+                self.assertEqual(metrics["processed_examples"], expected_count)
+                self.assertEqual(metrics["processed_unique_examples"], expected_count)
+                self.assertEqual(metrics["processed_tokens"], 3 * expected_count)
+                self.assertEqual(metrics["processed_supervised_tokens"], expected_count)
+                self.assertEqual(proof["processed_train"]["ids"], sampling["train"]["ids"][:expected_count])
+                self.assertEqual(proof["epochs_started"], 1)
+                self.assertEqual([step for step, values in observed if "train_loss" in values],
+                                 list(range(1, params["train"]["max_steps"] + 1)))
+                self.assertEqual([step for step, values in observed if "val_loss" in values],
+                                 list(range(0, params["train"]["max_steps"] + 1, params["train"]["eval_every"])))
+
+    def test_comparison_csv_uses_lf_and_refuses_unverified_sweep(self):
+        client = Mock()
+        run = copy.deepcopy(self.runs[0])
+        run.data.metrics.update(seconds=1, peak_memory_mb=2, adapter_mb=3, processed_examples=240,
+                                processed_unique_examples=240, train_pool_rows=240, val_rows=60)
+        run.data.tags["sampling_sha256"] = "fixture-sampling"
+        run.data.tags["training_view_sha256"] = "fixture-view"
+        client.get_run.return_value = run
+        with tempfile.TemporaryDirectory() as directory:
+            summary, output = Path(directory, "sweep.json"), Path(directory, "comparison.csv")
+            summary.write_text(json.dumps({"rows": [{"run_id": run.info.run_id, "name": "fixture"}]}))
+            with (patch.object(experiment_report, "load_params", return_value=PARAMS),
+                  patch.object(experiment_report, "connect"), patch.object(experiment_report, "MlflowClient", return_value=client),
+                  patch.object(experiment_report, "select") as verified, contextlib.redirect_stdout(io.StringIO())):
+                experiment_report.main(["--summary", str(summary), "--out", str(output)])
+                verified.assert_called_once()
+                self.assertNotIn(b"\r", output.read_bytes())
+                verified.side_effect = ValueError("stale sweep")
+                with self.assertRaises(ValueError):
+                    experiment_report.main(["--summary", str(summary), "--out", str(output)])
+
+    def test_select_sampling_proof_rejects_changed_pools_counts_sources_and_workers(self):
+        expected = expected_sampling_manifest(PARAMS)
+        sha = hashlib.sha256(json.dumps(expected, sort_keys=True, allow_nan=False).encode()).hexdigest()
+        original_runs = copy.deepcopy(self.runs)
+        for index, run in enumerate(original_runs):
+            run.data.tags.update(sampling_sha256=sha, worker_pid=str(index + 100), source_link_sha256="a" * 64,
+                                 source_train_sha256=expected["train"]["source_sha256"],
+                                 source_val_sha256=expected["val"]["source_sha256"])
+            run.data.metrics.update(processed_examples=240, processed_unique_examples=240,
+                                    train_pool_rows=240, val_rows=60)
+        bad_manifest = False
+        def download(run_id, artifact, directory):
+            proof = copy.deepcopy(expected)
+            if bad_manifest:
+                proof["train"]["ids"].reverse()
+            path = Path(directory, "sampling.json")
+            path.write_text(json.dumps(proof))
+            return str(path)
+        client = Mock(download_artifacts=Mock(side_effect=download))
+        with patch("src.experiment_train.expected_sampling_manifest", return_value=expected):
+            validate_sampling(client, PARAMS, original_runs)
+            for mutation in ("hash", "count", "unique", "pool", "source", "worker", "proof", "source_link"):
+                runs = copy.deepcopy(original_runs)
+                if mutation == "hash": runs[0].data.tags.pop("sampling_sha256")
+                elif mutation == "count": runs[0].data.metrics["processed_examples"] = 239
+                elif mutation == "unique": runs[0].data.metrics["processed_unique_examples"] = 239
+                elif mutation == "pool": runs[0].data.metrics["val_rows"] = 8
+                elif mutation == "source": runs[0].data.tags["source_train_sha256"] = "different"
+                elif mutation == "worker": runs[0].data.tags["worker_pid"] = runs[1].data.tags["worker_pid"]
+                elif mutation == "source_link": runs[0].data.tags.pop("source_link_sha256")
+                else: bad_manifest = True
+                with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                    validate_sampling(client, PARAMS, runs)
+                bad_manifest = False
 
 
 if __name__ == "__main__":

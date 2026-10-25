@@ -158,3 +158,37 @@ predict-candidate:
 
 .PHONY: check-hw67-all
 check-hw67-all: check-hw67 check-eval
+
+.PHONY: prepare-eval-v2 sweep-control report-control candidate-control archive-control sweep-unaligned report-unaligned candidate-unaligned archive-unaligned compare-hw67 naive-baseline
+prepare-eval-v2:
+	uv run python scripts/prepare_hw67_eval_v2.py
+
+sweep-control:
+	HW6_PARAMS=conf/hw67-control.yaml uv run python -m src.sweep
+
+report-control:
+	HW6_PARAMS=conf/hw67-control.yaml uv run python -m src.experiment_report
+
+candidate-control:
+	HW6_PARAMS=conf/hw67-control.yaml uv run python -m evaluation.cli candidate
+
+archive-control:
+	uv run python scripts/archive_hw67_control.py
+
+sweep-unaligned:
+	HW6_PARAMS=conf/hw67-unaligned.yaml uv run python -m src.sweep
+
+report-unaligned:
+	HW6_PARAMS=conf/hw67-unaligned.yaml uv run python -m src.experiment_report
+
+candidate-unaligned:
+	HW6_PARAMS=conf/hw67-unaligned.yaml uv run python -m evaluation.cli candidate
+
+archive-unaligned:
+	uv run python scripts/archive_hw67_control.py --stage unaligned
+
+compare-hw67:
+	uv run python scripts/compare_hw67_runs.py
+
+naive-baseline:
+	uv run python scripts/naive_hw67_baseline.py

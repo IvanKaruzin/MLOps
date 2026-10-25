@@ -1,0 +1,11 @@
+{
+  "golden": "data/eval/golden.jsonl",
+  "training_index": "data/eval/training-index.jsonl",
+  "behavioral": "data/eval/behavioral.jsonl",
+  "critical_slices": ["single_genre", "three_plus_genres", "before2000", "since2000"],
+  "seed": 20261025,
+  "system": "Определи все применимые жанры фильма по его описанию. Допустимые жанровые метки: анимация, боевик, вестерн, военный, детектив, документальный, драма, история, комедия, криминал, мелодрама, музыка, приключения, семейный, триллер, ужасы, фантастика, фэнтези. Верни только JSON-объект с единственным полем answer: его значение — строка жанров через запятую. Не добавляй пояснений или Markdown. Если запрос не относится к определению жанров фильма по описанию, верни {\"answer\":\"REFUSE\"}. REFUSE является отказом, а не жанром.",
+  "max_new_tokens": 96,
+  "enable_thinking": false,
+  "comparison_models": "evaluation/comparison-models.json"
+}

@@ -1,0 +1,5252 @@
+{
+  "protocol_sha256": "2c3f0fcdbcc2a7e19101c5360f805a3cf3ae113f11942f118b6eeafbf5efe3bd",
+  "golden_sha256": "c205c9bfaaeba2a06ec8f66478093517b4826c205beea145082590ae56f4a115",
+  "evaluation_run_id": "14bad8dacbf94701b222ce4a5f245ce0",
+  "models": {
+    "baseline": {
+      "kind": "base",
+      "name": "Qwen/Qwen3-0.6B",
+      "revision": "c1899de289a04d12100db370d81485cdf75e47ca"
+    },
+    "previous": {
+      "kind": "adapter",
+      "name": "my-qwen-adapter",
+      "version": "2",
+      "run_id": "dbc125fa62764a8aaf1f213d41cf2ded",
+      "uri": "models:/my-qwen-adapter/2"
+    },
+    "sampling_control": {
+      "kind": "adapter",
+      "name": "my-qwen-adapter",
+      "version": "3",
+      "run_id": "2aa8b014539c4cb5af123b9fc70006cc",
+      "uri": "models:/my-qwen-adapter/3"
+    },
+    "candidate": {
+      "kind": "adapter",
+      "name": "my-qwen-adapter",
+      "version": "4",
+      "run_id": "67920a2d113b406dad60e1f8ee0642bf",
+      "uri": "models:/my-qwen-adapter/4"
+    }
+  },
+  "overall": [
+    {
+      "role": "baseline",
+      "model": "Qwen/Qwen3-0.6B",
+      "training_run_id": "",
+      "n": 90,
+      "correct": 1,
+      "valid": 89,
+      "errors": 0,
+      "accuracy": 0.011111111111111112,
+      "format_rate": 0.9888888888888889,
+      "precision": 0.20833333333333334,
+      "recall": 0.3626943005181347,
+      "micro_f1": 0.2646502835538752,
+      "macro_f1": 0.1911686230865094,
+      "behavioral_correct": 1,
+      "behavioral_n": 5
+    },
+    {
+      "role": "previous",
+      "model": "models:/my-qwen-adapter/2",
+      "training_run_id": "dbc125fa62764a8aaf1f213d41cf2ded",
+      "n": 90,
+      "correct": 0,
+      "valid": 6,
+      "errors": 0,
+      "accuracy": 0.0,
+      "format_rate": 0.06666666666666667,
+      "precision": 0.08333333333333333,
+      "recall": 0.0051813471502590676,
+      "micro_f1": 0.00975609756097561,
+      "macro_f1": 0.0033670033670033673,
+      "behavioral_correct": 1,
+      "behavioral_n": 5
+    },
+    {
+      "role": "sampling_control",
+      "model": "models:/my-qwen-adapter/3",
+      "training_run_id": "2aa8b014539c4cb5af123b9fc70006cc",
+      "n": 90,
+      "correct": 3,
+      "valid": 90,
+      "errors": 0,
+      "accuracy": 0.03333333333333333,
+      "format_rate": 1.0,
+      "precision": 0.27601809954751133,
+      "recall": 0.3160621761658031,
+      "micro_f1": 0.2946859903381642,
+      "macro_f1": 0.17167727049732567,
+      "behavioral_correct": 1,
+      "behavioral_n": 5
+    },
+    {
+      "role": "candidate",
+      "model": "models:/my-qwen-adapter/4",
+      "training_run_id": "67920a2d113b406dad60e1f8ee0642bf",
+      "n": 90,
+      "correct": 0,
+      "valid": 0,
+      "errors": 0,
+      "accuracy": 0.0,
+      "format_rate": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "micro_f1": 0.0,
+      "macro_f1": 0.0,
+      "behavioral_correct": 0,
+      "behavioral_n": 5
+    }
+  ],
+  "pairwise": {
+    "sampling_control_vs_previous": {
+      "n": 90,
+      "improved": [
+        "movie-free-018",
+        "movie-free-046",
+        "movie-free-061"
+      ],
+      "regressed": [],
+      "metric_deltas": {
+        "accuracy": 0.03333333333333333,
+        "format_rate": 0.9333333333333333,
+        "precision": 0.19268476621417802,
+        "recall": 0.31088082901554404,
+        "micro_f1": 0.2849298927771886,
+        "macro_f1": 0.1683102671303223
+      }
+    },
+    "candidate_vs_previous": {
+      "n": 90,
+      "improved": [],
+      "regressed": [],
+      "metric_deltas": {
+        "accuracy": 0.0,
+        "format_rate": -0.06666666666666667,
+        "precision": -0.08333333333333333,
+        "recall": -0.0051813471502590676,
+        "micro_f1": -0.00975609756097561,
+        "macro_f1": -0.0033670033670033673
+      }
+    },
+    "candidate_vs_sampling_control": {
+      "n": 90,
+      "improved": [],
+      "regressed": [
+        "movie-free-018",
+        "movie-free-046",
+        "movie-free-061"
+      ],
+      "metric_deltas": {
+        "accuracy": -0.03333333333333333,
+        "format_rate": -1.0,
+        "precision": -0.27601809954751133,
+        "recall": -0.3160621761658031,
+        "micro_f1": -0.2946859903381642,
+        "macro_f1": -0.17167727049732567
+      }
+    },
+    "candidate_vs_baseline": {
+      "n": 90,
+      "improved": [],
+      "regressed": [
+        "movie-free-018"
+      ],
+      "metric_deltas": {
+        "accuracy": -0.011111111111111112,
+        "format_rate": -0.9888888888888889,
+        "precision": -0.20833333333333334,
+        "recall": -0.3626943005181347,
+        "micro_f1": -0.2646502835538752,
+        "macro_f1": -0.1911686230865094
+      }
+    }
+  },
+  "slices": {
+    "baseline": {
+      "before2000": {
+        "n": 45,
+        "correct": 0,
+        "valid": 45,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 1.0,
+        "tp": 34,
+        "fp": 148,
+        "fn": 62,
+        "support": 96,
+        "precision": 0.18681318681318682,
+        "recall": 0.3541666666666667,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.2446043165467626,
+        "macro_f1": 0.19359982318209087,
+        "per_label": {
+          "анимация": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 3,
+            "support": 4,
+            "precision": 1.0,
+            "recall": 0.25,
+            "f1": 0.4
+          },
+          "боевик": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 8,
+            "support": 9,
+            "precision": 1.0,
+            "recall": 0.1111111111111111,
+            "f1": 0.2
+          },
+          "вестерн": {
+            "tp": 1,
+            "fp": 5,
+            "fn": 0,
+            "support": 1,
+            "precision": 0.16666666666666666,
+            "recall": 1.0,
+            "f1": 0.2857142857142857
+          },
+          "военный": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 0,
+            "support": 1,
+            "precision": 0.5,
+            "recall": 1.0,
+            "f1": 0.6666666666666666
+          },
+          "детектив": {
+            "tp": 1,
+            "fp": 5,
+            "fn": 2,
+            "support": 3,
+            "precision": 0.16666666666666666,
+            "recall": 0.3333333333333333,
+            "f1": 0.2222222222222222
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 11,
+            "fp": 21,
+            "fn": 3,
+            "support": 14,
+            "precision": 0.34375,
+            "recall": 0.7857142857142857,
+            "f1": 0.4782608695652174
+          },
+          "история": {
+            "tp": 0,
+            "fp": 13,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 14,
+            "support": 15,
+            "precision": 0.5,
+            "recall": 0.06666666666666667,
+            "f1": 0.11764705882352941
+          },
+          "криминал": {
+            "tp": 3,
+            "fp": 17,
+            "fn": 5,
+            "support": 8,
+            "precision": 0.15,
+            "recall": 0.375,
+            "f1": 0.21428571428571427
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 25,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 4,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 9,
+            "fp": 27,
+            "fn": 0,
+            "support": 9,
+            "precision": 0.25,
+            "recall": 1.0,
+            "f1": 0.4
+          },
+          "ужасы": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 6,
+            "support": 7,
+            "precision": 1.0,
+            "recall": 0.14285714285714285,
+            "f1": 0.25
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 4,
+            "fp": 24,
+            "fn": 0,
+            "support": 4,
+            "precision": 0.14285714285714285,
+            "recall": 1.0,
+            "f1": 0.25
+          }
+        }
+      },
+      "long_description": {
+        "n": 22,
+        "correct": 0,
+        "valid": 21,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.9545454545454546,
+        "tp": 17,
+        "fp": 76,
+        "fn": 29,
+        "support": 46,
+        "precision": 0.1827956989247312,
+        "recall": 0.3695652173913043,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.2446043165467626,
+        "macro_f1": 0.11189173851263859,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 4,
+            "support": 5,
+            "precision": 1.0,
+            "recall": 0.2,
+            "f1": 0.3333333333333333
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 5,
+            "fp": 11,
+            "fn": 2,
+            "support": 7,
+            "precision": 0.3125,
+            "recall": 0.7142857142857143,
+            "f1": 0.43478260869565216
+          },
+          "история": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 7,
+            "support": 8,
+            "precision": 1.0,
+            "recall": 0.125,
+            "f1": 0.2222222222222222
+          },
+          "криминал": {
+            "tp": 2,
+            "fp": 10,
+            "fn": 0,
+            "support": 2,
+            "precision": 0.16666666666666666,
+            "recall": 1.0,
+            "f1": 0.2857142857142857
+          },
+          "мелодрама": {
+            "tp": 2,
+            "fp": 15,
+            "fn": 0,
+            "support": 2,
+            "precision": 0.11764705882352941,
+            "recall": 1.0,
+            "f1": 0.21052631578947367
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 4,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 5,
+            "fp": 16,
+            "fn": 0,
+            "support": 5,
+            "precision": 0.23809523809523808,
+            "recall": 1.0,
+            "f1": 0.38461538461538464
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 1,
+            "fp": 11,
+            "fn": 1,
+            "support": 2,
+            "precision": 0.08333333333333333,
+            "recall": 0.5,
+            "f1": 0.14285714285714285
+          }
+        }
+      },
+      "short_description": {
+        "n": 68,
+        "correct": 1,
+        "valid": 68,
+        "errors": 0,
+        "accuracy": 0.014705882352941176,
+        "format_rate": 1.0,
+        "tp": 53,
+        "fp": 190,
+        "fn": 94,
+        "support": 147,
+        "precision": 0.21810699588477367,
+        "recall": 0.36054421768707484,
+        "exact_set_accuracy": 0.014705882352941176,
+        "micro_f1": 0.2717948717948718,
+        "macro_f1": 0.21164079407351732,
+        "per_label": {
+          "анимация": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 6,
+            "support": 7,
+            "precision": 1.0,
+            "recall": 0.14285714285714285,
+            "f1": 0.25
+          },
+          "боевик": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 12,
+            "support": 13,
+            "precision": 0.5,
+            "recall": 0.07692307692307693,
+            "f1": 0.13333333333333333
+          },
+          "вестерн": {
+            "tp": 1,
+            "fp": 5,
+            "fn": 0,
+            "support": 1,
+            "precision": 0.16666666666666666,
+            "recall": 1.0,
+            "f1": 0.2857142857142857
+          },
+          "военный": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 0,
+            "support": 1,
+            "precision": 0.5,
+            "recall": 1.0,
+            "f1": 0.6666666666666666
+          },
+          "детектив": {
+            "tp": 1,
+            "fp": 8,
+            "fn": 3,
+            "support": 4,
+            "precision": 0.1111111111111111,
+            "recall": 0.25,
+            "f1": 0.15384615384615385
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 18,
+            "fp": 33,
+            "fn": 4,
+            "support": 22,
+            "precision": 0.35294117647058826,
+            "recall": 0.8181818181818182,
+            "f1": 0.4931506849315068
+          },
+          "история": {
+            "tp": 3,
+            "fp": 20,
+            "fn": 0,
+            "support": 3,
+            "precision": 0.13043478260869565,
+            "recall": 1.0,
+            "f1": 0.23076923076923078
+          },
+          "комедия": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 19,
+            "support": 20,
+            "precision": 0.5,
+            "recall": 0.05,
+            "f1": 0.09090909090909091
+          },
+          "криминал": {
+            "tp": 3,
+            "fp": 19,
+            "fn": 7,
+            "support": 10,
+            "precision": 0.13636363636363635,
+            "recall": 0.3,
+            "f1": 0.1875
+          },
+          "мелодрама": {
+            "tp": 1,
+            "fp": 28,
+            "fn": 6,
+            "support": 7,
+            "precision": 0.034482758620689655,
+            "recall": 0.14285714285714285,
+            "f1": 0.05555555555555555
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 2,
+            "fp": 9,
+            "fn": 8,
+            "support": 10,
+            "precision": 0.18181818181818182,
+            "recall": 0.2,
+            "f1": 0.19047619047619047
+          },
+          "семейный": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 10,
+            "support": 11,
+            "precision": 0.5,
+            "recall": 0.09090909090909091,
+            "f1": 0.15384615384615385
+          },
+          "триллер": {
+            "tp": 12,
+            "fp": 37,
+            "fn": 0,
+            "support": 12,
+            "precision": 0.24489795918367346,
+            "recall": 1.0,
+            "f1": 0.39344262295081966
+          },
+          "ужасы": {
+            "tp": 1,
+            "fp": 2,
+            "fn": 6,
+            "support": 7,
+            "precision": 0.3333333333333333,
+            "recall": 0.14285714285714285,
+            "f1": 0.2
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 6,
+            "fp": 23,
+            "fn": 2,
+            "support": 8,
+            "precision": 0.20689655172413793,
+            "recall": 0.75,
+            "f1": 0.32432432432432434
+          }
+        }
+      },
+      "since2000": {
+        "n": 45,
+        "correct": 1,
+        "valid": 44,
+        "errors": 0,
+        "accuracy": 0.022222222222222223,
+        "format_rate": 0.9777777777777777,
+        "tp": 36,
+        "fp": 118,
+        "fn": 61,
+        "support": 97,
+        "precision": 0.23376623376623376,
+        "recall": 0.3711340206185567,
+        "exact_set_accuracy": 0.022222222222222223,
+        "micro_f1": 0.2868525896414343,
+        "macro_f1": 0.15394583458050948,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 8,
+            "support": 9,
+            "precision": 0.5,
+            "recall": 0.1111111111111111,
+            "f1": 0.18181818181818182
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 4,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 12,
+            "fp": 23,
+            "fn": 3,
+            "support": 15,
+            "precision": 0.34285714285714286,
+            "recall": 0.8,
+            "f1": 0.48
+          },
+          "история": {
+            "tp": 3,
+            "fp": 10,
+            "fn": 1,
+            "support": 4,
+            "precision": 0.23076923076923078,
+            "recall": 0.75,
+            "f1": 0.35294117647058826
+          },
+          "комедия": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 12,
+            "support": 13,
+            "precision": 1.0,
+            "recall": 0.07692307692307693,
+            "f1": 0.14285714285714285
+          },
+          "криминал": {
+            "tp": 2,
+            "fp": 12,
+            "fn": 2,
+            "support": 4,
+            "precision": 0.14285714285714285,
+            "recall": 0.5,
+            "f1": 0.2222222222222222
+          },
+          "мелодрама": {
+            "tp": 3,
+            "fp": 18,
+            "fn": 3,
+            "support": 6,
+            "precision": 0.14285714285714285,
+            "recall": 0.5,
+            "f1": 0.2222222222222222
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 2,
+            "fp": 9,
+            "fn": 3,
+            "support": 5,
+            "precision": 0.18181818181818182,
+            "recall": 0.4,
+            "f1": 0.25
+          },
+          "семейный": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 6,
+            "support": 7,
+            "precision": 0.5,
+            "recall": 0.14285714285714285,
+            "f1": 0.2222222222222222
+          },
+          "триллер": {
+            "tp": 8,
+            "fp": 26,
+            "fn": 0,
+            "support": 8,
+            "precision": 0.23529411764705882,
+            "recall": 1.0,
+            "f1": 0.38095238095238093
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 3,
+            "fp": 10,
+            "fn": 3,
+            "support": 6,
+            "precision": 0.23076923076923078,
+            "recall": 0.5,
+            "f1": 0.3157894736842105
+          }
+        }
+      },
+      "single_genre": {
+        "n": 30,
+        "correct": 0,
+        "valid": 30,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 1.0,
+        "tp": 10,
+        "fp": 89,
+        "fn": 20,
+        "support": 30,
+        "precision": 0.10101010101010101,
+        "recall": 0.3333333333333333,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.15503875968992248,
+        "macro_f1": 0.10642135642135642,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "support": 1,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 5,
+            "fp": 17,
+            "fn": 1,
+            "support": 6,
+            "precision": 0.22727272727272727,
+            "recall": 0.8333333333333334,
+            "f1": 0.35714285714285715
+          },
+          "история": {
+            "tp": 1,
+            "fp": 9,
+            "fn": 0,
+            "support": 1,
+            "precision": 0.1,
+            "recall": 1.0,
+            "f1": 0.18181818181818182
+          },
+          "комедия": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 10,
+            "support": 12,
+            "precision": 1.0,
+            "recall": 0.16666666666666666,
+            "f1": 0.2857142857142857
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 13,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 13,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 1,
+            "fp": 20,
+            "fn": 0,
+            "support": 1,
+            "precision": 0.047619047619047616,
+            "recall": 1.0,
+            "f1": 0.09090909090909091
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 10,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "three_plus_genres": {
+        "n": 30,
+        "correct": 0,
+        "valid": 29,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.9666666666666667,
+        "tp": 39,
+        "fp": 77,
+        "fn": 64,
+        "support": 103,
+        "precision": 0.33620689655172414,
+        "recall": 0.3786407766990291,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.3561643835616438,
+        "macro_f1": 0.2408699487646856,
+        "per_label": {
+          "анимация": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 8,
+            "support": 9,
+            "precision": 1.0,
+            "recall": 0.1111111111111111,
+            "f1": 0.2
+          },
+          "боевик": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 8,
+            "support": 9,
+            "precision": 1.0,
+            "recall": 0.1111111111111111,
+            "f1": 0.2
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 1,
+            "support": 2,
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6666666666666666
+          },
+          "детектив": {
+            "tp": 1,
+            "fp": 4,
+            "fn": 4,
+            "support": 5,
+            "precision": 0.2,
+            "recall": 0.2,
+            "f1": 0.2
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 11,
+            "fp": 12,
+            "fn": 4,
+            "support": 15,
+            "precision": 0.4782608695652174,
+            "recall": 0.7333333333333333,
+            "f1": 0.5789473684210527
+          },
+          "история": {
+            "tp": 2,
+            "fp": 9,
+            "fn": 1,
+            "support": 3,
+            "precision": 0.18181818181818182,
+            "recall": 0.6666666666666666,
+            "f1": 0.2857142857142857
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 2,
+            "fp": 7,
+            "fn": 4,
+            "support": 6,
+            "precision": 0.2222222222222222,
+            "recall": 0.3333333333333333,
+            "f1": 0.26666666666666666
+          },
+          "мелодрама": {
+            "tp": 1,
+            "fp": 13,
+            "fn": 4,
+            "support": 5,
+            "precision": 0.07142857142857142,
+            "recall": 0.2,
+            "f1": 0.10526315789473684
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 8,
+            "support": 9,
+            "precision": 0.5,
+            "recall": 0.1111111111111111,
+            "f1": 0.18181818181818182
+          },
+          "семейный": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 10,
+            "support": 11,
+            "precision": 1.0,
+            "recall": 0.09090909090909091,
+            "f1": 0.16666666666666666
+          },
+          "триллер": {
+            "tp": 9,
+            "fp": 15,
+            "fn": 0,
+            "support": 9,
+            "precision": 0.375,
+            "recall": 1.0,
+            "f1": 0.5454545454545454
+          },
+          "ужасы": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 2,
+            "support": 3,
+            "precision": 0.5,
+            "recall": 0.3333333333333333,
+            "f1": 0.4
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 7,
+            "fp": 11,
+            "fn": 1,
+            "support": 8,
+            "precision": 0.3888888888888889,
+            "recall": 0.875,
+            "f1": 0.5384615384615384
+          }
+        }
+      },
+      "two_genres": {
+        "n": 30,
+        "correct": 1,
+        "valid": 30,
+        "errors": 0,
+        "accuracy": 0.03333333333333333,
+        "format_rate": 1.0,
+        "tp": 21,
+        "fp": 100,
+        "fn": 39,
+        "support": 60,
+        "precision": 0.17355371900826447,
+        "recall": 0.35,
+        "exact_set_accuracy": 0.03333333333333333,
+        "micro_f1": 0.23204419889502761,
+        "macro_f1": 0.1008477331846897,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 6,
+            "support": 7,
+            "precision": 1.0,
+            "recall": 0.14285714285714285,
+            "f1": 0.25
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 4,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 7,
+            "fp": 15,
+            "fn": 1,
+            "support": 8,
+            "precision": 0.3181818181818182,
+            "recall": 0.875,
+            "f1": 0.4666666666666667
+          },
+          "история": {
+            "tp": 0,
+            "fp": 5,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 10,
+            "support": 10,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 3,
+            "fp": 9,
+            "fn": 3,
+            "support": 6,
+            "precision": 0.25,
+            "recall": 0.5,
+            "f1": 0.3333333333333333
+          },
+          "мелодрама": {
+            "tp": 2,
+            "fp": 17,
+            "fn": 2,
+            "support": 4,
+            "precision": 0.10526315789473684,
+            "recall": 0.5,
+            "f1": 0.17391304347826086
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 1,
+            "fp": 9,
+            "fn": 2,
+            "support": 3,
+            "precision": 0.1,
+            "recall": 0.3333333333333333,
+            "f1": 0.15384615384615385
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 7,
+            "fp": 18,
+            "fn": 0,
+            "support": 7,
+            "precision": 0.28,
+            "recall": 1.0,
+            "f1": 0.4375
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 13,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      }
+    },
+    "previous": {
+      "before2000": {
+        "n": 45,
+        "correct": 0,
+        "valid": 2,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.044444444444444446,
+        "tp": 1,
+        "fp": 4,
+        "fn": 95,
+        "support": 96,
+        "precision": 0.2,
+        "recall": 0.010416666666666666,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.019801980198019802,
+        "macro_f1": 0.006944444444444444,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 13,
+            "support": 14,
+            "precision": 0.5,
+            "recall": 0.07142857142857142,
+            "f1": 0.125
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 15,
+            "support": 15,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 8,
+            "support": 8,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "long_description": {
+        "n": 22,
+        "correct": 0,
+        "valid": 3,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.13636363636363635,
+        "tp": 1,
+        "fp": 6,
+        "fn": 45,
+        "support": 46,
+        "precision": 0.14285714285714285,
+        "recall": 0.021739130434782608,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.03773584905660377,
+        "macro_f1": 0.011111111111111112,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 1,
+            "fp": 2,
+            "fn": 6,
+            "support": 7,
+            "precision": 0.3333333333333333,
+            "recall": 0.14285714285714285,
+            "f1": 0.2
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 8,
+            "support": 8,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "short_description": {
+        "n": 68,
+        "correct": 0,
+        "valid": 3,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.04411764705882353,
+        "tp": 0,
+        "fp": 5,
+        "fn": 147,
+        "support": 147,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 13,
+            "support": 13,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 22,
+            "support": 22,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 20,
+            "support": 20,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 10,
+            "support": 10,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 10,
+            "support": 10,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 11,
+            "support": 11,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 12,
+            "support": 12,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 8,
+            "support": 8,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "since2000": {
+        "n": 45,
+        "correct": 0,
+        "valid": 4,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.08888888888888889,
+        "tp": 0,
+        "fp": 7,
+        "fn": 97,
+        "support": 97,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 15,
+            "support": 15,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 13,
+            "support": 13,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 8,
+            "support": 8,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "single_genre": {
+        "n": 30,
+        "correct": 0,
+        "valid": 3,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.1,
+        "tp": 0,
+        "fp": 7,
+        "fn": 30,
+        "support": 30,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 12,
+            "support": 12,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "three_plus_genres": {
+        "n": 30,
+        "correct": 0,
+        "valid": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 103,
+        "support": 103,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 15,
+            "support": 15,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 11,
+            "support": 11,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 8,
+            "support": 8,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "two_genres": {
+        "n": 30,
+        "correct": 0,
+        "valid": 3,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.1,
+        "tp": 1,
+        "fp": 4,
+        "fn": 59,
+        "support": 60,
+        "precision": 0.2,
+        "recall": 0.016666666666666666,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.03076923076923077,
+        "macro_f1": 0.011111111111111112,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 7,
+            "support": 8,
+            "precision": 0.5,
+            "recall": 0.125,
+            "f1": 0.2
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 10,
+            "support": 10,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      }
+    },
+    "sampling_control": {
+      "before2000": {
+        "n": 45,
+        "correct": 0,
+        "valid": 45,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 1.0,
+        "tp": 32,
+        "fp": 78,
+        "fn": 64,
+        "support": 96,
+        "precision": 0.2909090909090909,
+        "recall": 0.3333333333333333,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.3106796116504854,
+        "macro_f1": 0.20156695156695156,
+        "per_label": {
+          "анимация": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 3,
+            "support": 4,
+            "precision": 1.0,
+            "recall": 0.25,
+            "f1": 0.4
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 0,
+            "support": 1,
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 13,
+            "fp": 21,
+            "fn": 1,
+            "support": 14,
+            "precision": 0.38235294117647056,
+            "recall": 0.9285714285714286,
+            "f1": 0.5416666666666666
+          },
+          "история": {
+            "tp": 0,
+            "fp": 7,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 14,
+            "support": 15,
+            "precision": 1.0,
+            "recall": 0.06666666666666667,
+            "f1": 0.125
+          },
+          "криминал": {
+            "tp": 1,
+            "fp": 3,
+            "fn": 7,
+            "support": 8,
+            "precision": 0.25,
+            "recall": 0.125,
+            "f1": 0.16666666666666666
+          },
+          "мелодрама": {
+            "tp": 1,
+            "fp": 11,
+            "fn": 2,
+            "support": 3,
+            "precision": 0.08333333333333333,
+            "recall": 0.3333333333333333,
+            "f1": 0.13333333333333333
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 5,
+            "support": 7,
+            "precision": 0.6666666666666666,
+            "recall": 0.2857142857142857,
+            "f1": 0.4
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 9,
+            "fp": 27,
+            "fn": 0,
+            "support": 9,
+            "precision": 0.25,
+            "recall": 1.0,
+            "f1": 0.4
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 3,
+            "fp": 6,
+            "fn": 1,
+            "support": 4,
+            "precision": 0.3333333333333333,
+            "recall": 0.75,
+            "f1": 0.46153846153846156
+          }
+        }
+      },
+      "long_description": {
+        "n": 22,
+        "correct": 0,
+        "valid": 22,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 1.0,
+        "tp": 13,
+        "fp": 40,
+        "fn": 33,
+        "support": 46,
+        "precision": 0.24528301886792453,
+        "recall": 0.2826086956521739,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.26262626262626265,
+        "macro_f1": 0.09389838556505223,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 5,
+            "fp": 12,
+            "fn": 2,
+            "support": 7,
+            "precision": 0.29411764705882354,
+            "recall": 0.7142857142857143,
+            "f1": 0.4166666666666667
+          },
+          "история": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 7,
+            "support": 8,
+            "precision": 1.0,
+            "recall": 0.125,
+            "f1": 0.2222222222222222
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 1,
+            "fp": 3,
+            "fn": 1,
+            "support": 2,
+            "precision": 0.25,
+            "recall": 0.5,
+            "f1": 0.3333333333333333
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 5,
+            "fp": 16,
+            "fn": 0,
+            "support": 5,
+            "precision": 0.23809523809523808,
+            "recall": 1.0,
+            "f1": 0.38461538461538464
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 1,
+            "fp": 3,
+            "fn": 1,
+            "support": 2,
+            "precision": 0.25,
+            "recall": 0.5,
+            "f1": 0.3333333333333333
+          }
+        }
+      },
+      "short_description": {
+        "n": 68,
+        "correct": 3,
+        "valid": 68,
+        "errors": 0,
+        "accuracy": 0.04411764705882353,
+        "format_rate": 1.0,
+        "tp": 48,
+        "fp": 120,
+        "fn": 99,
+        "support": 147,
+        "precision": 0.2857142857142857,
+        "recall": 0.32653061224489793,
+        "exact_set_accuracy": 0.04411764705882353,
+        "micro_f1": 0.3047619047619048,
+        "macro_f1": 0.18183982154570388,
+        "per_label": {
+          "анимация": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 6,
+            "support": 7,
+            "precision": 1.0,
+            "recall": 0.14285714285714285,
+            "f1": 0.25
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 13,
+            "support": 13,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 1,
+            "fp": 2,
+            "fn": 0,
+            "support": 1,
+            "precision": 0.3333333333333333,
+            "recall": 1.0,
+            "f1": 0.5
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 20,
+            "fp": 32,
+            "fn": 2,
+            "support": 22,
+            "precision": 0.38461538461538464,
+            "recall": 0.9090909090909091,
+            "f1": 0.5405405405405406
+          },
+          "история": {
+            "tp": 3,
+            "fp": 12,
+            "fn": 0,
+            "support": 3,
+            "precision": 0.2,
+            "recall": 1.0,
+            "f1": 0.3333333333333333
+          },
+          "комедия": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 19,
+            "support": 20,
+            "precision": 1.0,
+            "recall": 0.05,
+            "f1": 0.09523809523809523
+          },
+          "криминал": {
+            "tp": 2,
+            "fp": 4,
+            "fn": 8,
+            "support": 10,
+            "precision": 0.3333333333333333,
+            "recall": 0.2,
+            "f1": 0.25
+          },
+          "мелодрама": {
+            "tp": 1,
+            "fp": 18,
+            "fn": 6,
+            "support": 7,
+            "precision": 0.05263157894736842,
+            "recall": 0.14285714285714285,
+            "f1": 0.07692307692307693
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 4,
+            "fp": 3,
+            "fn": 6,
+            "support": 10,
+            "precision": 0.5714285714285714,
+            "recall": 0.4,
+            "f1": 0.47058823529411764
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 11,
+            "support": 11,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 11,
+            "fp": 33,
+            "fn": 1,
+            "support": 12,
+            "precision": 0.25,
+            "recall": 0.9166666666666666,
+            "f1": 0.39285714285714285
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 4,
+            "fp": 10,
+            "fn": 4,
+            "support": 8,
+            "precision": 0.2857142857142857,
+            "recall": 0.5,
+            "f1": 0.36363636363636365
+          }
+        }
+      },
+      "since2000": {
+        "n": 45,
+        "correct": 3,
+        "valid": 45,
+        "errors": 0,
+        "accuracy": 0.06666666666666667,
+        "format_rate": 1.0,
+        "tp": 29,
+        "fp": 82,
+        "fn": 68,
+        "support": 97,
+        "precision": 0.26126126126126126,
+        "recall": 0.29896907216494845,
+        "exact_set_accuracy": 0.06666666666666667,
+        "micro_f1": 0.27884615384615385,
+        "macro_f1": 0.1397615542713582,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 12,
+            "fp": 23,
+            "fn": 3,
+            "support": 15,
+            "precision": 0.34285714285714286,
+            "recall": 0.8,
+            "f1": 0.48
+          },
+          "история": {
+            "tp": 3,
+            "fp": 8,
+            "fn": 1,
+            "support": 4,
+            "precision": 0.2727272727272727,
+            "recall": 0.75,
+            "f1": 0.4
+          },
+          "комедия": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 12,
+            "support": 13,
+            "precision": 1.0,
+            "recall": 0.07692307692307693,
+            "f1": 0.14285714285714285
+          },
+          "криминал": {
+            "tp": 1,
+            "fp": 2,
+            "fn": 3,
+            "support": 4,
+            "precision": 0.3333333333333333,
+            "recall": 0.25,
+            "f1": 0.2857142857142857
+          },
+          "мелодрама": {
+            "tp": 1,
+            "fp": 10,
+            "fn": 5,
+            "support": 6,
+            "precision": 0.09090909090909091,
+            "recall": 0.16666666666666666,
+            "f1": 0.11764705882352941
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 2,
+            "fp": 2,
+            "fn": 3,
+            "support": 5,
+            "precision": 0.5,
+            "recall": 0.4,
+            "f1": 0.4444444444444444
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 7,
+            "fp": 22,
+            "fn": 1,
+            "support": 8,
+            "precision": 0.2413793103448276,
+            "recall": 0.875,
+            "f1": 0.3783783783783784
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 2,
+            "fp": 7,
+            "fn": 4,
+            "support": 6,
+            "precision": 0.2222222222222222,
+            "recall": 0.3333333333333333,
+            "f1": 0.26666666666666666
+          }
+        }
+      },
+      "single_genre": {
+        "n": 30,
+        "correct": 1,
+        "valid": 30,
+        "errors": 0,
+        "accuracy": 0.03333333333333333,
+        "format_rate": 1.0,
+        "tp": 11,
+        "fp": 59,
+        "fn": 19,
+        "support": 30,
+        "precision": 0.15714285714285714,
+        "recall": 0.36666666666666664,
+        "exact_set_accuracy": 0.03333333333333333,
+        "micro_f1": 0.22,
+        "macro_f1": 0.09870129870129869,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 1,
+            "fp": 1,
+            "fn": 0,
+            "support": 1,
+            "precision": 0.5,
+            "recall": 1.0,
+            "f1": 0.6666666666666666
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 6,
+            "fp": 18,
+            "fn": 0,
+            "support": 6,
+            "precision": 0.25,
+            "recall": 1.0,
+            "f1": 0.4
+          },
+          "история": {
+            "tp": 1,
+            "fp": 4,
+            "fn": 0,
+            "support": 1,
+            "precision": 0.2,
+            "recall": 1.0,
+            "f1": 0.3333333333333333
+          },
+          "комедия": {
+            "tp": 2,
+            "fp": 0,
+            "fn": 10,
+            "support": 12,
+            "precision": 1.0,
+            "recall": 0.16666666666666666,
+            "f1": 0.2857142857142857
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 4,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 5,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 1,
+            "fp": 20,
+            "fn": 0,
+            "support": 1,
+            "precision": 0.047619047619047616,
+            "recall": 1.0,
+            "f1": 0.09090909090909091
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 3,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "three_plus_genres": {
+        "n": 30,
+        "correct": 0,
+        "valid": 30,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 1.0,
+        "tp": 31,
+        "fp": 43,
+        "fn": 72,
+        "support": 103,
+        "precision": 0.4189189189189189,
+        "recall": 0.30097087378640774,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.3502824858757062,
+        "macro_f1": 0.16084529505582135,
+        "per_label": {
+          "анимация": {
+            "tp": 1,
+            "fp": 0,
+            "fn": 8,
+            "support": 9,
+            "precision": 1.0,
+            "recall": 0.1111111111111111,
+            "f1": 0.2
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 2,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 12,
+            "fp": 11,
+            "fn": 3,
+            "support": 15,
+            "precision": 0.5217391304347826,
+            "recall": 0.8,
+            "f1": 0.631578947368421
+          },
+          "история": {
+            "tp": 2,
+            "fp": 6,
+            "fn": 1,
+            "support": 3,
+            "precision": 0.25,
+            "recall": 0.6666666666666666,
+            "f1": 0.36363636363636365
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 8,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 3,
+            "fp": 0,
+            "fn": 6,
+            "support": 9,
+            "precision": 1.0,
+            "recall": 0.3333333333333333,
+            "f1": 0.5
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 11,
+            "support": 11,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 8,
+            "fp": 13,
+            "fn": 1,
+            "support": 9,
+            "precision": 0.38095238095238093,
+            "recall": 0.8888888888888888,
+            "f1": 0.5333333333333333
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 5,
+            "fp": 2,
+            "fn": 3,
+            "support": 8,
+            "precision": 0.7142857142857143,
+            "recall": 0.625,
+            "f1": 0.6666666666666666
+          }
+        }
+      },
+      "two_genres": {
+        "n": 30,
+        "correct": 2,
+        "valid": 30,
+        "errors": 0,
+        "accuracy": 0.06666666666666667,
+        "format_rate": 1.0,
+        "tp": 19,
+        "fp": 58,
+        "fn": 41,
+        "support": 60,
+        "precision": 0.24675324675324675,
+        "recall": 0.31666666666666665,
+        "exact_set_accuracy": 0.06666666666666667,
+        "micro_f1": 0.2773722627737226,
+        "macro_f1": 0.1109347442680776,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 1,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 7,
+            "fp": 15,
+            "fn": 1,
+            "support": 8,
+            "precision": 0.3181818181818182,
+            "recall": 0.875,
+            "f1": 0.4666666666666667
+          },
+          "история": {
+            "tp": 0,
+            "fp": 5,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 10,
+            "support": 10,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 4,
+            "support": 6,
+            "precision": 0.6666666666666666,
+            "recall": 0.3333333333333333,
+            "f1": 0.4444444444444444
+          },
+          "мелодрама": {
+            "tp": 2,
+            "fp": 8,
+            "fn": 2,
+            "support": 4,
+            "precision": 0.2,
+            "recall": 0.5,
+            "f1": 0.2857142857142857
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 1,
+            "fp": 2,
+            "fn": 2,
+            "support": 3,
+            "precision": 0.3333333333333333,
+            "recall": 0.3333333333333333,
+            "f1": 0.3333333333333333
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 7,
+            "fp": 16,
+            "fn": 0,
+            "support": 7,
+            "precision": 0.30434782608695654,
+            "recall": 1.0,
+            "f1": 0.4666666666666667
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 8,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      }
+    },
+    "candidate": {
+      "before2000": {
+        "n": 45,
+        "correct": 0,
+        "valid": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 96,
+        "support": 96,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 14,
+            "support": 14,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 15,
+            "support": 15,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 8,
+            "support": 8,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "long_description": {
+        "n": 22,
+        "correct": 0,
+        "valid": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 46,
+        "support": 46,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 8,
+            "support": 8,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "short_description": {
+        "n": 68,
+        "correct": 0,
+        "valid": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 147,
+        "support": 147,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 13,
+            "support": 13,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 22,
+            "support": 22,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 20,
+            "support": 20,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 10,
+            "support": 10,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 10,
+            "support": 10,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 11,
+            "support": 11,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 12,
+            "support": 12,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 8,
+            "support": 8,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "since2000": {
+        "n": 45,
+        "correct": 0,
+        "valid": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 97,
+        "support": 97,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 15,
+            "support": 15,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 13,
+            "support": 13,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 8,
+            "support": 8,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "single_genre": {
+        "n": 30,
+        "correct": 0,
+        "valid": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 30,
+        "support": 30,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 12,
+            "support": 12,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "three_plus_genres": {
+        "n": 30,
+        "correct": 0,
+        "valid": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 103,
+        "support": 103,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 15,
+            "support": 15,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 11,
+            "support": 11,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 9,
+            "support": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 8,
+            "support": 8,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      },
+      "two_genres": {
+        "n": 30,
+        "correct": 0,
+        "valid": 0,
+        "errors": 0,
+        "accuracy": 0.0,
+        "format_rate": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 60,
+        "support": 60,
+        "precision": 0.0,
+        "recall": 0.0,
+        "exact_set_accuracy": 0.0,
+        "micro_f1": 0.0,
+        "macro_f1": 0.0,
+        "per_label": {
+          "анимация": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "боевик": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "вестерн": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "военный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "детектив": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "документальный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "драма": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 8,
+            "support": 8,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "история": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 1,
+            "support": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "комедия": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 10,
+            "support": 10,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "криминал": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 6,
+            "support": 6,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "мелодрама": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "музыка": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "support": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "приключения": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 3,
+            "support": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "семейный": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "триллер": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 7,
+            "support": 7,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "ужасы": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 4,
+            "support": 4,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фантастика": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 5,
+            "support": 5,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          },
+          "фэнтези": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "support": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0
+          }
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Historical MCQ accuracy and free-genre metrics measure different tasks and are not subtracted.",
+    "Training losses from prefix, stratified-small and stratified-main use different validation inputs.",
+    "The common golden is deliberately balanced by era and label cardinality, not population-weighted.",
+    "One training seed and one corpus do not establish a general causal effect or training variance.",
+    "The main sweep changes sample size and step budget together; its delta is the combined change."
+  ]
+}

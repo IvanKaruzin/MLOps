@@ -71,6 +71,49 @@ def _validate_strings(values, label):
         raise ValueError(f'{label}: нужны уникальные непустые строки')
 
 
+
+def normalize_genre(value):
+    if not isinstance(value, str):
+        raise ValueError('Жанр должен быть строкой')
+    return ' '.join(value.casefold().split())
+
+
+def multilabel_taxonomy(choices):
+    """Полная жанровая таксономия; REFUSE не является жанровым классом."""
+    _validate_strings(choices, 'choices')
+    normalized = [normalize_genre(value) for value in choices]
+    if (len(set(normalized)) != len(normalized) or 'refuse' not in normalized
+            or any(',' in value or not value for value in normalized)):
+        raise ValueError('Нужны разные атомарные жанры и отдельный REFUSE')
+    labels = sorted(value for value in normalized if value != 'refuse')
+    if not labels:
+        raise ValueError('Жанровая таксономия пуста')
+    return labels
+
+
+def parse_genre_answer(answer, labels):
+    """Разрешены только регистр, пробелы и порядок; aliases не угадываются."""
+    value = normalize_genre(answer)
+    if value == 'refuse':
+        return [], True
+    genres = [normalize_genre(part) for part in answer.split(',')]
+    if (not genres or any(not part or part not in labels for part in genres)
+            or len(set(genres)) != len(genres)):
+        raise ValueError('Пустой, неизвестный или повторяющийся жанр')
+    return sorted(genres), False
+
+
+def target_for(row):
+    """Входной контракт поддерживает исходный MCQ и свободный multilabel."""
+    task = row.get('task', 'mcq')
+    if task == 'multilabel':
+        labels = multilabel_taxonomy(row.get('choices'))
+        expected, refusal = parse_genre_answer(row.get('expected'), labels)
+        return dict(task=task, labels=labels, expected_labels=expected, expected_refusal=refusal)
+    if task != 'mcq' or not isinstance(row.get('expected'), str) or row['expected'] not in row['choices']:
+        raise ValueError('Неверная задача или expected вне choices')
+    return dict(task='mcq')
+
 def validate_golden(rows, training, behavioral):
     for label, items in [('golden', rows), ('training', training), ('behavioral', behavioral)]:
         _validate_ids(items, label)
@@ -84,9 +127,14 @@ def validate_golden(rows, training, behavioral):
     for row in rows + behavioral:
         _validate_strings(row.get('slices'), 'slices')
         _validate_strings(row.get('choices'), 'choices')
-        if (not isinstance(row.get('expected'), str) or row['expected'] not in row['choices']
-                or not isinstance(row.get('source'), str) or not row['source'].strip()):
-            raise ValueError('Нужны проверенный expected и строковый source')
+        target_for(row)
+        if not isinstance(row.get('source'), str) or not row['source'].strip():
+            raise ValueError('Нужен строковый source')
+    targets = [target_for(row) for row in rows + behavioral]
+    if len({target['task'] for target in targets}) != 1:
+        raise ValueError('Golden и behavioral должны иметь одну задачу')
+    if targets[0]['task'] == 'multilabel' and any(target['labels'] != targets[0]['labels'] for target in targets):
+        raise ValueError('Жанровая таксономия должна быть общей')
     def normalize(value):
         return ' '.join(value.casefold().split())
     golden_inputs = [normalize(row['input']) for row in rows]
@@ -118,5 +166,7 @@ def validate_golden(rows, training, behavioral):
             paired = by_id.get(row['paired_with'])
             if paired is None or paired is row or paired['group_id'] != row['group_id']:
                 raise ValueError('Некорректная behavioral-пара paired_with/group_id')
+            if row.get('task') == 'multilabel' and target_for(paired) != target_for(row):
+                raise ValueError('Перефраз должен сохранять исходные жанры/отказ')
     return dict(exact_or_group_intersections=0, n_train_index=len(training),
                 n_golden=len(rows), n_behavioral=len(behavioral))

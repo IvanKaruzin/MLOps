@@ -89,6 +89,27 @@ def init_baseline():
     print('Baseline: исходная модель с точной ревизией. Сохраните evaluation/baseline.json в Git')
 
 
+
+def comparison_specs(config, verify_registry=False):
+    """Закреплённые дополнительные победители; alias candidate им не нужен."""
+    if 'comparison_models' not in config:
+        return {}
+    path = config['comparison_models']
+    if not isinstance(path, str) or not path.strip():
+        raise ValueError('comparison_models должен ссылаться на JSON-файл спецификаций')
+    models = read_json(path)
+    if not isinstance(models, dict) or not models or not set(models) <= {'previous', 'sampling_control', 'unaligned'}:
+        raise ValueError('В comparison_models разрешены только previous, sampling_control и unaligned')
+    for role, spec in models.items():
+        validate_model_spec(spec)
+        if spec['kind'] != 'adapter':
+            raise ValueError(f'{role}: нужна закреплённая версия адаптера')
+    if verify_registry:
+        _, client = tracking()
+        for spec in models.values():
+            registry_version(client, spec)
+    return {role: models[role] for role in ('previous', 'sampling_control', 'unaligned') if role in models}
+
 def inputs():
     config = read_json('evaluation/params.json')
     if (not isinstance(config.get('system'), str) or not config['system'].strip()
@@ -111,7 +132,8 @@ def inputs():
     validate_model_spec(baseline)
     if baseline['kind'] not in ('base', 'adapter'):
         raise ValueError('Baseline должен быть реальной моделью')
-    protocol = dict(config=config, golden=rows, behavioral=behavioral, training_index=training,
+    protocol = dict(config=config, comparison_models=comparison_specs(config),
+                    golden=rows, behavioral=behavioral, training_index=training,
                     evaluation_code={p.name: p.read_text() for p in sorted(Path('evaluation').glob('*.py'))})
     return config, rows, behavioral, baseline, proof, fingerprint(protocol)
 
@@ -135,11 +157,11 @@ def generate(spec, common_manifest, config, rows):
     revision = spec['revision'] if spec['kind'] == 'base' else model_cfg['revision']
     if len(revision) != 40:
         raise ValueError('Нужна точная commit-ревизия базы')
-    device = resolve_device(os.environ.get('HW6_DEVICE', model_cfg['device']))
-    dtype = resolve_dtype(os.environ.get('HW6_DTYPE', model_cfg['dtype']))
+    device = resolve_device(os.environ.get('HW6_DEVICE', expected_base['device']))
+    dtype = resolve_dtype(os.environ.get('HW6_DTYPE', expected_base['dtype']))
     set_seed(config['seed'])
-    tokenizer = AutoTokenizer.from_pretrained(str(adapter) if adapter else base_name,
-                                              **({'local_files_only': True} if adapter else {'revision': revision}))
+    # Один закреплённый tokenizer/chat template для всех сравниваемых ролей.
+    tokenizer = AutoTokenizer.from_pretrained(expected_base['name'], revision=expected_base['revision'])
     model = AutoModelForCausalLM.from_pretrained(base_name, revision=revision, dtype=dtype)
     if adapter:
         from peft import PeftModel
@@ -171,74 +193,133 @@ def generate(spec, common_manifest, config, rows):
     return outputs
 
 
+def answer_diff(anchor, other):
+    a = {item['id']: item for item in anchor['per_item']}
+    b = {item['id']: item for item in other['per_item']}
+    if set(a) != set(b):
+        raise ValueError('Нельзя сравнить ответы с разными id')
+    return dict(improved=[i for i in a if not a[i]['correct'] and b[i]['correct']],
+                regressed=[i for i in a if a[i]['correct'] and not b[i]['correct']])
+
+
+def comparison_diffs(reports):
+    result = {}
+    for anchor in ('baseline', 'previous'):
+        if anchor not in reports:
+            continue
+        for role in reports:
+            if role in ('baseline', anchor):
+                continue
+            before, after = reports[anchor], reports[role]
+            metrics = ('accuracy', 'format_rate', 'precision', 'recall', 'micro_f1', 'macro_f1')
+            deltas = {key: after['overall'][key] - before['overall'][key]
+                      for key in metrics if key in before['overall'] and key in after['overall']}
+            result[f'{anchor}_vs_{role}'] = dict(anchor_model=before['model'], compared_model=after['model'],
+                                                metric_deltas=deltas, **answer_diff(before, after))
+    if 'unaligned' in reports and 'candidate' in reports:
+        before, after = reports['unaligned'], reports['candidate']
+        metrics = ('accuracy', 'format_rate', 'precision', 'recall', 'micro_f1', 'macro_f1')
+        deltas = {key: after['overall'][key] - before['overall'][key]
+                  for key in metrics if key in before['overall'] and key in after['overall']}
+        result['unaligned_vs_candidate'] = dict(anchor_model=before['model'], compared_model=after['model'],
+                                                metric_deltas=deltas, **answer_diff(before, after))
+    return result
+
+
 def evaluate():
     import mlflow
     config, rows, behavioral, baseline, proof, protocol_hash = inputs()
     candidate = candidate_model()
+    references = comparison_specs(config, verify_registry=True)
+    models = dict(baseline=baseline, **references, candidate=candidate)
     manifest, _ = manifest_for(candidate)
     reports = {}
-    for role, spec in [('baseline', baseline), ('candidate', candidate)]:
+    comparison_hash = fingerprint(references)
+    for role, spec in models.items():
         outputs = generate(spec, manifest, config, rows + behavioral)
         by_id = {o['id']: o for o in outputs}
+        if len(by_id) != len(outputs) or set(by_id) != {r['id'] for r in rows + behavioral}:
+            raise ValueError(f'{role}: generation вернула несовместимые id')
         write_json(f'metrics/{role}-outputs.json', outputs)
         report = score(rows, [by_id[r['id']] for r in rows])
-        report.update(status='complete', model=spec, protocol_sha256=protocol_hash,
+        report.update(status='complete', role=role, model=spec, protocol_sha256=protocol_hash,
                       golden_sha256=fingerprint(rows), baseline_spec_sha256=fingerprint(baseline),
+                      comparison_models_sha256=comparison_hash,
                       behavioral=score(behavioral, [by_id[r['id']] for r in behavioral]), leakage=proof,
                       outputs_sha256=fingerprint(outputs))
         reports[role] = report
-    a = {r['id']: r for r in reports['baseline']['per_item']}
-    b = {r['id']: r for r in reports['candidate']['per_item']}
-    diff = dict(improved=[i for i in a if not a[i]['correct'] and b[i]['correct']],
-                regressed=[i for i in a if a[i]['correct'] and not b[i]['correct']])
+    diff = answer_diff(reports['baseline'], reports['candidate'])
+    diffs = comparison_diffs(reports)
     mlflow.set_experiment('hw67-evaluation')
-    with mlflow.start_run(run_name='baseline-vs-candidate') as run:
+    with mlflow.start_run(run_name='same-protocol-model-comparison') as run:
         for role, report in reports.items():
             report['evaluation_run_id'] = run.info.run_id
             write_json(f'metrics/{role}-eval.json', report)
-            mlflow.log_metrics({f'{role}.{key}': report['overall'][key] for key in ('accuracy', 'format_rate')})
+            mlflow.log_metrics({f'{role}.{key}': value for key, value in report['overall'].items()
+                                if type(value) in (int, float)})
         mlflow.set_tags(dict(kind='evaluation', candidate_run_id=candidate['run_id'],
-                             protocol_sha256=protocol_hash, golden_sha256=fingerprint(rows)))
+                             protocol_sha256=protocol_hash, golden_sha256=fingerprint(rows),
+                             comparison_models_sha256=comparison_hash, roles=','.join(models)))
         write_json('metrics/eval-diff.json', diff)
-        # Старые negative-* не принадлежат новой оценке и не должны
-        # попадать в её run через широкий glob по каталогу metrics.
+        write_json('metrics/comparison-diffs.json', diffs)
+        write_json('metrics/evaluation-models.json', dict(evaluation_run_id=run.info.run_id,
+                                                        protocol_sha256=protocol_hash, models=models))
+        # При повторном запуске не включаем артефакты старых ролей/negative-*.
         for role in reports:
             mlflow.log_artifact(f'metrics/{role}-eval.json', 'evaluation')
             mlflow.log_artifact(f'metrics/{role}-outputs.json', 'evaluation')
-        mlflow.log_artifact('metrics/eval-diff.json', 'evaluation')
-        mlflow.log_artifact('evaluation/params.json', 'evaluation')
-        mlflow.log_artifact(str(BASELINE), 'evaluation')
+        for path in ('metrics/eval-diff.json', 'metrics/comparison-diffs.json', 'metrics/evaluation-models.json',
+                     'evaluation/params.json', str(BASELINE)):
+            mlflow.log_artifact(path, 'evaluation')
+        if 'comparison_models' in config:
+            mlflow.log_artifact(config['comparison_models'], 'evaluation')
         mlflow.log_dict(proof, 'evaluation/leakage.json')
-    print('Отчёты и сырые ответы сохранены. Далее: make eval; только после PASS - make promote')
+    print('Отчёты всех ролей и сырые ответы сохранены. Далее: make eval; только после PASS - make promote')
 
 
-def current_reports():
-    _, rows, behavioral, baseline_spec, _, protocol_hash = inputs()
-    baseline, candidate = [read_json(f'metrics/{role}-eval.json') for role in ('baseline', 'candidate')]
-    candidate_spec = candidate_model()
-    if candidate['model'] != candidate_spec or baseline['model'] != baseline_spec:
-        raise ValueError('В отчёте другая модель')
-    if any(r['protocol_sha256'] != protocol_hash or r['golden_sha256'] != fingerprint(rows) or
-           r['baseline_spec_sha256'] != fingerprint(baseline_spec) for r in (baseline, candidate)):
-        raise ValueError('Изменились данные/протокол/код оценки; повторите make evaluate')
-    for role, report in [('baseline', baseline), ('candidate', candidate)]:
+def validated_reports():
+    config, rows, behavioral, baseline_spec, _, protocol_hash = inputs()
+    references = comparison_specs(config, verify_registry=True)
+    models = dict(baseline=baseline_spec, **references, candidate=candidate_model())
+    reports = {role: read_json(f'metrics/{role}-eval.json') for role in models}
+    comparison_hash = fingerprint(references)
+    for role, report in reports.items():
+        if report.get('status') != 'complete':
+            raise ValueError(f'{role}: оценка не завершена')
+        if report.get('role') != role or report.get('model') != models[role]:
+            raise ValueError(f'{role}: в отчёте другая роль или модель')
+        if (report.get('protocol_sha256') != protocol_hash or report.get('golden_sha256') != fingerprint(rows)
+                or report.get('baseline_spec_sha256') != fingerprint(baseline_spec)
+                or report.get('comparison_models_sha256') != comparison_hash):
+            raise ValueError('Изменились данные/протокол/модели/код оценки; повторите make evaluate')
         outputs = read_json(f'metrics/{role}-outputs.json')
-        if fingerprint(outputs) != report['outputs_sha256']:
-            raise ValueError('Сырые ответы изменены после оценки')
+        if fingerprint(outputs) != report.get('outputs_sha256'):
+            raise ValueError(f'{role}: сырые ответы изменены после оценки')
         by_id = {o['id']: o for o in outputs}
         if len(by_id) != len(outputs) or set(by_id) != {r['id'] for r in rows + behavioral}:
             raise ValueError('Изменились id сырых ответов')
         recalculated = score(rows, [by_id[r['id']] for r in rows])
-        if any(report[k] != recalculated[k] for k in ('overall', 'slices', 'per_item')):
-            raise ValueError('Метрики не соответствуют сырым ответам')
-        if report['behavioral'] != score(behavioral, [by_id[r['id']] for r in behavioral]):
-            raise ValueError('Behavioral-отчёт не соответствует ответам')
-    evaluation_id = candidate.get('evaluation_run_id')
+        if any(report.get(key) != value for key, value in recalculated.items()):
+            raise ValueError(f'{role}: метрики/эталоны/таксономия не соответствуют сырым ответам')
+        if report.get('behavioral') != score(behavioral, [by_id[r['id']] for r in behavioral]):
+            raise ValueError(f'{role}: behavioral-отчёт не соответствует ответам')
+    evaluation_id = reports['candidate'].get('evaluation_run_id')
     if (not isinstance(evaluation_id, str) or not evaluation_id.strip()
-            or baseline.get('evaluation_run_id') != evaluation_id):
+            or any(report.get('evaluation_run_id') != evaluation_id for report in reports.values())):
         raise ValueError('Отчёты должны относиться к одному конкретному evaluation run')
-    return baseline, candidate
+    expected_manifest = dict(evaluation_run_id=evaluation_id, protocol_sha256=protocol_hash, models=models)
+    if read_json('metrics/evaluation-models.json') != expected_manifest:
+        raise ValueError('Манифест моделей не соответствует оценке')
+    if read_json('metrics/eval-diff.json') != answer_diff(reports['baseline'], reports['candidate']):
+        raise ValueError('Diff baseline/candidate не соответствует ответам')
+    if read_json('metrics/comparison-diffs.json') != comparison_diffs(reports):
+        raise ValueError('Сравнительные diff не соответствуют ответам')
+    return reports
 
+
+def current_reports():
+    reports = validated_reports()
+    return reports['baseline'], reports['candidate']
 
 def report_evidence(baseline, candidate):
     """Вызывать только после успешной проверки raw, протокола и реестра."""
@@ -247,7 +328,8 @@ def report_evidence(baseline, candidate):
                 protocol_sha256=candidate['protocol_sha256'], golden_sha256=candidate['golden_sha256'],
                 baseline_spec_sha256=candidate['baseline_spec_sha256'],
                 baseline_outputs_sha256=baseline['outputs_sha256'],
-                candidate_outputs_sha256=candidate['outputs_sha256'])
+                candidate_outputs_sha256=candidate['outputs_sha256'],
+                comparison_models_sha256=candidate.get('comparison_models_sha256'))
 
 
 def record_gate(result, path, kind):
@@ -267,6 +349,8 @@ def record_gate(result, path, kind):
                         protocol_sha256=result['protocol_sha256'],
                         golden_sha256=result['golden_sha256'],
                         baseline_spec_sha256=result['baseline_spec_sha256'])
+            if result.get('comparison_models_sha256') is not None:
+                tags['comparison_models_sha256'] = result['comparison_models_sha256']
         mlflow.set_tags(tags)
         write_json(path, result)
         mlflow.log_artifact(path, 'evaluation')

@@ -302,73 +302,54 @@ DVC-кэш и локальный remote также не публикуются �
 Оба варианта прошли по 600 шагов и весь val; все проверки ДЗ-1–5 и
 unit-тесты (31) прошли. Подробности и ограничения — в docs/defects.md.
 
-## ДЗ 6+7 — эксперименты и допуск модели
+## ДЗ 6+7 — стратифицированные эксперименты и свободные жанры
 
-Условия: [course_tasks/hw67/Задание.html](course_tasks/hw67/Задание.html).
-Стартовый проект интегрирован в общий репозиторий; отдельная папка `hw67-broken`
-не нужна. Исходные модули и команды ДЗ 1–5 сохранены. Настройки нового поиска
-находятся в `conf/hw67.yaml`, оценки — в `evaluation/params.json`.
+Условия находятся в `course_tasks/hw67/`. Стартер интегрирован в накопительный
+проект; модули и проверки предыдущих ДЗ сохранены. Новая итерация устраняет
+выбор первых строк и проверяет самостоятельное перечисление жанров без A–D.
 
-Требуются Python 3.12, uv, Docker Engine и Docker Compose. На macOS подходит
-[Colima](https://colima.run/docs/installation/). MLflow доступен только локально:
-<http://127.0.0.1:5006>. Метаданные PostgreSQL и артефакты MLflow сохраняются
-в двух именованных Docker volumes. `make down` сохраняет данные;
-`docker compose down -v` удалит их, поэтому для обычной остановки не используется.
+Сравниваются пять закреплённых моделей на одном протоколе: исходная база,
+победитель первого эксперимента, победитель малого контроля, победитель
+120-шагового поиска с прежним форматом обучения и победитель поиска
+с согласованным JSON-контрактом. Полная генерация выполняется только для победителей поиска.
+Старые MCQ-результаты сохранены в [истории v1](docs/hw67-history/v1/README.md).
+Числа MCQ accuracy и F1 свободной классификации напрямую не вычитаются.
 
-```bash
-uv sync --frozen
-make check-eval
-make up
-make sweep             # шесть конфигураций, одинаковый бюджет
-make report
-make candidate         # loss gate -> alias candidate
-make baseline-init     # один раз; не перезаписывает baseline
-make evaluate          # реальные ответы базы и одного кандидата
-make eval              # ненулевой exit code при отказе
-make check-negative    # испорченная копия ответов должна получить отказ
-# make promote         # запускать только после PASS quality gate
-make check-storage     # реально пересоздаёт только контейнер MLflow
-make check-hw67-all     # 9 проверок артефактов + тесты оценки
-```
+Конфиги:
 
-Полные инструкции и контракт scorer/gate — в [EVALUATION.md](EVALUATION.md).
-Протокол и причины выбора критических срезов закреплены в
-[docs/evaluation-protocol.md](docs/evaluation-protocol.md).
-Результаты поиска — [docs/comparison.csv](docs/comparison.csv), разбор дефектов —
-[docs/defects.md](docs/defects.md), единый результат —
-[docs/conclusion.md](docs/conclusion.md). JSON-отчёты и сырые ответы лежат в
-`metrics/` и в артефактах MLflow; ссылки на runs приведены в выводе.
+- `conf/hw67-control.yaml`: 6 конфигураций × 4 optimizer steps, train-пул 32,
+  8 реально обработанных примеров, val 8.
+- `conf/hw67-unaligned.yaml`: те же 6 конфигураций × 120 optimizer steps,
+  train 240 уникальных примеров целиком, val 60, прежние ответы жанрами через запятую.
+- `conf/hw67.yaml`: те же 240/60/120 и исходные ID, но временное представление
+  train/val использует общую с serving system-инструкцию и JSON-ответ. Контекст
+  до 768 токенов сохраняется целиком; любая обрезка или потеря supervision — отказ.
+- Во всех трёх случаях фиксированы model revision, train seed 42 и sampling seed
+  20261025. Выборка из полного train/val стратифицирована по эпохе
+  (до/с 2000 года) и числу жанров (1/2/3+); исходный порядок строк не влияет
+  на результат. Каждый кандидат работает в отдельном процессе.
+- `evaluation/params.json`: единый greedy-протокол, 96 токенов, фиксированные
+  критические срезы и свободный JSON `{"answer":"боевик, криминал"}`.
+  Словарь из 18 жанров является таксономией классов; готовые комбинации
+  ответов и эталон модели не показываются.
 
-Отказ качества является допустимым результатом: candidate остаётся доступным,
-champion назначается только через `make promote` после повторной проверки raw
-и протокола. Исходная база не меняется автоматически. `make baseline-update`
-разрешён только после принятия и сохраняет предыдущий baseline в истории.
-Скринкаст и сценарий для ДЗ 6+7 по договорённости не создавались.
+Перед каждым sweep проверяется полная повторная токенизация 4800 train и
+599 val. В MLflow сохраняются hashes исходников/конфига/тензоров/исходных
+записей, source-link proof, точные выбранные и реально обработанные ID,
+страты, годы, seed, отдельные runs, кривые, ресурсы и автономные model-пакеты.
+Общие исходные данные ДЗ 3–5 и их тензоры не переписываются. Полные input_ids/masks/labels JSON-представления хранятся отдельным сжатым
+артефактом training run. Model-пакет включает proof с hashes, несколькими
+encoded samples и статистикой supervision. Целевой CE в JSON-проходе
+вычисляется только по supervised suffix, сохраняя весь transformer context;
+эквивалентность полного loss и gradients проверяется oracle-тестом.
 
+Нужны Python 3.12, uv, Docker Engine и Docker Compose. MLflow доступен на
+<http://127.0.0.1:5006>. PostgreSQL и артефакты используют отдельные постоянные
+volumes; `make down` их сохраняет. На macOS подходит
+[Colima](https://colima.run/docs/installation/); профиль авторской машины —
+`colima start mlops-hw67`, Docker context — `colima-mlops-hw67`.
 
-`make check-all` проверяет весь накопительный проект, включая свежесть моделей
-ДЗ 5 относительно общего lock. Добавление MLflow изменило этот lock, поэтому
-старые модели ДЗ 5 закономерно требуют переобучения для текущего окружения.
-Их сохранность отдельно проверена в исходном checkout и frozen-среде;
-подробности и точные fingerprints — в [выводе](docs/conclusion.md).
-Полная приёмка текущего ДЗ 6+7 — `make check-hw67-all`.
-
-На авторской машине Docker работает в отдельном профиле Colima:
-
-```bash
-colima start mlops-hw67
-docker context use colima-mlops-hw67
-make up
-```
-
-В новом окружении достаточно любого работающего Docker Engine/Compose.
-Git содержит данные оценки и отчёты; локальные MLflow volumes с runs и весами
-не публикуются. Для собственного восстановления runs выполните учебный маршрут
-выше; закреплённые числовые результаты и сырые ответы доступны без сервера.
-
-
-В чистом клоне исходные train/val и тензоры восстанавливаются из публичного
-закреплённого source без доступа к авторскому локальному DVC remote:
+Восстановление входных данных в клоне:
 
 ```bash
 uv sync --frozen
@@ -378,10 +359,87 @@ tar -xzf docs/datasets/hw67-evaluation.tar.gz
 uv run dvc status eval-data.dvc
 ```
 
-После этого выполните маршрут `make up` → `make sweep` → `make report` →
-`make candidate` → `make evaluate` → `make eval` → `make check-negative` →
-`make check-storage` → `make check-hw67-all`. Файл `evaluation/baseline.json`
-уже включён в Git и закрепляет исходную базу; `make baseline-init` в таком
-клоне пропускается. Эта команда нужна лишь при первой фиксации отсутствующего
-baseline и намеренно запрещает перезапись. Promote выполняется только при PASS;
-первоначальные отчёты демонстрируют предусмотренный отказ.
+Повторная подготовка фиксированного набора из восстановленного source:
+
+```bash
+make prepare-eval-v2
+uv run dvc status eval-data.dvc
+```
+
+Архив содержит 90 вопросов, 5 behavioral-кейсов, полный индекс train и manifest.
+Данные проверяются через DVC; архив включён в Git, приватный cache не требуется.
+Полная методология и ограничения — в [протоколе](docs/evaluation-protocol.md).
+[Первое свободное сравнение](docs/hw67-history/v2-unaligned/README.md) сохранено:
+оно выявило форматный дефект train/serving. После этого появился отдельный
+JSON-aligned проход, при неизменных golden, scorer и порогах. Старые результаты
+не скрываются и не пересчитываются с ослабленным парсером.
+
+Маршрут эксперимента на машине с сохранённым предыдущим MLflow-реестром:
+
+```bash
+make check-eval
+make up
+make sweep-control
+make report-control
+make candidate-control
+make archive-control
+make sweep-unaligned
+make report-unaligned
+make candidate-unaligned
+make archive-unaligned
+make sweep
+make report
+make candidate
+make evaluate
+make eval               # ненулевой код при отказе; порог не ослаблять
+make check-negative
+make compare-hw67
+make naive-baseline
+# make promote          # только при PASS quality gate
+make check-storage
+make check-hw67-all
+make check-unit
+```
+
+`archive-control` и `archive-unaligned` сохраняют промежуточные sweeps
+и закрепляют их версии в `evaluation/comparison-models.json`. Этот файл также закрепляет
+прежнего победителя: aliases для исторических сравнений не используются.
+В чистом новом MLflow-сервере прежние веса отсутствуют: для полного сравнения
+нужно сохранить volumes авторской машины либо воспроизвести старый поиск
+из указанного в истории Git-коммита и закрепить полученную registry version.
+Весов, тензоров, volumes и секретов в Git нет. Сохранённые raw и отчёты
+можно изучать без сервера.
+
+`evaluation/baseline.json` уже включён в Git. `baseline-init` нужен только при
+первой фиксации отсутствующего baseline и запрещает перезапись. Baseline
+не меняется автоматически; `baseline-update` выполняется явно после выпуска.
+Champion назначается только после повторного пересчёта и успешного gate.
+Отказ по качеству оставляет candidate доступным.
+
+Результаты:
+
+- [JSON-aligned sweep](docs/comparison.csv), [контрольный sweep](docs/control-comparison.csv)
+  и [120-шаговый unaligned sweep](docs/unaligned-comparison.csv).
+- [Сравнение качества пяти моделей](docs/quality-comparison.csv)
+  и [F1 по каждому жанру с support](docs/per-label-comparison.csv).
+- [Единый вывод](docs/conclusion.md), [разбор дефектов](docs/defects.md).
+- `metrics/*-outputs.json`, `*-eval.json`, `comparison-diffs.json`,
+  `experiment-comparison.json`, `naive-genre-baseline.json`, `quality-gate.json`, `negative-*`,
+  `source-link-check.json` и `storage-check.json`.
+
+Исходные tests не ослаблялись; адаптация пути shell-проверки описана в
+`docs/test-changes.diff`. Скринкаст и сценарий ДЗ 6+7 не создаются.
+
+`make check-all` остаётся строгой проверкой всех ДЗ, включая свежесть старых
+моделей ДЗ 5 относительно общего lock. Добавление MLflow изменило этот lock:
+текущая проверка старых моделей требует переобучения. Их сохранность ранее
+отдельно подтверждена в исходном checkout и frozen-среде; metadata и метрики
+ради зелёной проверки не переписываются. Полная приёмка ДЗ 6+7 —
+`make check-hw67-all` вместе с `make check-unit`.
+
+
+Диагностический `make naive-baseline` всегда выдаёт одинаковый набор самых
+частых жанров. Число меток и частоты вычисляются только по тем же 240 train-ID,
+без подбора по golden. Он показывает, сколько micro-F1 можно получить за счёт
+частот классов; для сравнения нужен также macro-F1 и per-label support. Это
+дополнительная диагностика, она не меняет заранее заданный release gate.

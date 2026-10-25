@@ -1,7 +1,7 @@
 {
   "name": "my-qwen-adapter",
   "aliases": {
-    "candidate": "2"
+    "candidate": "5"
   },
   "champion_present": false
 }

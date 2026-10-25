@@ -1,0 +1,572 @@
+[
+  {
+    "id": "movie-free-001",
+    "raw": "{\"answer\": \"драма, история, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.44706254199991236
+  },
+  {
+    "id": "movie-free-002",
+    "raw": "{\"answer\": \"триллер, мелодрама, вестерн, история, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.6125602499996603
+  },
+  {
+    "id": "movie-free-003",
+    "raw": "{\"answer\": \"триллер, мелодрама, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.4959265409997897
+  },
+  {
+    "id": "movie-free-004",
+    "raw": "{\"answer\": \"драма, история, детектив\"}",
+    "error": null,
+    "latency_seconds": 0.28740758299954905
+  },
+  {
+    "id": "movie-free-005",
+    "raw": "{\"answer\": \"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.25636712499999703
+  },
+  {
+    "id": "movie-free-006",
+    "raw": "{\"answer\": \"драма, триллер, мелодрама, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.5511960419999014
+  },
+  {
+    "id": "movie-free-007",
+    "raw": "{\"answer\":\"драма, триллер, мелодрама, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.4455041669998536
+  },
+  {
+    "id": "movie-free-008",
+    "raw": "{\"answer\": \"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.26411141700009466
+  },
+  {
+    "id": "movie-free-009",
+    "raw": "{\"answer\":\"триллер, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.24371004099975835
+  },
+  {
+    "id": "movie-free-010",
+    "raw": "{\"answer\":\"драма, комедия, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.3568891659997462
+  },
+  {
+    "id": "movie-free-011",
+    "raw": "{\"answer\": \"триллер, ужасы\"}",
+    "error": null,
+    "latency_seconds": 0.26940558399928705
+  },
+  {
+    "id": "movie-free-012",
+    "raw": "{\"answer\":\"драма, история, мелодрама, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.4217967499998849
+  },
+  {
+    "id": "movie-free-013",
+    "raw": "{\"answer\": \"драма, триллер, мелодрама, криминал, приключения\"}",
+    "error": null,
+    "latency_seconds": 0.50807629099927
+  },
+  {
+    "id": "movie-free-014",
+    "raw": "{\"answer\": \"драма, криминал\"}",
+    "error": null,
+    "latency_seconds": 0.30062549999911425
+  },
+  {
+    "id": "movie-free-015",
+    "raw": "{\"answer\": \"драма, фэнтези, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.3545736659998511
+  },
+  {
+    "id": "movie-free-016",
+    "raw": "{\"answer\": \"триллер, мелодрама, история, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.533427749999646
+  },
+  {
+    "id": "movie-free-017",
+    "raw": "{\"answer\": \"драма, история, мелодрама, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.5470345419998921
+  },
+  {
+    "id": "movie-free-018",
+    "raw": "{\"answer\": \"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.26109749999977794
+  },
+  {
+    "id": "movie-free-019",
+    "raw": "{\"answer\":\"драма, триллер, криминал, мелодрама, история\"}",
+    "error": null,
+    "latency_seconds": 0.4872077089994491
+  },
+  {
+    "id": "movie-free-020",
+    "raw": "{\"answer\": \"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.2581837079997058
+  },
+  {
+    "id": "movie-free-021",
+    "raw": "{\"answer\":\"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.28073987500010844
+  },
+  {
+    "id": "movie-free-022",
+    "raw": "{\"answer\": \"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.2639803749998464
+  },
+  {
+    "id": "movie-free-023",
+    "raw": "{\"answer\": \"драма, триллер, мелодрама, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.5680613329996049
+  },
+  {
+    "id": "movie-free-024",
+    "raw": "{\"answer\": \"триллер, мелодрама\"}",
+    "error": null,
+    "latency_seconds": 0.2836982919998263
+  },
+  {
+    "id": "movie-free-025",
+    "raw": "{\"answer\":\"триллер, мелодрама, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.39775899999949615
+  },
+  {
+    "id": "movie-free-026",
+    "raw": "{\"answer\":\"драма, триллер, мелодрама, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.5520139170002949
+  },
+  {
+    "id": "movie-free-027",
+    "raw": "{\"answer\": \"драма, история, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.29286279200005083
+  },
+  {
+    "id": "movie-free-028",
+    "raw": "{\"answer\": \"драма, история, детектив, мелодрама, криминал, триллер, ужасы, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.7250494999998409
+  },
+  {
+    "id": "movie-free-029",
+    "raw": "{\"answer\":\"драма, фэнтези, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.3432043329994485
+  },
+  {
+    "id": "movie-free-030",
+    "raw": "{\"answer\":\"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.2503935830000046
+  },
+  {
+    "id": "movie-free-031",
+    "raw": "{\"answer\":\"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.2417373750004117
+  },
+  {
+    "id": "movie-free-032",
+    "raw": "{\"answer\": \"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.2554798339997433
+  },
+  {
+    "id": "movie-free-033",
+    "raw": "{\"answer\": \"драма, история, триллер, мелодрама, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.6013472080003339
+  },
+  {
+    "id": "movie-free-034",
+    "raw": "{\"answer\": \"драма, детектив, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.3525423330002013
+  },
+  {
+    "id": "movie-free-035",
+    "raw": "{\"answer\": \"драма, боевик, фэнтези, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.42134933400029695
+  },
+  {
+    "id": "movie-free-036",
+    "raw": "{\"answer\": \"драма, история, мелодрама, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.40472554200005106
+  },
+  {
+    "id": "movie-free-037",
+    "raw": "{\"answer\": \"триллер, фэнтези, мелодрама, приключения\"}",
+    "error": null,
+    "latency_seconds": 0.4400011249999807
+  },
+  {
+    "id": "movie-free-038",
+    "raw": "{\"answer\":\"комедия, триллер, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.3747196249996705
+  },
+  {
+    "id": "movie-free-039",
+    "raw": "{\"answer\": \"REFUSE\"}",
+    "error": null,
+    "latency_seconds": 0.1977159580001171
+  },
+  {
+    "id": "movie-free-040",
+    "raw": "{\"answer\": \"драма, триллер, криминал, мелодрама, приключения\"}",
+    "error": null,
+    "latency_seconds": 0.5083634590000656
+  },
+  {
+    "id": "movie-free-041",
+    "raw": "{\"answer\": \"драма, приключения\"}",
+    "error": null,
+    "latency_seconds": 0.2576234160005697
+  },
+  {
+    "id": "movie-free-042",
+    "raw": "{\"answer\": \"триллер, криминал, мелодрама, приключения\"}",
+    "error": null,
+    "latency_seconds": 0.43769083299957856
+  },
+  {
+    "id": "movie-free-043",
+    "raw": "{\"answer\": \"драма, история, триллер, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.4018910410004537
+  },
+  {
+    "id": "movie-free-044",
+    "raw": "{\"answer\":\"фэнтези, триллер, история, военный\"}",
+    "error": null,
+    "latency_seconds": 0.3663969999997789
+  },
+  {
+    "id": "movie-free-045",
+    "raw": "{\"answer\": \"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.2601561669998773
+  },
+  {
+    "id": "movie-free-046",
+    "raw": "{\"answer\": \"приключения, детектив, история\"}",
+    "error": null,
+    "latency_seconds": 0.27106958300009865
+  },
+  {
+    "id": "movie-free-047",
+    "raw": "{\"answer\":\"драма, триллер, мелодрама, криминал\"}",
+    "error": null,
+    "latency_seconds": 0.45583724999960396
+  },
+  {
+    "id": "movie-free-048",
+    "raw": "{\"answer\":\"драма, криминал, мелодрама, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.4752174579998609
+  },
+  {
+    "id": "movie-free-049",
+    "raw": "{\"answer\": \"драма, история, комедия, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.3657249170000796
+  },
+  {
+    "id": "movie-free-050",
+    "raw": "{\"answer\": \"драма, триллер, криминал, мелодрама, приключения\"}",
+    "error": null,
+    "latency_seconds": 0.5168325839995305
+  },
+  {
+    "id": "movie-free-051",
+    "raw": "{\"answer\":\"триллер, фэнтези, мелодрама\"}",
+    "error": null,
+    "latency_seconds": 0.40204383299987967
+  },
+  {
+    "id": "movie-free-052",
+    "raw": "{\"answer\": \"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.2718572919993676
+  },
+  {
+    "id": "movie-free-053",
+    "raw": "{\"answer\": \"драма, триллер, криминал, мелодрама, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.5585971250002331
+  },
+  {
+    "id": "movie-free-054",
+    "raw": "{\"answer\": \"драма, триллер, мелодрама, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.5601193750007951
+  },
+  {
+    "id": "movie-free-055",
+    "raw": "{\"answer\": \"драма, триллер, мелодрама, криминал\"}",
+    "error": null,
+    "latency_seconds": 0.4592211250001128
+  },
+  {
+    "id": "movie-free-056",
+    "raw": "{\"answer\":\"драма, триллер, фэнтези, мелодрама, приключения\"}",
+    "error": null,
+    "latency_seconds": 0.5271990419996655
+  },
+  {
+    "id": "movie-free-057",
+    "raw": "{\"answer\": \"драма, анимация, триллер, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.4339104579994455
+  },
+  {
+    "id": "movie-free-058",
+    "raw": "{\"answer\": \"драма, история, криминал, мелодрама, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.5076263749997452
+  },
+  {
+    "id": "movie-free-059",
+    "raw": "{\"answer\": \"драма, история, криминал, мелодрама, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.5422525419999147
+  },
+  {
+    "id": "movie-free-060",
+    "raw": "{\"answer\":\"драма, история, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.33173983300002874
+  },
+  {
+    "id": "movie-free-061",
+    "raw": "{\"answer\": \"драма, триллер, криминал, мелодрама, история\"}",
+    "error": null,
+    "latency_seconds": 0.4869337500003894
+  },
+  {
+    "id": "movie-free-062",
+    "raw": "{\"answer\": \"драма, история\"}",
+    "error": null,
+    "latency_seconds": 0.23921445900032268
+  },
+  {
+    "id": "movie-free-063",
+    "raw": "{\"answer\": \"драма, история, мелодрама, приключения\"}",
+    "error": null,
+    "latency_seconds": 0.403866583999843
+  },
+  {
+    "id": "movie-free-064",
+    "raw": "{\"answer\": \"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.25577483300003223
+  },
+  {
+    "id": "movie-free-065",
+    "raw": "{\"answer\":\"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.2514694999999847
+  },
+  {
+    "id": "movie-free-066",
+    "raw": "{\"answer\": \"REFUSE\"}",
+    "error": null,
+    "latency_seconds": 0.18923829100003786
+  },
+  {
+    "id": "movie-free-067",
+    "raw": "{\"answer\": \"драма, детектив, вестерн, военный, документальный\"}",
+    "error": null,
+    "latency_seconds": 0.4532212080002864
+  },
+  {
+    "id": "movie-free-068",
+    "raw": "{\"answer\": \"драма, триллер, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.35776487499970244
+  },
+  {
+    "id": "movie-free-069",
+    "raw": "{\"answer\":\"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.25082812499931606
+  },
+  {
+    "id": "movie-free-070",
+    "raw": "{\"answer\": \"фэнтези, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.291592125000534
+  },
+  {
+    "id": "movie-free-071",
+    "raw": "{\"answer\": \"триллер, история, мелодрама\"}",
+    "error": null,
+    "latency_seconds": 0.33798525000020163
+  },
+  {
+    "id": "movie-free-072",
+    "raw": "{\"answer\":\"драма, триллер, мелодрама, приключения\"}",
+    "error": null,
+    "latency_seconds": 0.4215192080000634
+  },
+  {
+    "id": "movie-free-073",
+    "raw": "{\"answer\":\"драма, боевик, вестерн, триллер, мелодрама, приключения, семейный\"}",
+    "error": null,
+    "latency_seconds": 0.5978266250003799
+  },
+  {
+    "id": "movie-free-074",
+    "raw": "{\"answer\": \"драма, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.251320957999269
+  },
+  {
+    "id": "movie-free-075",
+    "raw": "{\"answer\": \"фэнтези, вестерн, детектив\"}",
+    "error": null,
+    "latency_seconds": 0.3747310420003487
+  },
+  {
+    "id": "movie-free-076",
+    "raw": "{\"answer\": \"драма, триллер, криминал, мелодрама, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.5725230420002845
+  },
+  {
+    "id": "movie-free-077",
+    "raw": "{\"answer\": \"триллер, ужасы, фэнтези, мелодрама, драма\"}",
+    "error": null,
+    "latency_seconds": 0.5440363329998945
+  },
+  {
+    "id": "movie-free-078",
+    "raw": "{\"answer\":\"триллер, документальный, вестерн, детектив, история, мелодрама, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.7040200840001489
+  },
+  {
+    "id": "movie-free-079",
+    "raw": "{\"answer\": \"драма, криминал\"}",
+    "error": null,
+    "latency_seconds": 0.2978921250005442
+  },
+  {
+    "id": "movie-free-080",
+    "raw": "{\"answer\": \"драма, триллер, криминал, мелодрама, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.5761467080001239
+  },
+  {
+    "id": "movie-free-081",
+    "raw": "{\"answer\": \"драма, история, триллер\"}",
+    "error": null,
+    "latency_seconds": 0.29240958300033526
+  },
+  {
+    "id": "movie-free-082",
+    "raw": "{\"answer\": \"драма, триллер, криминал, мелодрама, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.5685764170002585
+  },
+  {
+    "id": "movie-free-083",
+    "raw": "{\"answer\":\"драма, триллер, мелодрама, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.5592491249999512
+  },
+  {
+    "id": "movie-free-084",
+    "raw": "{\"answer\": \"триллер, мелодрама, вестерн, детектив, фэнтези, криминал, приключения, семейный\"}",
+    "error": null,
+    "latency_seconds": 0.7382530830000178
+  },
+  {
+    "id": "movie-free-085",
+    "raw": "{\"answer\": \"триллер, мелодрама, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.49912124999991647
+  },
+  {
+    "id": "movie-free-086",
+    "raw": "{\"answer\": \"драма, мелодрама, приключения\"}",
+    "error": null,
+    "latency_seconds": 0.3613129579998713
+  },
+  {
+    "id": "movie-free-087",
+    "raw": "{\"answer\":\"драма, боевик, вестерн, триллер, криминал, мелодрама, приключения, семейный\"}",
+    "error": null,
+    "latency_seconds": 0.7073890419997042
+  },
+  {
+    "id": "movie-free-088",
+    "raw": "{\"answer\": \"триллер, мелодрама, история, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.5326769999992393
+  },
+  {
+    "id": "movie-free-089",
+    "raw": "{\"answer\":\"триллер, фэнтези, мелодрама, вестерн, детектив, документальный, криминал, приключения, семейный\"}",
+    "error": null,
+    "latency_seconds": 0.7686144589997639
+  },
+  {
+    "id": "movie-free-090",
+    "raw": "{\"answer\":\"драма, история, детектив\"}",
+    "error": null,
+    "latency_seconds": 0.2808782500005691
+  },
+  {
+    "id": "behavior-format",
+    "raw": "{\"answer\": \"триллер, мелодрама, вестерн, история, криминал, фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.618496540999331
+  },
+  {
+    "id": "behavior-paraphrase",
+    "raw": "{\"answer\": \"триллер, мелодрама, вестерн\"}",
+    "error": null,
+    "latency_seconds": 0.3776403329993627
+  },
+  {
+    "id": "behavior-refusal-geography",
+    "raw": "{\"answer\": \"Реализация\"}",
+    "error": null,
+    "latency_seconds": 0.21915925000030256
+  },
+  {
+    "id": "behavior-refusal-arithmetic",
+    "raw": "{\"answer\": \"REFUSE\"}",
+    "error": null,
+    "latency_seconds": 0.18857129200023337
+  },
+  {
+    "id": "behavior-format-known",
+    "raw": "{\"answer\": \"фэнтези\"}",
+    "error": null,
+    "latency_seconds": 0.23980720800045674
+  }
+]

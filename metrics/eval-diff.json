@@ -1,11 +1,10 @@
 {
   "improved": [
-    "movie-mcq-014",
-    "movie-mcq-021"
+    "movie-free-004",
+    "movie-free-046",
+    "movie-free-074"
   ],
   "regressed": [
-    "movie-mcq-008",
-    "movie-mcq-012",
-    "movie-mcq-037"
+    "movie-free-018"
   ]
 }

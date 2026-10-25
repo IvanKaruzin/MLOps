@@ -1,54 +1,1178 @@
 {
   "passed": true,
-  "parent_id": "a2492440db4d45329a0ab9ff8252750c",
+  "scope": "CPU/server package integrity and fresh isolated MPS registry inference",
+  "parent_id": "c91104948b3c41e3abbd54a07bcb71c7",
   "candidate": {
     "kind": "adapter",
     "name": "my-qwen-adapter",
-    "version": "2",
-    "run_id": "dbc125fa62764a8aaf1f213d41cf2ded",
-    "uri": "models:/my-qwen-adapter/2"
+    "version": "5",
+    "run_id": "724f89d55d204ee1a24b6373fb6539dd",
+    "uri": "models:/my-qwen-adapter/5"
   },
-  "weights_sha256": "ece56da7a9534c649bd3f431e4e2b3e52137cf13f7af6647b5bdc08538c9acd9",
-  "weights_identical_to_v1": true,
+  "weights_sha256": "e894fe75941d70f681390984aea9a14c37ea192aee2045bdd0775ee325a6d8ea",
   "bundled_prompt_identical": true,
   "isolated_reload_matches": true,
+  "isolated_reload_status": "PASS: fresh python -I, temporary cwd, HF offline, actual MPS, both stored answers match exactly",
   "sample": {
     "prompt": "A spaceship crew explores an unknown planet and discovers an alien civilization.",
-    "expected": "Фильм: \"Космос и звезды\" (",
+    "expected": "{\"answer\": \"анимация, приключения, фантастика\"}",
     "actual": [
-      "Фильм: \"Космос и звезды\" ("
+      "{\"answer\": \"анимация, приключения, фантастика\"}"
     ]
   },
-  "runs": [
-    {
-      "name": "qv-r4-low",
-      "run_id": "31bdf80b4d13402aa8bbc8d26b9be1ab",
-      "status": "FINISHED"
+  "selected_package": {
+    "role": "aligned",
+    "name": "all-r8-low",
+    "run_id": "724f89d55d204ee1a24b6373fb6539dd",
+    "weights_sha256": "e894fe75941d70f681390984aea9a14c37ea192aee2045bdd0775ee325a6d8ea",
+    "weight_bytes": 20236472,
+    "lora_tensors": 392,
+    "lora_parameters": 5046272,
+    "projection_shapes": {
+      "down_proj.lora_A": [
+        8,
+        3072
+      ],
+      "down_proj.lora_B": [
+        1024,
+        8
+      ],
+      "gate_proj.lora_A": [
+        8,
+        1024
+      ],
+      "gate_proj.lora_B": [
+        3072,
+        8
+      ],
+      "up_proj.lora_A": [
+        8,
+        1024
+      ],
+      "up_proj.lora_B": [
+        3072,
+        8
+      ],
+      "k_proj.lora_A": [
+        8,
+        1024
+      ],
+      "k_proj.lora_B": [
+        1024,
+        8
+      ],
+      "o_proj.lora_A": [
+        8,
+        2048
+      ],
+      "o_proj.lora_B": [
+        1024,
+        8
+      ],
+      "q_proj.lora_A": [
+        8,
+        1024
+      ],
+      "q_proj.lora_B": [
+        2048,
+        8
+      ],
+      "v_proj.lora_A": [
+        8,
+        1024
+      ],
+      "v_proj.lora_B": [
+        1024,
+        8
+      ]
     },
-    {
-      "name": "qv-r4-high",
-      "run_id": "9ed0552218054ca0bf01080b329efdaf",
-      "status": "FINISHED"
-    },
-    {
-      "name": "qv-r8-low",
-      "run_id": "e8fbfb69739f4fea9859d05ea5203db8",
-      "status": "FINISHED"
-    },
-    {
-      "name": "qv-r8-high",
-      "run_id": "2ff299109bd044f08b04503f3ede3595",
-      "status": "FINISHED"
-    },
-    {
-      "name": "all-r8-low",
-      "run_id": "3d778a37bf974faa9b25292a0fcdc4f2",
-      "status": "FINISHED"
-    },
-    {
-      "name": "all-r8-high",
-      "run_id": "dbc125fa62764a8aaf1f213d41cf2ded",
-      "status": "FINISHED"
+    "signature_checked": true,
+    "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+    "bundled_prompt_identical": true,
+    "bundled_model_code_identical": true,
+    "requirements": [
+      "accelerate==1.14.0",
+      "mlflow==2.22.2",
+      "numpy==2.5.3",
+      "pandas==2.3.3",
+      "peft==0.20.0",
+      "safetensors==0.8.0",
+      "torch==2.14.0",
+      "transformers==5.16.1"
+    ],
+    "manifest_and_sampling_checked": true,
+    "training_view_sha256": "32a806367d5f08947a7fd50665850ce34f55d07134c523533645f6e6bc4c965e",
+    "response_format": "json_genres",
+    "loss_implementation": "supervised_suffix_same_objective",
+    "generation_system_matches_evaluation": true,
+    "generation_max_new_tokens": 96,
+    "sample": {
+      "prompt": "A spaceship crew explores an unknown planet and discovers an alien civilization.",
+      "expected": "{\"answer\": \"анимация, приключения, фантастика\"}"
     }
-  ]
+  },
+  "packages": [
+    {
+      "role": "aligned",
+      "name": "all-r8-high",
+      "run_id": "16256cf4737b41fbbb7ba9e9122307d2",
+      "weights_sha256": "500ee037a38dcc6d5c9145b29dc9440c92515cb42f5bc79d1abedca46699f8bd",
+      "weight_bytes": 20236472,
+      "lora_tensors": 392,
+      "lora_parameters": 5046272,
+      "projection_shapes": {
+        "down_proj.lora_A": [
+          8,
+          3072
+        ],
+        "down_proj.lora_B": [
+          1024,
+          8
+        ],
+        "gate_proj.lora_A": [
+          8,
+          1024
+        ],
+        "gate_proj.lora_B": [
+          3072,
+          8
+        ],
+        "up_proj.lora_A": [
+          8,
+          1024
+        ],
+        "up_proj.lora_B": [
+          3072,
+          8
+        ],
+        "k_proj.lora_A": [
+          8,
+          1024
+        ],
+        "k_proj.lora_B": [
+          1024,
+          8
+        ],
+        "o_proj.lora_A": [
+          8,
+          2048
+        ],
+        "o_proj.lora_B": [
+          1024,
+          8
+        ],
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "training_view_sha256": "32a806367d5f08947a7fd50665850ce34f55d07134c523533645f6e6bc4c965e",
+      "response_format": "json_genres",
+      "loss_implementation": "supervised_suffix_same_objective",
+      "generation_system_matches_evaluation": true,
+      "generation_max_new_tokens": 96
+    },
+    {
+      "role": "aligned",
+      "name": "all-r8-low",
+      "run_id": "724f89d55d204ee1a24b6373fb6539dd",
+      "weights_sha256": "e894fe75941d70f681390984aea9a14c37ea192aee2045bdd0775ee325a6d8ea",
+      "weight_bytes": 20236472,
+      "lora_tensors": 392,
+      "lora_parameters": 5046272,
+      "projection_shapes": {
+        "down_proj.lora_A": [
+          8,
+          3072
+        ],
+        "down_proj.lora_B": [
+          1024,
+          8
+        ],
+        "gate_proj.lora_A": [
+          8,
+          1024
+        ],
+        "gate_proj.lora_B": [
+          3072,
+          8
+        ],
+        "up_proj.lora_A": [
+          8,
+          1024
+        ],
+        "up_proj.lora_B": [
+          3072,
+          8
+        ],
+        "k_proj.lora_A": [
+          8,
+          1024
+        ],
+        "k_proj.lora_B": [
+          1024,
+          8
+        ],
+        "o_proj.lora_A": [
+          8,
+          2048
+        ],
+        "o_proj.lora_B": [
+          1024,
+          8
+        ],
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "training_view_sha256": "32a806367d5f08947a7fd50665850ce34f55d07134c523533645f6e6bc4c965e",
+      "response_format": "json_genres",
+      "loss_implementation": "supervised_suffix_same_objective",
+      "generation_system_matches_evaluation": true,
+      "generation_max_new_tokens": 96
+    },
+    {
+      "role": "aligned",
+      "name": "qv-r4-high",
+      "run_id": "5f2c32d3b90d4652b2e9c03e19753a95",
+      "weights_sha256": "0544f089cbf5a7929b007bfa40b1657d29c07542e595b6f5024d5327988e7cf2",
+      "weight_bytes": 2308432,
+      "lora_tensors": 112,
+      "lora_parameters": 573440,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          4,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          4
+        ],
+        "v_proj.lora_A": [
+          4,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          4
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "training_view_sha256": "32a806367d5f08947a7fd50665850ce34f55d07134c523533645f6e6bc4c965e",
+      "response_format": "json_genres",
+      "loss_implementation": "supervised_suffix_same_objective",
+      "generation_system_matches_evaluation": true,
+      "generation_max_new_tokens": 96
+    },
+    {
+      "role": "aligned",
+      "name": "qv-r4-low",
+      "run_id": "b7171cab489441ceb68cc0a09aad8545",
+      "weights_sha256": "9280618b45055305469cbec7906730ae6d1866015525eed30fdd684c379b112e",
+      "weight_bytes": 2308432,
+      "lora_tensors": 112,
+      "lora_parameters": 573440,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          4,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          4
+        ],
+        "v_proj.lora_A": [
+          4,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          4
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "training_view_sha256": "32a806367d5f08947a7fd50665850ce34f55d07134c523533645f6e6bc4c965e",
+      "response_format": "json_genres",
+      "loss_implementation": "supervised_suffix_same_objective",
+      "generation_system_matches_evaluation": true,
+      "generation_max_new_tokens": 96
+    },
+    {
+      "role": "aligned",
+      "name": "qv-r8-high",
+      "run_id": "89e334afda6e43f097de96b880b091d7",
+      "weights_sha256": "f223f68eafa3b77bde22530374cdc2913598ca7f6d1ac81ee3bee0e3a8331139",
+      "weight_bytes": 4602248,
+      "lora_tensors": 112,
+      "lora_parameters": 1146880,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "training_view_sha256": "32a806367d5f08947a7fd50665850ce34f55d07134c523533645f6e6bc4c965e",
+      "response_format": "json_genres",
+      "loss_implementation": "supervised_suffix_same_objective",
+      "generation_system_matches_evaluation": true,
+      "generation_max_new_tokens": 96
+    },
+    {
+      "role": "aligned",
+      "name": "qv-r8-low",
+      "run_id": "804d62e912f2461987521f38dca533f4",
+      "weights_sha256": "16e7f38818c46ee7c0a15aecc2a52edc4014983b3855b27371e7805296f57897",
+      "weight_bytes": 4602248,
+      "lora_tensors": 112,
+      "lora_parameters": 1146880,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "training_view_sha256": "32a806367d5f08947a7fd50665850ce34f55d07134c523533645f6e6bc4c965e",
+      "response_format": "json_genres",
+      "loss_implementation": "supervised_suffix_same_objective",
+      "generation_system_matches_evaluation": true,
+      "generation_max_new_tokens": 96
+    },
+    {
+      "role": "control",
+      "name": "all-r8-high",
+      "run_id": "80adda95080744e6b3ce90b5b1ba5fa3",
+      "weights_sha256": "886478ef51b232701525123be9998d6cafd43dd454ebc8af05be838e46c4279c",
+      "weight_bytes": 20236472,
+      "lora_tensors": 392,
+      "lora_parameters": 5046272,
+      "projection_shapes": {
+        "down_proj.lora_A": [
+          8,
+          3072
+        ],
+        "down_proj.lora_B": [
+          1024,
+          8
+        ],
+        "gate_proj.lora_A": [
+          8,
+          1024
+        ],
+        "gate_proj.lora_B": [
+          3072,
+          8
+        ],
+        "up_proj.lora_A": [
+          8,
+          1024
+        ],
+        "up_proj.lora_B": [
+          3072,
+          8
+        ],
+        "k_proj.lora_A": [
+          8,
+          1024
+        ],
+        "k_proj.lora_B": [
+          1024,
+          8
+        ],
+        "o_proj.lora_A": [
+          8,
+          2048
+        ],
+        "o_proj.lora_B": [
+          1024,
+          8
+        ],
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "verification_snapshot": "metrics/hw67-history/v2-unaligned/model-package-check.json"
+    },
+    {
+      "role": "control",
+      "name": "all-r8-low",
+      "run_id": "1379c34facd7410683c9397f55175a0c",
+      "weights_sha256": "1c4d85222128255828c2aade0f1d8c50a6296b08ffc14d06a9a7367ebb5bdb55",
+      "weight_bytes": 20236472,
+      "lora_tensors": 392,
+      "lora_parameters": 5046272,
+      "projection_shapes": {
+        "down_proj.lora_A": [
+          8,
+          3072
+        ],
+        "down_proj.lora_B": [
+          1024,
+          8
+        ],
+        "gate_proj.lora_A": [
+          8,
+          1024
+        ],
+        "gate_proj.lora_B": [
+          3072,
+          8
+        ],
+        "up_proj.lora_A": [
+          8,
+          1024
+        ],
+        "up_proj.lora_B": [
+          3072,
+          8
+        ],
+        "k_proj.lora_A": [
+          8,
+          1024
+        ],
+        "k_proj.lora_B": [
+          1024,
+          8
+        ],
+        "o_proj.lora_A": [
+          8,
+          2048
+        ],
+        "o_proj.lora_B": [
+          1024,
+          8
+        ],
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "verification_snapshot": "metrics/hw67-history/v2-unaligned/model-package-check.json"
+    },
+    {
+      "role": "control",
+      "name": "qv-r4-high",
+      "run_id": "9e3289cd45844a41954450cf7091b2aa",
+      "weights_sha256": "803687be8c3da6c2cee89793e0909832781cecbe117bc5d383c6f038ce353d8b",
+      "weight_bytes": 2308432,
+      "lora_tensors": 112,
+      "lora_parameters": 573440,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          4,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          4
+        ],
+        "v_proj.lora_A": [
+          4,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          4
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "verification_snapshot": "metrics/hw67-history/v2-unaligned/model-package-check.json"
+    },
+    {
+      "role": "control",
+      "name": "qv-r4-low",
+      "run_id": "83fa290d60c349aabfa2165d7d69cf94",
+      "weights_sha256": "2eaec8a619cc97abb5e0e4f91e94c249810b4a8de805d0be18daa21f6ac7f5f3",
+      "weight_bytes": 2308432,
+      "lora_tensors": 112,
+      "lora_parameters": 573440,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          4,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          4
+        ],
+        "v_proj.lora_A": [
+          4,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          4
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "verification_snapshot": "metrics/hw67-history/v2-unaligned/model-package-check.json"
+    },
+    {
+      "role": "control",
+      "name": "qv-r8-high",
+      "run_id": "0d504303187f4a11963f9e4e00a0f953",
+      "weights_sha256": "61cf96e853ad83a9ca699de3d650e6838dde0b5e7f5ea3126d817256c956b27c",
+      "weight_bytes": 4602248,
+      "lora_tensors": 112,
+      "lora_parameters": 1146880,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "verification_snapshot": "metrics/hw67-history/v2-unaligned/model-package-check.json"
+    },
+    {
+      "role": "control",
+      "name": "qv-r8-low",
+      "run_id": "2aa8b014539c4cb5af123b9fc70006cc",
+      "weights_sha256": "daf73fb3b9d3240050ad5ed3fe298d3d9832a7ae0a14efd48e1623300d010b71",
+      "weight_bytes": 4602248,
+      "lora_tensors": 112,
+      "lora_parameters": 1146880,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "verification_snapshot": "metrics/hw67-history/v2-unaligned/model-package-check.json"
+    },
+    {
+      "role": "unaligned",
+      "name": "all-r8-high",
+      "run_id": "67920a2d113b406dad60e1f8ee0642bf",
+      "weights_sha256": "abe388c2a5339d09473d8c964923e81dcd135f4d2314d86e5d15b2a4fd2ba925",
+      "weight_bytes": 20236472,
+      "lora_tensors": 392,
+      "lora_parameters": 5046272,
+      "projection_shapes": {
+        "down_proj.lora_A": [
+          8,
+          3072
+        ],
+        "down_proj.lora_B": [
+          1024,
+          8
+        ],
+        "gate_proj.lora_A": [
+          8,
+          1024
+        ],
+        "gate_proj.lora_B": [
+          3072,
+          8
+        ],
+        "up_proj.lora_A": [
+          8,
+          1024
+        ],
+        "up_proj.lora_B": [
+          3072,
+          8
+        ],
+        "k_proj.lora_A": [
+          8,
+          1024
+        ],
+        "k_proj.lora_B": [
+          1024,
+          8
+        ],
+        "o_proj.lora_A": [
+          8,
+          2048
+        ],
+        "o_proj.lora_B": [
+          1024,
+          8
+        ],
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "verification_snapshot": "metrics/hw67-history/v2-unaligned/model-package-check.json"
+    },
+    {
+      "role": "unaligned",
+      "name": "all-r8-low",
+      "run_id": "7afd074952404009ad834bcab70f5db8",
+      "weights_sha256": "547c2cacb704765be4a4707c3557f612182b0bb4f97db5283c6bb9df28846dd1",
+      "weight_bytes": 20236472,
+      "lora_tensors": 392,
+      "lora_parameters": 5046272,
+      "projection_shapes": {
+        "down_proj.lora_A": [
+          8,
+          3072
+        ],
+        "down_proj.lora_B": [
+          1024,
+          8
+        ],
+        "gate_proj.lora_A": [
+          8,
+          1024
+        ],
+        "gate_proj.lora_B": [
+          3072,
+          8
+        ],
+        "up_proj.lora_A": [
+          8,
+          1024
+        ],
+        "up_proj.lora_B": [
+          3072,
+          8
+        ],
+        "k_proj.lora_A": [
+          8,
+          1024
+        ],
+        "k_proj.lora_B": [
+          1024,
+          8
+        ],
+        "o_proj.lora_A": [
+          8,
+          2048
+        ],
+        "o_proj.lora_B": [
+          1024,
+          8
+        ],
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "verification_snapshot": "metrics/hw67-history/v2-unaligned/model-package-check.json"
+    },
+    {
+      "role": "unaligned",
+      "name": "qv-r4-high",
+      "run_id": "b4a9f06bd65e493892205ade2639fc3e",
+      "weights_sha256": "40fed2525508aecbb8598417eda5b35146b13f039fa233d87ae888037fd17bae",
+      "weight_bytes": 2308432,
+      "lora_tensors": 112,
+      "lora_parameters": 573440,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          4,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          4
+        ],
+        "v_proj.lora_A": [
+          4,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          4
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "verification_snapshot": "metrics/hw67-history/v2-unaligned/model-package-check.json"
+    },
+    {
+      "role": "unaligned",
+      "name": "qv-r4-low",
+      "run_id": "6c8e4de126a94ce1a72878d5b39384af",
+      "weights_sha256": "6cce6424a80ceb68d2acc87754dd05510c9131094a43b373aa846ac5e7a1faa0",
+      "weight_bytes": 2308432,
+      "lora_tensors": 112,
+      "lora_parameters": 573440,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          4,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          4
+        ],
+        "v_proj.lora_A": [
+          4,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          4
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "verification_snapshot": "metrics/hw67-history/v2-unaligned/model-package-check.json"
+    },
+    {
+      "role": "unaligned",
+      "name": "qv-r8-high",
+      "run_id": "fcd9cd9acedc44d68671fb3c9bed8ae9",
+      "weights_sha256": "2abad4b1e995710c6e3bd4518abaad168ef737aae67ca8bf388b78f17ac41628",
+      "weight_bytes": 4602248,
+      "lora_tensors": 112,
+      "lora_parameters": 1146880,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "verification_snapshot": "metrics/hw67-history/v2-unaligned/model-package-check.json"
+    },
+    {
+      "role": "unaligned",
+      "name": "qv-r8-low",
+      "run_id": "b5aa3685e0a748edb8b666a0888b1731",
+      "weights_sha256": "81b851d530de3abf187763415c35ad60cb06f969ef1ea43f20a91fa6c0bcf1e1",
+      "weight_bytes": 4602248,
+      "lora_tensors": 112,
+      "lora_parameters": 1146880,
+      "projection_shapes": {
+        "q_proj.lora_A": [
+          8,
+          1024
+        ],
+        "q_proj.lora_B": [
+          2048,
+          8
+        ],
+        "v_proj.lora_A": [
+          8,
+          1024
+        ],
+        "v_proj.lora_B": [
+          1024,
+          8
+        ]
+      },
+      "signature_checked": true,
+      "tokenizer_vocab_sha256": "3ec3c124e02b7ace235364350c04b8fc38d34b182aad914fc45430fa925c0f3f",
+      "bundled_prompt_identical": true,
+      "bundled_model_code_identical": true,
+      "requirements": [
+        "accelerate==1.14.0",
+        "mlflow==2.22.2",
+        "numpy==2.5.3",
+        "pandas==2.3.3",
+        "peft==0.20.0",
+        "safetensors==0.8.0",
+        "torch==2.14.0",
+        "transformers==5.16.1"
+      ],
+      "manifest_and_sampling_checked": true,
+      "verification_snapshot": "metrics/hw67-history/v2-unaligned/model-package-check.json"
+    }
+  ],
+  "training_view_sha256": "32a806367d5f08947a7fd50665850ce34f55d07134c523533645f6e6bc4c965e",
+  "response_format": "json_genres",
+  "generation_system_matches_evaluation": true,
+  "generation_max_new_tokens": 96,
+  "loss_implementation": "supervised_suffix_same_objective",
+  "isolated_reload": {
+    "passed": true,
+    "actual": [
+      "{\"answer\": \"анимация, приключения, фантастика\"}",
+      "{\"answer\": \"драма, комедия, криминал, мелодрама\"}"
+    ],
+    "device": "mps",
+    "isolated_mode": true,
+    "helper_loaded_from_model_bundle": true,
+    "no_local_config": true,
+    "response_format": "json_genres",
+    "generation_max_new_tokens": 96,
+    "expected": [
+      "{\"answer\": \"анимация, приключения, фантастика\"}",
+      "{\"answer\": \"драма, комедия, криминал, мелодрама\"}"
+    ],
+    "uri": "models:/my-qwen-adapter/5",
+    "alias_candidate_version": "5"
+  }
 }

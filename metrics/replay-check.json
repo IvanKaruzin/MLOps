@@ -1,0 +1,25 @@
+{
+  "evaluation_run_id": "add3fbe58ada41a9b87dde71cc5580ca",
+  "ignored_fields": [
+    "latency_seconds"
+  ],
+  "roles": {
+    "baseline": {
+      "n": 95,
+      "identical_raw_and_error": true
+    },
+    "previous": {
+      "n": 95,
+      "identical_raw_and_error": true
+    },
+    "sampling_control": {
+      "n": 95,
+      "identical_raw_and_error": true
+    },
+    "unaligned": {
+      "n": 95,
+      "identical_raw_and_error": true
+    }
+  },
+  "passed": true
+}

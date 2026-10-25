@@ -1,0 +1,49 @@
+# Одинаковые стратифицированные train/val и бюджет для всех кандидатов.
+model:
+  name: Qwen/Qwen3-0.6B
+  revision: c1899de289a04d12100db370d81485cdf75e47ca
+  device: auto
+  dtype: bfloat16
+  enable_thinking: false
+data:
+  train: data/tokenized/train.pt
+  val: data/tokenized/val.pt
+  source_train: data/train.jsonl
+  source_val: data/val.jsonl
+  tokenization_params: params.yaml
+sampling:
+  method: stratified_shuffle
+  seed: 20261025
+train:
+  seed: 42
+  max_steps: 120
+  train_limit: 240
+  val_limit: 60
+  batch_size: 1
+  grad_accum: 2
+  eval_every: 30
+  gradient_checkpointing: true
+lora:
+  dropout: 0.05
+  alpha_over_r: 2
+sweep:
+  - {name: qv-r4-low, r: 4, lr: 0.0001, target_modules: [q_proj, v_proj]}
+  - {name: qv-r4-high, r: 4, lr: 0.0003, target_modules: [q_proj, v_proj]}
+  - {name: qv-r8-low, r: 8, lr: 0.0001, target_modules: [q_proj, v_proj]}
+  - {name: qv-r8-high, r: 8, lr: 0.0003, target_modules: [q_proj, v_proj]}
+  - {name: all-r8-low, r: 8, lr: 0.0001, target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]}
+  - {name: all-r8-high, r: 8, lr: 0.0003, target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]}
+tracking:
+  uri: http://127.0.0.1:5006
+  experiment: hw67-main-stratified
+registry:
+  name: my-qwen-adapter
+  alias: candidate
+  # Порог относительный к базе на ТОМ ЖЕ val; меньше loss — лучше.
+  max_val_ratio: 1.0
+generation:
+  max_new_tokens: 16
+  system: "Классифицируй фильм по описанию: перечисли подходящие жанры через запятую без пояснений."
+  prompts:
+    - "A spaceship crew explores an unknown planet and discovers an alien civilization."
+    - "A detective investigates a mysterious murder while the suspect tries to escape."

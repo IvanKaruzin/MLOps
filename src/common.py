@@ -21,6 +21,21 @@ def validate_params(params):
     for key in ("max_steps", "train_limit", "val_limit", "batch_size", "grad_accum", "eval_every"):
         if type(train[key]) is not int or train[key] <= 0:
             raise ValueError(f"train.{key}: нужно положительное целое число")
+    if type(train["seed"]) is not int:
+        raise ValueError("train.seed: нужно целое число")
+    if train.get("response_format", "source") not in ("source", "json_genres"):
+        raise ValueError("train.response_format: допустимы source и json_genres")
+    if train.get("response_format") == "json_genres" and (type(train.get("view_max_seq_len")) is not int
+                                                          or train["view_max_seq_len"] <= 0):
+        raise ValueError("JSON training view требует положительный view_max_seq_len")
+    sampling = params["sampling"]
+    if sampling.get("method") != "stratified_shuffle" or type(sampling.get("seed")) is not int:
+        raise ValueError("Нужны sampling.method=stratified_shuffle и целочисленный sampling.seed")
+    for key in ("train", "val", "source_train", "source_val", "tokenization_params"):
+        if not isinstance(params["data"].get(key), str) or not params["data"][key]:
+            raise ValueError(f"data.{key}: нужен путь к файлу")
+    if params["data"]["source_train"] == params["data"]["source_val"]:
+        raise ValueError("Исходные train и val должны различаться")
     candidates = params["sweep"]
     if len(candidates) < 6 or len({item["name"] for item in candidates}) != len(candidates):
         raise ValueError("Нужно минимум шесть кандидатов с уникальными именами")
@@ -60,14 +75,26 @@ def code_digest():
 
 def provenance(params):
     sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
+    source_hashes = {f"source_{split}_sha256": digest(params["data"][f"source_{split}"])
+                     for split in ("train", "val")}
+    source_hashes["tokenization_params_sha256"] = digest(params["data"]["tokenization_params"])
     return {
         "git_sha": sha,
         "git_dirty": str(bool(subprocess.check_output(["git", "status", "--porcelain"], text=True).strip())),
         "code_sha256": code_digest(),
         "data_train_sha256": digest(params["data"]["train"]),
         "data_val_sha256": digest(params["data"]["val"]),
-        "config_sha256": hashlib.sha256(json.dumps(params, sort_keys=True).encode()).hexdigest(),
+        **source_hashes,
+        "config_sha256": hashlib.sha256(json.dumps(
+            {"params": params, "source_hashes": source_hashes}, sort_keys=True, allow_nan=False).encode()).hexdigest(),
     }
+
+
+def verify_provenance(params, expected):
+    current = provenance(params)
+    for key in ("code_sha256", "config_sha256", "data_train_sha256", "data_val_sha256"):
+        if current[key] != expected.get(key):
+            raise ValueError(f"Входы изменились во время sweep: {key}")
 
 
 def save_json(path, value):
