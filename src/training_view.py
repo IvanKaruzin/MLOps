@@ -3,6 +3,7 @@
 import copy
 import hashlib
 import json
+import re
 from pathlib import Path
 
 import yaml
@@ -10,6 +11,81 @@ import yaml
 
 def fingerprint(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, ensure_ascii=False, allow_nan=False).encode()).hexdigest()
+
+
+def normalized_input(value):
+    return " ".join(re.findall(r"\w+", value.casefold()))
+
+
+def load_auxiliary(params):
+    """Read only training/development data; never open a holdout manifest path."""
+    path = params["data"].get("auxiliary")
+    if not path:
+        return {"train": [], "val": []}, None
+    if params["train"].get("response_format") != "json_genres":
+        raise ValueError("Auxiliary data requires the JSON training view")
+    raw = Path(path).read_bytes()
+    bundle = json.loads(raw)
+    if (not isinstance(bundle, dict) or type(bundle.get("version")) not in (str, int)
+            or not isinstance(bundle.get("train"), list) or not isinstance(bundle.get("dev"), list)
+            or "sealed_final" in bundle):
+        raise ValueError("Auxiliary bundle requires version/train/dev and no sealed holdout records")
+    originals = {}
+    for split in ("train", "val"):
+        originals[split] = [json.loads(line) for line in Path(params["data"][f"source_{split}"])
+                           .read_text(encoding="utf-8").splitlines() if line.strip()]
+    original_ids = {row["id"] for rows in originals.values() for row in rows}
+    original_texts = {normalized_input(message["content"]) for rows in originals.values() for row in rows
+                      for message in row["messages"] if message["role"] == "user"}
+    original_groups = {split: {row["topic"] for row in rows} for split, rows in originals.items()}
+    vocabulary = {label.strip().casefold() for rows in originals.values() for row in rows
+                  for label in row["messages"][-1]["content"].split(",")}
+    seen_ids, seen_texts, groups = set(original_ids), set(original_texts), {}
+    prepared = {}
+    for split, key in (("train", "train"), ("val", "dev")):
+        prepared[split], groups[split] = [], set()
+        for row in bundle[key]:
+            if not isinstance(row, dict) or any(not isinstance(row.get(field), str) or not row[field].strip()
+                                                for field in ("id", "input", "expected", "group_id", "kind", "source")):
+                raise ValueError("Auxiliary rows require nonempty id/input/expected/group_id/kind/source")
+            if row["kind"] not in ("genre", "refusal") or row["source"] not in ("pinned_source", "author_synthetic"):
+                raise ValueError("Unknown auxiliary kind or source")
+            answer = row["expected"]
+            if row["kind"] == "refusal":
+                if answer != "REFUSE":
+                    raise ValueError("Refusal targets must be uppercase REFUSE")
+            else:
+                parts = answer.split(", ")
+                if answer != ", ".join(sorted(set(parts))) or any(part not in vocabulary for part in parts):
+                    raise ValueError("Auxiliary genre targets must be canonical known genre combinations")
+            text = normalized_input(row["input"])
+            if row["id"] in seen_ids or not text or text in seen_texts:
+                raise ValueError("Auxiliary ids and normalized inputs must be unique and separate from original data")
+            opposite = "val" if split == "train" else "train"
+            if row["group_id"] in original_groups[opposite]:
+                raise ValueError("Auxiliary group leaks into the opposite original split")
+            seen_ids.add(row["id"])
+            seen_texts.add(text)
+            groups[split].add(row["group_id"])
+            prepared[split].append(copy.deepcopy(row))
+    if groups["train"] & groups["val"]:
+        raise ValueError("Auxiliary training and development families/groups overlap")
+    return prepared, {"path": str(path), "sha256": hashlib.sha256(raw).hexdigest(),
+                      "version": bundle["version"], "train_rows": len(prepared["train"]),
+                      "dev_rows": len(prepared["val"])}
+
+
+def auxiliary_metadata(row):
+    parts = [] if row["expected"] == "REFUSE" else row["expected"].split(", ")
+    return {"id": row["id"], "kind": row["kind"], "source": row["source"],
+            "group_id": row["group_id"], "stratum": "aux__" + row["kind"],
+            "release_year": row.get("release_year"), "genre_cardinality": len(parts)}
+
+
+def auxiliary_record(row, system):
+    return {"id": row["id"], "messages": [{"role": "system", "content": system},
+            {"role": "user", "content": row["input"]},
+            {"role": "assistant", "content": json.dumps({"answer": row["expected"]}, ensure_ascii=False)}]}
 
 
 def canonical_answer(record):
@@ -62,6 +138,9 @@ def build_training_view(params, train_examples, val_examples, tokenizer=None):
              "tokenization_params_sha256": hashlib.sha256(Path(params["data"]["tokenization_params"]).read_bytes()).hexdigest(),
              "tokenizer": {"name": params["model"]["name"], "revision": params["model"]["revision"]},
              "splits": {}}
+    auxiliary, auxiliary_proof = load_auxiliary(params)
+    if auxiliary_proof:
+        proof["auxiliary"] = auxiliary_proof
     prepared = {}
     for split, original in (("train", train_examples), ("val", val_examples)):
         if len({example["id"] for example in original}) != len(original):
@@ -69,16 +148,20 @@ def build_training_view(params, train_examples, val_examples, tokenizer=None):
         path = Path(params["data"][f"source_{split}"])
         source_rows = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
         by_id = {row["id"]: row for row in source_rows}
+        aux_by_id = {row["id"]: row for row in auxiliary[split]}
         if len(by_id) != len(source_rows):
             raise ValueError("Duplicate original source id")
+        if not set(aux_by_id).issubset({row["id"] for row in original}):
+            raise ValueError("Every auxiliary row must be included in its actual encoded split")
         encoded_rows, entries, samples = [], [], []
         for example in original:
             identity = example["id"]
-            if identity not in by_id:
+            if identity not in by_id and identity not in aux_by_id:
                 raise ValueError("Selected view id is absent from the original source")
             if mode == "json_genres":
                 from src.tokenize_data import encode_example
-                record = json_record(by_id[identity], system)
+                record = (auxiliary_record(aux_by_id[identity], system) if identity in aux_by_id
+                          else json_record(by_id[identity], system))
                 encoded = encode_example(tokenizer, record, source_config, max_length)
                 meta = encoded.pop("_meta")
                 if meta["truncated"] or meta["full_len"] > max_length or not meta["supervised"]:
@@ -107,20 +190,28 @@ def build_training_view(params, train_examples, val_examples, tokenizer=None):
             entries.append({"id": identity, "input_ids_sha256": fingerprint(encoded["input_ids"]),
                             "attention_mask_sha256": fingerprint(encoded["attention_mask"]), "labels_sha256": fingerprint(encoded["labels"]),
                             "input_tokens": sum(encoded["attention_mask"]), "supervised_tokens": meta["supervised"], "meta": meta})
-            if len(samples) < 3:
+            sample_kind = "original" if identity in by_id else "aux_" + aux_by_id[identity]["kind"]
+            sample_limit = 3 if sample_kind == "original" else 2
+            if sum(sample.get("kind", "original") == sample_kind for sample in samples) < sample_limit:
                 samples.append({"id": identity, "messages": record["messages"], "encoded": encoded,
                                 "decoded_supervised": decoded, "meta": meta})
+                if auxiliary_proof:
+                    samples[-1]["kind"] = sample_kind
         prepared[split] = encoded_rows
         proof["splits"][split] = {
             "ids": [row["id"] for row in encoded_rows], "n": len(encoded_rows), "entries": entries,
             "source_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-            "original_selected_tensors_sha256": fingerprint(original), "encoded_sha256": fingerprint(encoded_rows),
+            "original_selected_tensors_sha256": fingerprint([row for row in original if row["id"] in by_id]),
+            "encoded_sha256": fingerprint(encoded_rows),
             "input_tokens": sum(entry["input_tokens"] for entry in entries),
             "supervised_tokens": sum(entry["supervised_tokens"] for entry in entries),
             "min_tokens": min(len(row["input_ids"]) for row in encoded_rows),
             "max_tokens": max(len(row["input_ids"]) for row in encoded_rows),
             "truncated": 0 if mode == "json_genres" else None, "samples": samples,
         }
+        if auxiliary_proof:
+            proof["splits"][split]["original_ids"] = [row["id"] for row in original if row["id"] in by_id]
+            proof["splits"][split]["auxiliary_ids"] = [row["id"] for row in original if row["id"] in aux_by_id]
     if set(proof["splits"]["train"]["ids"]) & set(proof["splits"]["val"]["ids"]):
         raise ValueError("Training view train and val ids overlap")
     return prepared["train"], prepared["val"], proof

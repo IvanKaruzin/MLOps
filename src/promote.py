@@ -30,7 +30,7 @@ def validate_sampling(client, params, runs):
             if run.data.tags.get("sampling_sha256") != expected_sha:
                 raise ValueError("Кандидаты имеют другую выборку или порядок обработки")
             required = {"processed_examples": processed["count"], "processed_unique_examples": processed["unique_count"],
-                        "train_pool_rows": params["train"]["train_limit"], "val_rows": params["train"]["val_limit"]}
+                        "train_pool_rows": expected["train"]["selected_rows"], "val_rows": expected["val"]["selected_rows"]}
             if any(run.data.metrics.get(key) != value for key, value in required.items()):
                 raise ValueError("Фактический бюджет или размеры выборок не соответствуют конфигу")
             for name in ("train", "val"):
@@ -79,6 +79,59 @@ def validate_training_view(client, params, runs, sampling):
                 raise ValueError("Сохранённые input ids/labels отличаются от actual training view")
 
 
+def validate_checkpoints(client, params, runs, sampling=None):
+    """Bind the selected validation checkpoint to the adapter actually served."""
+    import yaml
+    if sampling is None:
+        from src.experiment_train import expected_sampling_manifest
+        sampling = expected_sampling_manifest(params)
+    val_ids = sampling["val"].get("original_ids", sampling["val"]["ids"])
+    from src.training_view import fingerprint
+    with tempfile.TemporaryDirectory(prefix="hw67-select-checkpoint-") as directory:
+        for index, run in enumerate(runs):
+            destination = Path(directory) / str(index)
+            destination.mkdir()
+            def download(path):
+                return Path(client.download_artifacts(run.info.run_id, path, str(destination)))
+            proof = json.loads(download("checkpoint.json").read_text())
+            steps, selected = proof.get("training_steps"), proof.get("selected_step")
+            if (type(steps) is not int or steps != params["train"]["max_steps"] or type(selected) is not int
+                    or not 1 <= selected <= steps or proof.get("primary_val_rows") != len(val_ids)
+                    or proof.get("primary_val_ids_sha256") != fingerprint(val_ids)
+                    or proof.get("auxiliary_val_rows") != sampling["val"]["selected_rows"] - len(val_ids)
+                    or proof.get("policy") != params["train"].get("checkpoint_selection", "best_val")
+                    or proof.get("metric") != "original_val_token_weighted_nll"):
+                raise ValueError("Checkpoint selection does not match the original VAL and full training budget")
+            trajectory = proof.get("checkpoints", [])
+            expected_steps = [0, *range(params["train"]["eval_every"], steps + 1, params["train"]["eval_every"])]
+            if expected_steps[-1] != steps:
+                expected_steps.append(steps)
+            if ([point.get("step") for point in trajectory] != expected_steps
+                    or any(not math.isfinite(point.get("val_loss", float("nan"))) or point["val_loss"] < 0
+                           for point in trajectory)):
+                raise ValueError("Checkpoint trajectory is incomplete or nonfinite")
+            chosen = next((point for point in trajectory if point["step"] == selected), None)
+            expected = (min(trajectory[1:], key=lambda point: (point["val_loss"], point["step"]))
+                        if proof["policy"] == "best_val" else trajectory[-1])
+            final_loss = run.data.metrics.get("final_val_loss", float("nan"))
+            if (chosen != expected or run.data.metrics.get("selected_step") != selected
+                    or not math.isclose(proof.get("selected_val_loss", float("nan")), final_loss, rel_tol=1e-6, abs_tol=1e-6)
+                    or not math.isclose(chosen["val_loss"], final_loss, rel_tol=1e-5, abs_tol=1e-6)
+                    or proof.get("end_val_loss") != trajectory[-1]["val_loss"]
+                    or run.data.metrics.get("end_val_loss") != proof["end_val_loss"]):
+                raise ValueError("Selected checkpoint metrics differ from the exported model selection")
+            metadata = yaml.safe_load(download("model/MLmodel").read_text())
+            location = metadata["flavors"]["python_function"]["artifacts"]["adapter"]["path"]
+            manifest = json.loads(download(f"model/{location}/manifest.json").read_text())
+            weights = download(f"model/{location}/adapter_model.safetensors")
+            digest = hashlib.sha256(weights.read_bytes()).hexdigest()
+            if (manifest.get("checkpoint") != proof or proof.get("adapter_sha256") != digest
+                    or manifest.get("sampling_sha256") != run.data.tags.get("sampling_sha256")
+                    or manifest.get("training_view_sha256") != run.data.tags.get("training_view_sha256")
+                    or run.data.tags.get("selected_adapter_sha256") != digest):
+                raise ValueError("Selected checkpoint does not match the packaged adapter weights")
+
+
 def gate(run, max_ratio):
     m = run.data.metrics
     values = [m.get(k, float("nan")) for k in ("final_val_loss", "base_val_loss")]
@@ -92,6 +145,8 @@ def gate(run, max_ratio):
 def select(client, params, summary):
     current = provenance(params)
     parent = client.get_run(summary["parent_id"])
+    if summary.get("kind", "sweep") != "sweep" or parent.data.tags.get("kind", "sweep") != "sweep":
+        raise ValueError("Development runs cannot be selected as a final fair sweep")
     if parent.info.status != "FINISHED":
         raise ValueError("Sweep не завершён")
     version_keys = ("code_sha256", "config_sha256", "data_train_sha256", "data_val_sha256")
@@ -133,11 +188,14 @@ def select(client, params, summary):
         raise ValueError("Исходный val loss кандидатов различается")
     sampling = validate_sampling(client, params, runs)
     validate_training_view(client, params, runs, sampling)
+    validate_checkpoints(client, params, runs, sampling)
     return min(runs, key=lambda r: (r.data.metrics["final_val_loss"], r.info.run_id))
 
 
 def promote(client, run, name, alias, threshold):
     ratio = gate(run, threshold)
+    if run.data.tags.get("kind", "candidate") != "candidate":
+        raise ValueError("Development models cannot be registered through the final candidate path")
     if alias == "champion":
         raise ValueError("Champion назначается только через make promote после проверки качества ответов")
     version = mlflow.register_model(f"runs:/{run.info.run_id}/model", name)

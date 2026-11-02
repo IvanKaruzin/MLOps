@@ -1,25 +1,84 @@
 {
-  "date": "2026-10-25",
-  "scope": "HW6+7 only; strict exact-string choices contract",
+  "date": "2026-11-02",
+  "scope": "HW6+7; explicit completed model after cancellation of remaining training",
   "hw67_acceptance": {
     "command": "make check-all",
-    "passed": true,
+    "passed": false,
+    "exit_code": 2,
     "artifact_checks": 9,
-    "artifact_checks_passed": 9,
-    "evaluation_tests": 56,
-    "pipeline_tests": 5,
-    "tests_fingerprint": "668541c5fccd",
-    "starter_tests_fingerprint": "c42ac7788026",
-    "starter_assertions_unchanged": true
+    "artifact_checks_passed": 4,
+    "checks": [
+      {
+        "number": 1,
+        "passed": false,
+        "title": "Минимум шесть отдельных законченных runs",
+        "detail": "Родительский sweep KILLED; закончены2из6"
+      },
+      {
+        "number": 2,
+        "passed": false,
+        "title": "Код, данные, конфиг и база имеют версии",
+        "detail": "У прерванного child0c2 отсутствует финальный base_revision"
+      },
+      {
+        "number": 3,
+        "passed": false,
+        "title": "Конфигурации и кривые соответствуют бюджету",
+        "detail": "Прерванный child не имеет полной val/train curve"
+      },
+      {
+        "number": 4,
+        "passed": false,
+        "title": "Реальный адаптер, токенизатор, signature и пример входа",
+        "detail": "У прерванного child нет завершённого model package"
+      },
+      {
+        "number": 5,
+        "passed": false,
+        "title": "Одинаковые промпты и непустые примеры генерации",
+        "detail": "У прерванного child нет итогового samples.json"
+      },
+      {
+        "number": 6,
+        "passed": true,
+        "title": "Запрет регистрации при непройденном пороге",
+        "detail": "Нулевой loss-порог корректно отклонён"
+      },
+      {
+        "number": 7,
+        "passed": true,
+        "title": "Загрузка из реестра в новом процессе, без локального конфига",
+        "detail": "Candidate6 воспроизвёл сохранённый ответ в fresh python-I"
+      },
+      {
+        "number": 8,
+        "passed": true,
+        "title": "Артефакт пережил пересоздание контейнера",
+        "detail": "SHA256 probe совпал после реального recreate"
+      },
+      {
+        "number": 9,
+        "passed": true,
+        "title": "Есть сравнение, вывод и разбор дефектов",
+        "detail": "Обязательные документы существуют"
+      }
+    ],
+    "tests_fingerprint": "598478735b4a",
+    "evidence": "Observed completed command outputs in this session",
+    "note": "Canonical command stopped after failed HW67 artifact checks; unit tests were completed separately."
   },
-  "additional_tests": {
-    "command": "uv run python -m unittest discover -s tests -p 'test_hw67_experiments.py'",
+  "unit_tests": {
+    "command": "make check-eval",
     "passed": true,
-    "tests": 13
+    "exit_code": 0,
+    "evaluation_tests": 68,
+    "pipeline_tests": 5,
+    "hw67_tests": 67,
+    "total": 140
   },
   "evaluation": {
-    "evaluation_run_id": "ef925fe3d3cc4a5f881beea453e3a463",
-    "protocol_sha256": "59cf5865bd47bf3a9faa885832e0c22ba95b555354044d05a5371c5d3bb11ab0",
+    "evaluation_run_id": "b494140e67d24817b2e14efe3a93159a",
+    "protocol_sha256": "5b07bb6728754afd4e389eb67aae0382add1db0dd261c0a7eadb8a3d527eaa37",
     "models": {
       "baseline": {
         "kind": "base",
@@ -29,9 +88,9 @@
       "candidate": {
         "kind": "adapter",
         "name": "my-qwen-adapter",
-        "version": "5",
-        "run_id": "724f89d55d204ee1a24b6373fb6539dd",
-        "uri": "models:/my-qwen-adapter/5"
+        "version": "6",
+        "run_id": "6dc3386897fc42ec873c99937218ecb1",
+        "uri": "models:/my-qwen-adapter/6"
       }
     }
   },
@@ -39,7 +98,7 @@
     "passed": false,
     "reason": "Не все обязательные behavioral-кейсы пройдены",
     "reports_verified": true,
-    "evaluation_run_id": "ef925fe3d3cc4a5f881beea453e3a463",
+    "evaluation_run_id": "b494140e67d24817b2e14efe3a93159a",
     "baseline_model": {
       "kind": "base",
       "name": "Qwen/Qwen3-0.6B",
@@ -48,57 +107,77 @@
     "candidate_model": {
       "kind": "adapter",
       "name": "my-qwen-adapter",
-      "version": "5",
-      "run_id": "724f89d55d204ee1a24b6373fb6539dd",
-      "uri": "models:/my-qwen-adapter/5"
+      "version": "6",
+      "run_id": "6dc3386897fc42ec873c99937218ecb1",
+      "uri": "models:/my-qwen-adapter/6"
     },
-    "protocol_sha256": "59cf5865bd47bf3a9faa885832e0c22ba95b555354044d05a5371c5d3bb11ab0",
+    "protocol_sha256": "5b07bb6728754afd4e389eb67aae0382add1db0dd261c0a7eadb8a3d527eaa37",
     "golden_sha256": "1a726c9218aa0400e054293d481bb008071d3eb1acb00f46aa6b358fad07ada2",
     "baseline_spec_sha256": "f71269b95f6b4e1e160fa25e9af6c973517cfebad15880b75b56c8184680b163",
-    "baseline_outputs_sha256": "327b9ec549fc061969600229af2c8e5f2046b623334e2d3d3017c7cd6ba07c5a",
-    "candidate_outputs_sha256": "2b14f16a10fd4aa75a35ccfbfcd6e10850f166876951b835b75bbbdcbbe921e3",
-    "gate_run_id": "89fddfeb329e4659a314b24f10eb026f"
+    "baseline_outputs_sha256": "985f33b32bfdec28d28660912bfd62ee90de4106e90712d7951153676cd5cc7a",
+    "candidate_outputs_sha256": "9bc7cd99e175bef57dc58bea0921d056c88b09e5853afff9f237e635bf0158b5",
+    "gate_run_id": "8644fb60d5724c9193aaf690e5c12bc4"
   },
   "negative_gate": {
     "passed": true,
     "corrupted_copy_rejected": true,
-    "gate_run_id": "3ab4bd6da8154753addb899723b6afdb"
+    "gate_run_id": "3f585f82324d4184ab10e55b04f03ce3"
   },
   "registry": {
     "name": "my-qwen-adapter",
     "aliases": {
-      "candidate": "5"
+      "candidate": "6"
     },
     "champion_present": false
   },
   "storage": {
     "passed": true,
     "proof": {
-      "run_id": "f030aaa097414894bd279444399d3ced",
-      "sha256": "3508481eb83dc100113d24ef5d2c4b904c4825f61e693aa255533145d517b47b",
+      "run_id": "baa57110ef3c45f499e3f5a88e7d566f",
+      "sha256": "3e7c6c86cd2f739b19cfb42aae79cc62d3e425553cd0301b0b24390484e66f89",
       "compose_sha256": "8c05f7a6868b88476eb4304b510515bcde083a0b588323f70f58a170b11a80f9",
       "project": "mlops-hw6"
     }
   },
   "isolated_reload": {
     "passed": true,
-    "verified_by": "make check-all: check 7; fresh isolated process without local configuration"
+    "verified_by": "make check-all check7: fresh python-I in temporary cwd without local config"
+  },
+  "candidate_selection": {
+    "mode": "explicit_finished_training_run",
+    "training_run_id": "6dc3386897fc42ec873c99937218ecb1",
+    "parent_run_id": "7e32e5528f004dddab8dd7d8fe6ce54b",
+    "parent_status": "KILLED",
+    "fair_sweep_verified": false,
+    "evidence_sha256": "b699cdfc2f8ecc32cff9e00b5430814885329470cc0dc2fecddeb7cf4c507358"
   },
   "eval_data": {
     "golden": 90,
     "behavioral": 5,
-    "training_index": 4800,
+    "training_index": 10006,
     "catalogue_choices": 932,
-    "all_expected_in_choices": true,
-    "original_questions_labels_slices_and_order_unchanged": true,
     "dvc_status": "up to date",
-    "dvc_directory_hash": "b6a20c7655bc6027ce2052ecb8788073.dir",
-    "archive_sha256": "4da0960f16151d1792af6797e2dca57eb9764b8a4f8615e34c75d4f0b8cd7e0f"
+    "dvc_directory_hash": "835854a6c904c3bcc36d8c6d3144de6e.dir",
+    "archive_sha256": "5bdeace9dab2e12089ba41f923c657a93e1305f7d2c6c83c7e8d8a098481dd0e"
   },
   "input_integrity": {
-    "original_4800_train_and_599_val_fully_reencoded": true,
-    "original_raw_and_tensors_unchanged": true,
-    "source_code_and_lock_sha256": "9e96167e6623011c3ac6ab5ca05612d994a9c50a2ed176bde92bbd3cfb6e0e76",
-    "training_view_sha256": "32a806367d5f08947a7fd50665850ce34f55d07134c523533645f6e6bc4c965e"
-  }
+    "frozen_data_scorer_baseline_generation_and_training_code_unchanged": true,
+    "sha256": {
+      "data/eval/golden.jsonl": "523d8a32188800c985098bb995610ce2819ccf852ecf74b3ad6c66eb5a2ad9b1",
+      "data/eval/behavioral.jsonl": "d8122827c911d3fe88b84d89bffbb0aec9c4f5ec18ed8b7bd731cfbd62aab985",
+      "data/eval/auxiliary.json": "0af9efde4dfb2665459f4f0161c5542d72872e71ac8a673195fd903e014c8785",
+      "data/eval/improvement-holdout.jsonl": "4d9f9231d7b46927d60df8b8a2f55f89b27ad7223bc54442f4028a33fbc477fc",
+      "evaluation/solution.py": "21bdf6a2c3abb727a94d5ce8d7a9d31f48f7ea90a2bd94ef90e3b6edca0a904a",
+      "evaluation/contract.py": "f86e239b6d97568e1b4d6be2db2166a0fef9056832a0548352560b14600724de",
+      "evaluation/params.json": "b1bb16cc7a8e3f595cd176d5a85b2271eae493e9fa0c56d70a73ca18f79f3357",
+      "evaluation/baseline.json": "da0ace0ea269b2d9e5c0cad79ab54823d7bae8b4a65ece6446fa6adbbfed787e",
+      "evaluation/cli.py": "156be8bc5931ff958e64a2174b484116ffc4999ef7862bd45d4354facd9406e8"
+    },
+    "training_code_sha256": "64a95f1f20d446e37eba6f3a9fe2f84907554e09ed829c2d42a085b0284104a3",
+    "training_view_sha256": "c4f9626ba724e7bbaaea1fc106d90e23382b41f61356ae5e801bacf69dd97992"
+  },
+  "no_new_training": true,
+  "sealed_holdout_evaluated": false,
+  "champion_assigned": false,
+  "release_decision": "reject: official behavioral3/5 and incomplete mandatory six-run sweep"
 }

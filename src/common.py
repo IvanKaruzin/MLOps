@@ -29,13 +29,29 @@ def validate_params(params):
                                                           or train["view_max_seq_len"] <= 0):
         raise ValueError("JSON training view требует положительный view_max_seq_len")
     sampling = params["sampling"]
-    if sampling.get("method") != "stratified_shuffle" or type(sampling.get("seed")) is not int:
-        raise ValueError("Нужны sampling.method=stratified_shuffle и целочисленный sampling.seed")
+    if sampling.get("method") not in ("stratified_shuffle", "full_shuffle") or type(sampling.get("seed")) is not int or sampling["seed"] < 0:
+        raise ValueError("Нужны поддерживаемый sampling.method и неотрицательный целочисленный sampling.seed")
+    for key in ("eval_batch_size", "epochs", "worker_timeout_seconds"):
+        if key in train and (type(train[key]) is not int or train[key] <= 0):
+            raise ValueError(f"train.{key}: нужно положительное целое число")
+    if train.get("worker_timeout_seconds", 21600) > 172800:
+        raise ValueError("Таймаут worker не должен превышать двое суток")
+    if train.get("lr_schedule", "constant") not in ("constant", "cosine"):
+        raise ValueError("train.lr_schedule: допустимы constant и cosine")
+    if (isinstance(train.get("warmup_ratio", 0.0), bool)
+            or not isinstance(train.get("warmup_ratio", 0.0), (int, float))
+            or not math.isfinite(train.get("warmup_ratio", 0.0)) or not 0 <= train.get("warmup_ratio", 0.0) < 1):
+        raise ValueError("train.warmup_ratio: нужно конечное число от нуля до единицы")
+    if train.get("checkpoint_selection", "best_val") not in ("best_val", "last"):
+        raise ValueError("train.checkpoint_selection: допустимы best_val и last")
     for key in ("train", "val", "source_train", "source_val", "tokenization_params"):
         if not isinstance(params["data"].get(key), str) or not params["data"][key]:
             raise ValueError(f"data.{key}: нужен путь к файлу")
     if params["data"]["source_train"] == params["data"]["source_val"]:
         raise ValueError("Исходные train и val должны различаться")
+    if "auxiliary" in params["data"] and (not isinstance(params["data"]["auxiliary"], str)
+                                           or not params["data"]["auxiliary"]):
+        raise ValueError("data.auxiliary: нужен путь к отдельному training/dev bundle")
     candidates = params["sweep"]
     if len(candidates) < 6 or len({item["name"] for item in candidates}) != len(candidates):
         raise ValueError("Нужно минимум шесть кандидатов с уникальными именами")
@@ -78,6 +94,8 @@ def provenance(params):
     source_hashes = {f"source_{split}_sha256": digest(params["data"][f"source_{split}"])
                      for split in ("train", "val")}
     source_hashes["tokenization_params_sha256"] = digest(params["data"]["tokenization_params"])
+    if params["data"].get("auxiliary"):
+        source_hashes["auxiliary_sha256"] = digest(params["data"]["auxiliary"])
     return {
         "git_sha": sha,
         "git_dirty": str(bool(subprocess.check_output(["git", "status", "--porcelain"], text=True).strip())),

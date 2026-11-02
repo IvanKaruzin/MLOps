@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "mode": "explicit_finished_training_run",
+  "reason": "User requested mandatory evaluation of this completed model without new training; the sweep was cancelled.",
+  "training_run_id": "6dc3386897fc42ec873c99937218ecb1",
+  "parent_run_id": "7e32e5528f004dddab8dd7d8fe6ce54b",
+  "parent_status": "KILLED",
+  "source_sweep_cancelled": true,
+  "fair_sweep_verified": false,
+  "selection_scope": "one_finished_child_not_a_sweep_winner",
+  "provenance": {
+    "code_sha256": "64a95f1f20d446e37eba6f3a9fe2f84907554e09ed829c2d42a085b0284104a3",
+    "data_train_sha256": "c9679054f3b806e41429b8eaefb83b960d42e7ef02f465d8203a12630548d833",
+    "data_val_sha256": "c02e3f313fbd63e545d6750a0979303c57d953256501437db25c85bfcd5b53f3",
+    "source_train_sha256": "3a8539f2ed7decb37d577f8402f49512fb36a95b3e5d406e36ce7dddf7e9c86c",
+    "source_val_sha256": "14b182eee66984381030470dbff76f2cc2a471d7089a313cb2842c69a68f2f9f",
+    "tokenization_params_sha256": "d32794f4a948f4d6fc957712d45d95b479d39528c075f91bd1600281ca1d8872",
+    "auxiliary_sha256": "0af9efde4dfb2665459f4f0161c5542d72872e71ac8a673195fd903e014c8785",
+    "config_sha256": "67643ecd1c07858d800146fd92031e9df31faba73713021fa80ebb990716ccef"
+  },
+  "configuration": {
+    "name": "all-r8-low",
+    "r": 8,
+    "lr": 0.0001,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  },
+  "training_steps": 2502,
+  "source_link_sha256": "3c40ba5cd6442f2527eea9f3ac53c962afec429292af21050ae16c286fe766db",
+  "sampling_sha256": "88a37fd41eb3934fc17117cf361cc876cf26ffa5c8a23786dc4ff50cfe7ef641",
+  "training_view_sha256": "c4f9626ba724e7bbaaea1fc106d90e23382b41f61356ae5e801bacf69dd97992",
+  "checkpoint_sha256": "777ec57d0234bcae7e8e0d1a3993bb30bc6088cccfafc5b9ae941f665bd660cd",
+  "adapter_sha256": "516d25efcc496468514a3e489054f60530f7ab2e03ff66d972bfd36d9be23024",
+  "model": {
+    "kind": "adapter",
+    "name": "my-qwen-adapter",
+    "version": "6",
+    "run_id": "6dc3386897fc42ec873c99937218ecb1",
+    "uri": "models:/my-qwen-adapter/6"
+  }
+}

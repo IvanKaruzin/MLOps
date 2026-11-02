@@ -1,4 +1,4 @@
-"""Deterministic stratified samples linked to complete HW4 source records."""
+"""Deterministic samples and epoch orders linked to complete HW4 records."""
 
 import hashlib
 import json
@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 METHOD = "stratified_shuffle"
+METHODS = (METHOD, "full_shuffle")
 STRATA = tuple(f"{era}__{cardinality}" for era in ("before2000", "since2000")
                for cardinality in ("single_genre", "two_genres", "three_plus_genres"))
 
@@ -37,18 +38,20 @@ def source_metadata(row):
 
 
 def sample_split(blob, source_path, limit, seed, split_name, method=METHOD):
-    """Return a shuffled balanced sample and its exact ordered provenance.
+    """Return a shuffled sample and its exact ordered provenance.
 
     Sorting by id before shuffling makes alignment independent of serialized
-    source/tensor row order. Each stratum has its own random stream, so the
-    smaller control sample is contained in a larger sample with the same seed.
+    source/tensor row order. full_shuffle samples the complete pool without
+    quotas; stratified_shuffle retains the balanced historical protocol.
     """
-    if method != METHOD:
+    if method not in METHODS:
         raise ValueError(f"Unsupported sampling method: {method!r}")
     if type(seed) is not int or seed < 0:
         raise ValueError("Sampling seed must be a nonnegative integer")
-    if type(limit) is not int or limit < len(STRATA):
-        raise ValueError("Sampling limit must cover all six strata")
+    if type(limit) is not int or limit <= 0:
+        raise ValueError("Sampling limit must be a positive integer")
+    if method == METHOD and limit < len(STRATA):
+        raise ValueError("Stratified sampling limit must cover all six strata")
     if split_name not in ("train", "val"):
         raise ValueError("Sampling split must be train or val")
     if not isinstance(blob, dict) or not isinstance(blob.get("examples"), list) or not blob["examples"]:
@@ -80,19 +83,24 @@ def sample_split(blob, source_path, limit, seed, split_name, method=METHOD):
     strata = {name: [] for name in STRATA}
     for identity, item in metadata.items():
         strata[item["stratum"]].append(identity)
-    base, remainder = divmod(limit, len(STRATA))
-    extra_order = list(STRATA)
-    random.Random(f"{seed}:{split_name}:quotas").shuffle(extra_order)
-    extra = set(extra_order[:remainder])
-    quotas = {name: base + (name in extra) for name in STRATA}
-    selected_ids = []
-    for name in STRATA:
-        identities = sorted(strata[name])
-        if len(identities) < quotas[name]:
-            raise ValueError(f"Insufficient {split_name} stratum {name}: {len(identities)} < {quotas[name]}")
-        random.Random(f"{seed}:{split_name}:{name}").shuffle(identities)
-        selected_ids.extend(identities[:quotas[name]])
-    random.Random(f"{seed}:{split_name}:order").shuffle(selected_ids)
+    if method == "full_shuffle":
+        selected_ids = sorted(tensors)
+        random.Random(f"{seed}:{split_name}:full_shuffle").shuffle(selected_ids)
+        selected_ids = selected_ids[:limit]
+    else:
+        base, remainder = divmod(limit, len(STRATA))
+        extra_order = list(STRATA)
+        random.Random(f"{seed}:{split_name}:quotas").shuffle(extra_order)
+        extra = set(extra_order[:remainder])
+        quotas = {name: base + (name in extra) for name in STRATA}
+        selected_ids = []
+        for name in STRATA:
+            identities = sorted(strata[name])
+            if len(identities) < quotas[name]:
+                raise ValueError(f"Insufficient {split_name} stratum {name}: {len(identities)} < {quotas[name]}")
+            random.Random(f"{seed}:{split_name}:{name}").shuffle(identities)
+            selected_ids.extend(identities[:quotas[name]])
+        random.Random(f"{seed}:{split_name}:order").shuffle(selected_ids)
     selected = [tensors[identity] for identity in selected_ids]
     selected_metadata = [metadata[identity] for identity in selected_ids]
     manifest = {
@@ -100,13 +108,39 @@ def sample_split(blob, source_path, limit, seed, split_name, method=METHOD):
         "source_path": str(source), "source_sha256": hashlib.sha256(raw).hexdigest(),
         "source_rows": len(records), "tensor_rows": len(tensors), "selected_rows": len(selected),
         "ids": selected_ids, "selected_records": selected_metadata,
-        "strata_counts": quotas,
+        "strata_counts": {name: sum(item["stratum"] == name for item in selected_metadata) for name in STRATA},
         "source_strata_counts": {name: len(strata[name]) for name in STRATA},
         "year_counts": dict(sorted(Counter(str(item["release_year"]) for item in selected_metadata).items())),
         "genre_cardinality_counts": dict(sorted(Counter(str(item["genre_cardinality"])
                                                        for item in selected_metadata).items())),
     }
     return selected, manifest
+
+
+def epoch_order(examples_or_ids, seed, epoch):
+    """Return one complete epoch permutation without touching global RNG.
+
+    Inputs can be unique string ids or example dictionaries with unique ids.
+    Sorting by id first gives every candidate the same order even when its
+    source pool happened to be serialized in a different order.
+    """
+    if type(seed) is not int or seed < 0 or type(epoch) is not int or epoch < 0:
+        raise ValueError("Epoch seed and index must be nonnegative integers")
+    if not isinstance(examples_or_ids, (list, tuple)) or not examples_or_ids:
+        raise ValueError("Epoch inputs must be a nonempty sequence")
+    dictionary_input = isinstance(examples_or_ids[0], dict)
+    indexed = {}
+    for item in examples_or_ids:
+        if dictionary_input:
+            identity = item.get("id") if isinstance(item, dict) else None
+        else:
+            identity = item if isinstance(item, str) else None
+        if not isinstance(identity, str) or not identity.strip() or identity in indexed:
+            raise ValueError("Epoch inputs require unique string ids and a uniform input type")
+        indexed[identity] = item
+    identities = sorted(indexed)
+    random.Random(f"{seed}:epoch:{epoch}").shuffle(identities)
+    return [indexed[identity] for identity in identities]
 
 
 def verify_tensor_sources(params):

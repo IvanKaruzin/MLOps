@@ -39,12 +39,12 @@ def verify_source_proof(params, versions, proof):
             raise ValueError("Preflight proof относится к другим исходным строкам или тензорам")
 
 
-def run_candidate(params, candidate, versions, proof, view_proof):
+def run_candidate(params, candidate, versions, proof, view_proof, kind="candidate"):
     verify_source_proof(params, versions, proof)
     verify_provenance(params, versions)
     source_link_sha = hashlib.sha256(json.dumps(proof, sort_keys=True, allow_nan=False).encode()).hexdigest()
     view_sha = fingerprint(view_proof)
-    mlflow.set_tags({**versions, "kind": "candidate", "candidate": candidate["name"],
+    mlflow.set_tags({**versions, "kind": kind, "candidate": candidate["name"],
                      "worker_pid": str(os.getpid()), "source_link_sha256": source_link_sha,
                      "training_view_sha256": view_sha})
     mlflow.log_dict(proof, "source-link-check.json")
@@ -76,6 +76,7 @@ def run_candidate(params, candidate, versions, proof, view_proof):
         mlflow.set_tags(details)
         mlflow.log_artifact(str(out / "sampling.json"))
         mlflow.log_artifact(str(out / "training-view.json"))
+        mlflow.log_artifact(str(out / "checkpoint.json"))
         mlflow.log_artifact(str(out.parent / "training-view.json.gz"))
         samples = {"prompt": params["generation"]["prompts"], "answer": answers}
         mlflow.log_table(samples, "samples.json")
@@ -91,7 +92,7 @@ def run_candidate(params, candidate, versions, proof, view_proof):
                 "worker_pid": os.getpid(), **results}
 
 
-def run_candidate_isolated(params, candidate, versions, proof, view_proof):
+def run_candidate_isolated(params, candidate, versions, proof, view_proof, development=False):
     """Resume exactly one pre-created nested run in a fresh Python process."""
     run_id = mlflow.active_run().info.run_id
     with tempfile.TemporaryDirectory(prefix="hw67-candidate-process-") as directory:
@@ -99,12 +100,12 @@ def run_candidate_isolated(params, candidate, versions, proof, view_proof):
         result = Path(directory) / "result.json"
         save_json(request, {"params": params, "candidate": candidate, "versions": versions,
                             "run_id": run_id, "tracking_uri": mlflow.get_tracking_uri(), "source_proof": proof,
-                            "training_view_proof": view_proof})
+                            "training_view_proof": view_proof, "development": development})
         command = [sys.executable, "-m", "src.sweep", "--candidate-request", str(request),
                    "--candidate-result", str(result)]
         environment = dict(os.environ, PYTHONHASHSEED=str(params["train"]["seed"]),
                            MLFLOW_TRACKING_URI=mlflow.get_tracking_uri())
-        subprocess.run(command, check=True, env=environment, timeout=7200)
+        subprocess.run(command, check=True, env=environment, timeout=params["train"].get("worker_timeout_seconds", 21600))
         row = json.loads(result.read_text(encoding="utf-8"))
     if (row.get("run_id") != run_id or row.get("name") != candidate["name"] or not row.get("sampling_sha256")
             or row.get("training_view_sha256") != fingerprint(view_proof)):
@@ -118,8 +119,8 @@ def candidate_worker(request_path, result_path):
     params = request["params"]
     mlflow.set_tracking_uri(request["tracking_uri"])
     with mlflow.start_run(run_id=request["run_id"]):
-        row = run_candidate(params, request["candidate"], request["versions"], request["source_proof"],
-                            request["training_view_proof"])
+        args = (params, request["candidate"], request["versions"], request["source_proof"], request["training_view_proof"])
+        row = (run_candidate(*args, kind="development") if request.get("development") else run_candidate(*args))
     save_json(result_path, row)
 
 
@@ -127,6 +128,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--candidate-request")
     parser.add_argument("--candidate-result")
+    parser.add_argument("--development", action="store_true")
+    parser.add_argument("--development-candidate", default="all-r8-low")
     args = parser.parse_args(argv)
     if args.candidate_request or args.candidate_result:
         if not args.candidate_request or not args.candidate_result:
@@ -134,6 +137,11 @@ def main(argv=None):
         candidate_worker(args.candidate_request, args.candidate_result)
         return
     p = load_params()
+    candidates = p["sweep"]
+    if args.development:
+        candidates = [candidate for candidate in candidates if candidate["name"] == args.development_candidate]
+        if len(candidates) != 1:
+            parser.error("Development candidate must name exactly one configured candidate")
     if len(p["sweep"]) < 6 or len({x["name"] for x in p["sweep"]}) != len(p["sweep"]):
         raise SystemExit("Нужно минимум шесть кандидатов с уникальными именами")
     if any(p["train"][k] <= 0 for k in ("max_steps", "train_limit", "val_limit", "batch_size", "grad_accum", "eval_every")):
@@ -143,24 +151,31 @@ def main(argv=None):
     from src.experiment_train import prepare_training_data
     _, _, _, _, view_proof = prepare_training_data(p)
     verify_provenance(p, versions)
-    save_json("metrics/source-link-check.json", proof)
-    save_json("metrics/training-view-check.json", {"passed": True, "training_view_sha256": fingerprint(view_proof),
-                                                  "proof": view_proof})
+    if not args.development:
+        save_json("metrics/source-link-check.json", proof)
+        save_json("metrics/training-view-check.json", {"passed": True, "training_view_sha256": fingerprint(view_proof),
+                                                      "proof": view_proof})
     connect(p)
     rows = []
-    with mlflow.start_run(run_name="sweep", tags={"kind": "sweep", **versions}) as parent:
+    kind = "development" if args.development else "sweep"
+    with mlflow.start_run(run_name=kind, tags={"kind": kind, **versions}) as parent:
         mlflow.log_dict(proof, "source-link-check.json")
         mlflow.log_dict(view_proof, "training-view-check.json")
-        for candidate in p["sweep"]:
+        for candidate in candidates:
             with mlflow.start_run(run_name=candidate["name"], nested=True):
-                rows.append(run_candidate_isolated(p, candidate, versions, proof, view_proof))
+                if args.development:
+                    rows.append(run_candidate_isolated(p, candidate, versions, proof, view_proof, development=True))
+                else:
+                    rows.append(run_candidate_isolated(p, candidate, versions, proof, view_proof))
         if len({row["sampling_sha256"] for row in rows}) != 1:
             raise ValueError("Кандидаты использовали разные выборки или порядок обработки")
         if len({row["training_view_sha256"] for row in rows}) != 1:
             raise ValueError("Кандидаты использовали разные представления обучающих ответов")
         mlflow.log_dict({"candidates": rows}, "comparison.json")
-        result = {"parent_id": parent.info.run_id, "rows": rows, "provenance": versions}
-    save_json("metrics/sweep.json", result)
+        result = {"kind": kind, "parent_id": parent.info.run_id, "rows": rows, "provenance": versions}
+        mlflow.log_dict(result, "summary.json")
+    if not args.development:
+        save_json("metrics/sweep.json", result)
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
 

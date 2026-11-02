@@ -2,8 +2,11 @@
 import argparse
 import copy
 import gc
+import hashlib
 import json
+import math
 import os
+import tempfile
 import time
 from pathlib import Path
 
@@ -12,6 +15,8 @@ from evaluation.solution import quality_gate, score, validate_model_spec
 
 BASELINE = Path('evaluation/baseline.json')
 CANDIDATE = Path('metrics/candidate-model.json')
+SELECTION = Path('metrics/candidate-selection.json')
+EXPLICIT_SELECTION = 'explicit_finished_training_run'
 
 
 def tracking():
@@ -50,6 +55,82 @@ def manifest_for(spec):
     validate_model_spec(dict(kind='base', name=manifest['model']['name'], revision=manifest['model']['revision']))
     return manifest, adapter
 
+
+def explicit_training_run(client, params, run_id, reason):
+    """Validate one user-selected model without claiming a completed fair sweep."""
+    from src.common import provenance
+    from src.promote import gate as loss_gate, validate_sampling, validate_training_view, validate_checkpoints
+    from src.sweep import verify_source_proof
+    if not isinstance(reason, str) or not reason.strip():
+        raise ValueError('Для явного выбора нужна непустая причина --reason')
+    run = client.get_run(run_id)
+    parent_id = run.data.tags.get('mlflow.parentRunId')
+    if (run.info.run_id != run_id or run.info.status != 'FINISHED'
+            or run.data.tags.get('kind') not in ('candidate', 'development')
+            or not isinstance(parent_id, str) or not parent_id or parent_id == run_id):
+        raise ValueError('Явно выбрать можно только завершённый training child')
+    parent = client.get_run(parent_id)
+    if (parent.info.run_id != parent_id or parent.info.status not in ('FINISHED', 'KILLED')
+            or parent.info.experiment_id != run.info.experiment_id):
+        raise ValueError('Родитель должен быть завершён или явно остановлен в том же experiment')
+    current = {key: value for key, value in provenance(params).items() if key not in ('git_sha', 'git_dirty')}
+    if any(item.data.tags.get(key) != value for item in (parent, run) for key, value in current.items()):
+        raise ValueError('Версии явного кандидата или родителя устарели')
+    configurations = {item['name']: item for item in params['sweep']}
+    configuration = configurations.get(run.data.tags.get('candidate'))
+    if (configuration is None or run.data.tags.get('base_revision') != params['model']['revision']
+            or run.data.metrics.get('steps') != params['train']['max_steps']):
+        raise ValueError('База, конфигурация или бюджет явного кандидата не совпадают')
+    logged = {'r': configuration['r'], 'lr': configuration['lr'],
+              'target_modules': ','.join(configuration['target_modules']),
+              **{f'train.{key}': value for key, value in params['train'].items()},
+              'model': params['model']['name'], 'dtype': params['model']['dtype'],
+              'sampling.method': params['sampling']['method'], 'sampling.seed': params['sampling']['seed'],
+              'alpha_over_r': params['lora']['alpha_over_r'], 'dropout': params['lora']['dropout']}
+    if any(run.data.params.get(key) != str(value) for key, value in logged.items()):
+        raise ValueError('Сохранённые параметры явного кандидата отличаются от конфигурации')
+    with tempfile.TemporaryDirectory(prefix='hw67-explicit-selection-') as directory:
+        def artifact(identity, name):
+            destination = Path(directory) / identity
+            destination.mkdir(exist_ok=True)
+            return read_json(client.download_artifacts(identity, name, str(destination)))
+        if artifact(run_id, 'config.json') != params:
+            raise ValueError('Серверный config.json отличается от текущего конфига')
+        source = artifact(run_id, 'source-link-check.json')
+        source_sha = hashlib.sha256(json.dumps(source, sort_keys=True, allow_nan=False).encode()).hexdigest()
+        verify_source_proof(params, current, source)
+        if (run.data.tags.get('source_link_sha256') != source_sha
+                or artifact(parent_id, 'source-link-check.json') != source):
+            raise ValueError('Source/tensor proof кандидата и родителя не совпадает')
+        sampling = validate_sampling(client, params, [run])
+        validate_training_view(client, params, [run], sampling)
+        validate_checkpoints(client, params, [run], sampling)
+        checkpoint = artifact(run_id, 'checkpoint.json')
+    history = client.get_metric_history(run_id, 'train_loss')
+    if (len(history) != params['train']['max_steps']
+            or {point.step for point in history} != set(range(1, params['train']['max_steps'] + 1))
+            or any(not math.isfinite(point.value) or point.value < 0 for point in history)):
+        raise ValueError('История train loss не подтверждает полный бюджет')
+    curve = sorted(client.get_metric_history(run_id, 'val_loss'), key=lambda point: point.step)
+    expected = checkpoint['checkpoints']
+    if (len(curve) != len(expected)
+            or any(point.step != saved['step'] or not math.isclose(point.value, saved['val_loss'], rel_tol=1e-9, abs_tol=1e-9)
+                   for point, saved in zip(curve, expected))):
+        raise ValueError('Серверная val curve не соответствует checkpoint proof')
+    after = {key: value for key, value in provenance(params).items() if key not in ('git_sha', 'git_dirty')}
+    if after != current:
+        raise ValueError('Входы изменились во время проверки явного кандидата')
+    loss_gate(run, params['registry']['max_val_ratio'])
+    evidence = dict(schema_version=1, mode=EXPLICIT_SELECTION, reason=reason.strip(),
+                    training_run_id=run_id, parent_run_id=parent_id, parent_status=parent.info.status,
+                    source_sweep_cancelled=parent.info.status == 'KILLED', fair_sweep_verified=False,
+                    selection_scope='one_finished_child_not_a_sweep_winner', provenance=current,
+                    configuration=configuration, training_steps=params['train']['max_steps'],
+                    source_link_sha256=source_sha, sampling_sha256=run.data.tags['sampling_sha256'],
+                    training_view_sha256=run.data.tags['training_view_sha256'],
+                    checkpoint_sha256=fingerprint(checkpoint), adapter_sha256=checkpoint['adapter_sha256'])
+    return run, evidence
+
 def candidate_model():
     from src.promote import gate as loss_gate, select
     p, client = tracking()
@@ -62,20 +143,51 @@ def candidate_model():
     if (version.run_id != spec['run_id'] or str(alias.version) != spec['version']
             or alias.run_id != spec['run_id']):
         raise ValueError('Кандидат/alias не соответствует закреплённой версии реестра')
-    best = select(client, p, read_json('metrics/sweep.json'))
-    if best.info.run_id != spec['run_id']:
-        raise ValueError('Выбран другой/устаревший кандидат; выполните make candidate')
-    loss_gate(best, p['registry']['max_val_ratio'])
+    selection_mode = version.tags.get('selection.mode')
+    if SELECTION.exists() or selection_mode == EXPLICIT_SELECTION:
+        evidence = read_json(SELECTION)
+        if (selection_mode != EXPLICIT_SELECTION or evidence.get('model') != spec
+                or version.tags.get('selection.sha256') != fingerprint(evidence)):
+            raise ValueError('Явный выбор не соответствует закреплённой версии и evidence')
+        _, verified = explicit_training_run(client, p, spec['run_id'], evidence.get('reason'))
+        if evidence != dict(verified, model=spec):
+            raise ValueError('Явный выбор или его доказательства изменились после регистрации')
+    else:
+        best = select(client, p, read_json('metrics/sweep.json'))
+        if best.info.run_id != spec['run_id']:
+            raise ValueError('Выбран другой/устаревший кандидат; выполните make candidate')
+        loss_gate(best, p['registry']['max_val_ratio'])
     return spec
 
 
-def prepare_candidate():
-    from src.promote import promote, select
+def prepare_candidate(training_run_id=None, reason=None):
+    from src.promote import gate as loss_gate, promote, select
     p, client = tracking()
-    best = select(client, p, read_json('metrics/sweep.json'))
-    version = promote(client, best, p['registry']['name'], 'candidate', p['registry']['max_val_ratio'])
+    evidence = None
+    if training_run_id is not None:
+        import mlflow
+        best, evidence = explicit_training_run(client, p, training_run_id, reason)
+        # A stopped sweep remains stopped; only this validated model is registered.
+        ratio = loss_gate(best, p['registry']['max_val_ratio'])
+        version = mlflow.register_model(f'runs:/{best.info.run_id}/model', p['registry']['name'])
+        for key, value in {'val_ratio': ratio, 'gate.max_val_ratio': p['registry']['max_val_ratio'],
+                           'validation': 'passed'}.items():
+            client.set_model_version_tag(version.name, version.version, key, str(value))
+    else:
+        if reason is not None:
+            raise ValueError('--reason используется только с --training-run-id')
+        best = select(client, p, read_json('metrics/sweep.json'))
+        version = promote(client, best, p['registry']['name'], 'candidate', p['registry']['max_val_ratio'])
     spec = dict(kind='adapter', name=version.name, version=str(version.version), run_id=best.info.run_id,
                 uri=f'models:/{version.name}/{version.version}')
+    if evidence is not None:
+        evidence['model'] = spec
+        client.set_model_version_tag(version.name, version.version, 'selection.mode', EXPLICIT_SELECTION)
+        client.set_model_version_tag(version.name, version.version, 'selection.sha256', fingerprint(evidence))
+        client.set_registered_model_alias(version.name, 'candidate', version.version)
+        write_json(SELECTION, evidence)
+    elif SELECTION.exists():
+        SELECTION.unlink()
     write_json(CANDIDATE, spec)
     print(json.dumps(spec, ensure_ascii=False, indent=2))
 
@@ -324,6 +436,10 @@ def release():
     candidate = gate()
     spec = candidate['model']
     _, client = tracking()
+    version = registry_version(client, spec)
+    if (version.tags.get('selection.mode') == EXPLICIT_SELECTION
+            or (SELECTION.exists() and read_json(SELECTION).get('mode') == EXPLICIT_SELECTION)):
+        raise ValueError('Явный single-run выбор не подтверждает обязательную приёмку полного sweep; champion запрещён')
     # Смена champion выполняется только после успешного gate, candidate остаётся отдельным alias.
     client.set_registered_model_alias(spec['name'], 'champion', spec['version'])
     write_json('metrics/released.json', dict(model=spec, evaluation_run_id=candidate['evaluation_run_id'],
@@ -379,11 +495,22 @@ def negative():
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('command', choices=['candidate', 'baseline-init', 'evaluate', 'gate', 'promote', 'baseline-update', 'negative'])
+    ap.add_argument('--training-run-id')
+    ap.add_argument('--reason')
     args = ap.parse_args()
+    if (args.training_run_id is not None or args.reason is not None) and args.command != 'candidate':
+        ap.error('--training-run-id/--reason разрешены только для candidate')
+    if args.training_run_id is not None and (args.reason is None or not args.reason.strip()):
+        ap.error('candidate --training-run-id требует явную непустую --reason')
+    if args.reason is not None and args.training_run_id is None:
+        ap.error('--reason требует --training-run-id')
     commands = {'candidate': prepare_candidate, 'baseline-init': init_baseline, 'evaluate': evaluate,
                 'gate': gate, 'promote': release, 'baseline-update': update_baseline, 'negative': negative}
     try:
-        commands[args.command]()
+        if args.command == 'candidate':
+            prepare_candidate(args.training_run_id, args.reason)
+        else:
+            commands[args.command]()
     except (ValueError, KeyError, FileNotFoundError, NotImplementedError) as exc:
         raise SystemExit(f'Отказ: {exc}') from exc
 

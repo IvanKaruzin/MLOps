@@ -294,15 +294,29 @@ unit-тесты (31) прошли. Подробности и ограничен�
 ## ДЗ 6+7 — эксперименты и проверка качества
 
 Условия: `course_tasks/hw67/Задание.html`, [EVALUATION.md](EVALUATION.md).
-В сдачу входят один sweep из шести конфигураций и оценка исходной базы
-с одним выбранным кандидатом. Скринкаст и сценарий исключены пользователем.
+Задание требует sweep из шести конфигураций и оценку исходной базы
+с одним кандидатом. Исторический короткий sweep завершён; новый поиск
+на увеличенном бюджете остановлен после 2 из 6 runs и не выдаётся за полный.
+Скринкаст и сценарий исключены пользователем.
 
 `conf/hw67.yaml` закрепляет Qwen/Qwen3-0.6B, точную HF-ревизию, данные,
-seed и одинаковый бюджет всех шести runs. Меняются lr, r и target_modules.
-Текущий бюджет: 120 шагов, 240 train, 60 val, batch 1 × accumulation 2.
+seed и одинаковый плановый бюджет шести вариантов. Меняются lr, r и target_modules.
+Текущий бюджет: одна полная эпоха, 2502 шага, batch 4, accumulation 1.
+Train содержит 10006 записей: исходные 4800, 2758 дополнительных фильмов,
+1728 авторских жанровых примеров и 720 отказов. Валидационный пул — 1087:
+исходный primary val599 и 488 дополнительных dev-записей. Checkpoint
+выбирается по NLL исходного val599.
 Test/golden не участвует в выборе кандидата по validation loss.
 Исходные данные и тензоры предыдущих ДЗ не переписываются; для обучения
 используется проверяемое временное представление с JSON-целями.
+
+Текущая train-ревизия подготовлена с учётом ошибок на dev; dev не является
+независимым итоговым аудитом. В новой жанровой части 1488 представлений
+объединены в 248 парных двуязычных групп: переводы или близкие варианты
+сюжета, по три представления на язык. Эти строки и группы не считаются
+статистически независимыми историями. Жанровые примеры и отказы
+поровну представлены на EN/RU. Закрытый набор из 541 записи зафиксирован
+отдельно и ещё не использовался для инференса.
 
 Для запуска нужны Python 3.12, uv и Docker Compose v2. Если входы ДЗ4
 ещё не восстановлены:
@@ -320,9 +334,21 @@ tar -xzf docs/datasets/hw67-evaluation.tar.gz
 uv run dvc status eval-data.dvc
 ```
 
-`data/eval/` содержит 90 golden-вопросов, 5 behavioral-кейсов, полный индекс
-4800 train-вопросов и manifest. Для восстановления того же набора из
-закреплённого исходного CSV используется `make prepare-eval`.
+Архив размером 3521457 байт содержит шесть текстовых файлов в `data/eval/`:
+90 golden-вопросов, 5 behavioral-кейсов, полный индекс 10006 train-вопросов,
+manifest, `auxiliary.json` с train/dev и отдельный
+`improvement-holdout.jsonl`. SHA256 архива:
+`5bdeace9dab2e12089ba41f923c657a93e1305f7d2c6c83c7e8d8a098481dd0e`.
+Trainer не открывает закрытый holdout. Для проверки готовой версии достаточно
+восстановить frozen input из архива/DVC, пересборка не нужна. Для отдельной
+новой сборки из закреплённого CSV и исходных тензоров используются
+`uv run python scripts/prepare_hw67_auxiliary.py` и `make prepare-eval`.
+Первый скрипт проверяет неизменность dev/holdout; второй восстанавливает
+golden, полный training-index и manifest.
+
+Точный frozen input восстанавливается из архива/DVC. Его генератор сохранён
+в parent MLflow run, `data-preparation/`; rebuild последним builder после
+изменения кода создаёт новый provenance SHA, даже если строки набора те же.
 
 Обе модели видят один input/system, seed, лимит 96 токенов и один scorer.
 Ответ — JSON с единственным `answer`: строкой из общего каталога 932 меток.
@@ -331,35 +357,49 @@ uv run dvc status eval-data.dvc
 train-only или независимым от test labelspace. `choices` и `expected`
 модели не передаются. Подробности: [протокол](docs/evaluation-protocol.md).
 
-Основной маршрут:
+Текущая готовая модель — `models:/my-qwen-adapter/6`, training run
+`6dc3386897fc42ec873c99937218ecb1`. Официальная оценка дала correct 13/90,
+valid 89/90 и behavioral 3/5. Gate отказал из-за двух неверных вестернов;
+champion не назначен. Negative и storage прошли. `make check-all` завершился
+с exit2 (4/9), поскольку новый sweep прерван; отдельный `make check-eval`
+прошёл 140/140 тестов. Полные counts и ссылки — в [выводе](docs/conclusion.md).
+
+Маршрут проверки готовой версии без нового обучения и повторной регистрации:
 
 ```bash
 uv sync --frozen
 make check-eval
 make up
-make sweep
-make report
-make candidate
-test -f evaluation/baseline.json || make baseline-init
 make evaluate
-make eval               # при отказе не выполнять promote
+make eval               # сейчас FAIL: promote не выполнять
 make check-negative
 # make promote          # только при PASS quality gate
 make check-storage
 make check-all          # только ДЗ 6+7: 9 проверок MLflow + тесты оценки
 ```
 
+Команда явного выбора FINISHED run для воспроизведения регистрации:
+
+```bash
+uv run --frozen python -m evaluation.cli candidate \
+  --training-run-id 6dc3386897fc42ec873c99937218ecb1 \
+  --reason 'explicit user selection of a finished run; no new training'
+```
+
+Версия 6 уже существует: повтор этой команды зарегистрирует ещё одну версию.
+Для текущей проверки начинают с `make evaluate`, без `make sweep`.
+
 MLflow UI: http://127.0.0.1:5006. Backend и артефакты сохраняются в Docker
-volumes; `make down` их не удаляет. `make candidate` применяет loss-порог
-до регистрации. `make promote` повторно проверяет качество и только при
+volumes; `make down` их не удаляет. Явный выбор готового run проверяет
+loss-порог, provenance и пакет до регистрации. `make promote` повторно проверяет качество и только при
 PASS назначает champion. Отказ по качеству допустим: candidate остаётся
 доступным, champion не меняется. Baseline не обновляется автоматически.
 Ненулевой код `make eval` не подавляется; после отказа выполняются
 отрицательная проверка, проверка хранения и `make check-all`.
 
-Результаты сдачи:
+Файлы результатов:
 
-- [Сравнение шести runs](docs/comparison.csv), [четыре дефекта](docs/defects.md),
+- [Историческое сравнение шести runs](docs/comparison.csv), [четыре дефекта](docs/defects.md),
   [единый вывод](docs/conclusion.md).
 - `evaluation/params.json`, `evaluation/baseline.json`, `eval-data.dvc`
   и [данные оценки](docs/datasets/hw67-evaluation.tar.gz).

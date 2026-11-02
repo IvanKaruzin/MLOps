@@ -1,6 +1,6 @@
 {
-  "evaluation_run_id": "ef925fe3d3cc4a5f881beea453e3a463",
-  "protocol_sha256": "59cf5865bd47bf3a9faa885832e0c22ba95b555354044d05a5371c5d3bb11ab0",
+  "evaluation_run_id": "b494140e67d24817b2e14efe3a93159a",
+  "protocol_sha256": "5b07bb6728754afd4e389eb67aae0382add1db0dd261c0a7eadb8a3d527eaa37",
   "models": {
     "baseline": {
       "kind": "base",
@@ -10,9 +10,9 @@
     "candidate": {
       "kind": "adapter",
       "name": "my-qwen-adapter",
-      "version": "5",
-      "run_id": "724f89d55d204ee1a24b6373fb6539dd",
-      "uri": "models:/my-qwen-adapter/5"
+      "version": "6",
+      "run_id": "6dc3386897fc42ec873c99937218ecb1",
+      "uri": "models:/my-qwen-adapter/6"
     }
   }
 }

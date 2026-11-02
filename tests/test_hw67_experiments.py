@@ -22,10 +22,16 @@ from transformers import Qwen3Config, Qwen3ForCausalLM
 from src import experiment_report, experiment_train, sweep
 from src.common import provenance, validate_params, verify_provenance
 from src.experiment_train import evaluate, expected_sampling_manifest, prepare_data, processed_summary
-from src.promote import gate, promote, select, validate_sampling
+from src.promote import gate, promote, select, validate_sampling, validate_checkpoints
 
 
 PARAMS = yaml.safe_load((Path(__file__).resolve().parents[1] / "conf/hw67.yaml").read_text())
+# Keep the original small/control regressions independent of production budgets.
+PARAMS["data"].pop("auxiliary", None)
+PARAMS["sampling"]["method"] = "stratified_shuffle"
+PARAMS["train"].update(max_steps=120, train_limit=240, val_limit=60, batch_size=1,
+                       grad_accum=2, eval_every=30, eval_batch_size=1)
+PARAMS["train"].pop("epochs", None)
 VERSIONS = {key: key + "-value" for key in
             ("code_sha256", "config_sha256", "data_train_sha256", "data_val_sha256")}
 
@@ -83,6 +89,50 @@ class ExperimentContract(unittest.TestCase):
             register.assert_not_called()
             self.client.set_registered_model_alias.assert_not_called()
 
+    def test_development_cannot_register_or_masquerade_as_fair_sweep(self):
+        run = copy.deepcopy(self.runs[0])
+        run.data.tags["kind"] = "development"
+        with patch("src.promote.mlflow.register_model") as register:
+            with self.assertRaises(ValueError): promote(self.client, run, "model", "candidate", 1.0)
+            register.assert_not_called()
+        summary = {**self.summary, "kind": "development"}
+        with patch("src.promote.provenance", return_value=VERSIONS):
+            with self.assertRaises(ValueError): select(self.client, PARAMS, summary)
+
+    def test_checkpoint_proof_binds_best_loss_budget_and_real_weights(self):
+        params = copy.deepcopy(PARAMS)
+        params["train"].update(max_steps=2, eval_every=1)
+        weights = b"unit adapter bytes"
+        digest = hashlib.sha256(weights).hexdigest()
+        sampling = expected_sampling_manifest(params)
+        proof = {"policy": "best_val", "metric": "original_val_token_weighted_nll", "primary_val_rows": 60,
+                 "primary_val_ids_sha256": sweep.fingerprint(sampling["val"]["ids"]), "auxiliary_val_rows": 0,
+                 "training_steps": 2, "selected_step": 1, "selected_val_loss": 0.2, "end_val_loss": 0.4,
+                 "checkpoints": [{"step": 0, "val_loss": 1.0}, {"step": 1, "val_loss": 0.2},
+                                 {"step": 2, "val_loss": 0.4}], "adapter_sha256": digest}
+        run = copy.deepcopy(self.runs[0])
+        run.data.metrics.update(final_val_loss=0.2, end_val_loss=0.4, selected_step=1)
+        run.data.tags["selected_adapter_sha256"] = digest
+        mutation = None
+        def download(run_id, artifact, destination):
+            path = Path(destination, artifact)
+            path.parent.mkdir(exist_ok=True, parents=True)
+            actual = copy.deepcopy(proof)
+            if mutation == "step": actual["selected_step"] = 2
+            elif mutation == "budget": actual["training_steps"] = 1
+            elif mutation == "metric": actual["selected_val_loss"] = 0.1
+            elif mutation == "trajectory": actual["checkpoints"].pop()
+            if artifact == "checkpoint.json": path.write_text(json.dumps(actual))
+            elif artifact.endswith("MLmodel"):
+                path.write_text(yaml.safe_dump({"flavors": {"python_function": {"artifacts": {"adapter": {"path": "adapter"}}}}}))
+            elif artifact.endswith("manifest.json"): path.write_text(json.dumps({"checkpoint": actual}))
+            else: path.write_bytes(weights + (b"altered" if mutation == "weights" else b""))
+            return str(path)
+        client = Mock(download_artifacts=Mock(side_effect=download))
+        validate_checkpoints(client, params, [run], sampling)
+        for mutation in ("step", "budget", "metric", "trajectory", "weights"):
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError): validate_checkpoints(client, params, [run], sampling)
+
     def test_registration_after_loss_gate_sets_only_requested_alias(self):
         version = SimpleNamespace(version="2")
         with patch("src.promote.mlflow.register_model", return_value=version) as register:
@@ -92,7 +142,7 @@ class ExperimentContract(unittest.TestCase):
 
     def test_selection_rejects_stale_summary_config_budget_or_base(self):
         with (patch("src.promote.provenance", return_value=VERSIONS), patch("src.promote.validate_sampling"),
-              patch("src.promote.validate_training_view")):
+              patch("src.promote.validate_training_view"), patch("src.promote.validate_checkpoints")):
             self.assertEqual(select(self.client, PARAMS, self.summary).info.run_id, "run-5")
             for mutation in ("summary", "provenance", "budget", "parameters", "revision", "base_loss"):
                 with self.subTest(mutation=mutation):
@@ -143,6 +193,45 @@ class ExperimentContract(unittest.TestCase):
             evaluate(model, [item([1])], 0, torch.device("cpu"))
         self.assertFalse(model.training)
 
+    def test_validation_batching_keeps_token_weighted_objective(self):
+        examples = [{"input_ids": [0] + values, "attention_mask": [1] * (len(values) + 1),
+                     "labels": [-100] + values} for values in ([1], [3, 3, 3], [2, 2])]
+        model = TokenLossModel()
+        expected = evaluate(model, examples, 0, torch.device("cpu"), batch_size=1)
+        self.assertAlmostEqual(evaluate(model, examples, 0, torch.device("cpu"), batch_size=4), expected, places=6)
+        self.assertTrue(model.training)
+
+    def test_scheduler_warmup_cosine_and_epoch_budget_are_explicit(self):
+        config = {"max_steps": 10, "warmup_ratio": 0.2, "lr_schedule": "cosine"}
+        curve = [experiment_train.learning_rate_multiplier(step, config) for step in range(11)]
+        self.assertEqual(curve[:3], [0.5, 1.0, 1.0])
+        self.assertEqual(curve[-1], 0.0)
+        self.assertTrue(all(0 <= value <= 1 for value in curve))
+        self.assertEqual(curve[2:], sorted(curve[2:], reverse=True))
+        params = copy.deepcopy(PARAMS)
+        params["train"].update(epochs=2, batch_size=4, grad_accum=1, max_steps=6)
+        self.assertEqual(experiment_train.check_epoch_budget(params, 9), 3)
+        params["train"]["max_steps"] = 5
+        with self.assertRaises(ValueError): experiment_train.check_epoch_budget(params, 9)
+
+    def test_checkpoint_restores_the_selected_adapter_weights(self):
+        from peft import LoraConfig, get_peft_model, get_peft_model_state_dict
+        cfg = Qwen3Config(vocab_size=8, hidden_size=16, intermediate_size=32,
+                          num_hidden_layers=1, num_attention_heads=2, num_key_value_heads=1, head_dim=8)
+        model = get_peft_model(Qwen3ForCausalLM(cfg), LoraConfig(r=2, target_modules=["q_proj"], task_type="CAUSAL_LM"))
+        checkpoint = experiment_train.AdapterCheckpoint()
+        checkpoint.consider(model, 1, 0.25)
+        selected = {key: value.clone() for key, value in get_peft_model_state_dict(model).items()}
+        with torch.no_grad():
+            for parameter in model.parameters():
+                if parameter.requires_grad: parameter.add_(2)
+        checkpoint.consider(model, 2, 0.75)
+        checkpoint.restore(model)
+        self.assertEqual(checkpoint.step, 1)
+        for key, value in get_peft_model_state_dict(model).items():
+            self.assertTrue(torch.equal(value, selected[key]), key)
+        with self.assertRaises(ValueError): checkpoint.consider(model, 3, float("nan"))
+
     def test_sweep_creates_six_direct_distinct_child_runs(self):
         previous_uri = mlflow.get_tracking_uri()
         cwd = Path.cwd()
@@ -155,8 +244,8 @@ class ExperimentContract(unittest.TestCase):
 import os
 import sys
 from src import sweep
-def fixture(params, config, versions, proof, view_proof):
-    sweep.mlflow.set_tags({**versions, "kind": "candidate", "candidate": config["name"]})
+def fixture(params, config, versions, proof, view_proof, kind="candidate"):
+    sweep.mlflow.set_tags({**versions, "kind": kind, "candidate": config["name"]})
     return {"run_id": sweep.mlflow.active_run().info.run_id, "name": config["name"],
             "sampling_sha256": "fixture-sampling", "training_view_sha256": sweep.fingerprint(view_proof),
             "worker_pid": os.getpid()}
@@ -188,6 +277,24 @@ sweep.main(sys.argv[1:])
                 self.assertEqual(len({row["run_id"] for row in result["rows"]}), 6)
                 self.assertEqual(len({row["worker_pid"] for row in result["rows"]}), 6)
                 self.assertNotIn(os.getpid(), {row["worker_pid"] for row in result["rows"]})
+                before = Path("metrics/sweep.json").read_bytes()
+                with (patch.object(sweep, "load_params", return_value=PARAMS),
+                      patch.object(sweep, "connect"), patch.object(sweep, "provenance", return_value=VERSIONS),
+                      patch.object(sweep, "verify_provenance"),
+                      patch.object(sweep, "verify_tensor_sources", return_value={"passed": True}),
+                      patch.object(experiment_train, "prepare_training_data", return_value=([], [], 0, {}, {"fixture": True})),
+                      patch.object(sweep.subprocess, "run", side_effect=launch),
+                      patch.object(sweep.mlflow, "register_model") as register,
+                      contextlib.redirect_stdout(io.StringIO())):
+                    sweep.main(["--development"])
+                    register.assert_not_called()
+                self.assertEqual(Path("metrics/sweep.json").read_bytes(), before)
+                development = MlflowClient().search_runs([parent.info.experiment_id], filter_string="tags.kind = 'development'")
+                self.assertEqual(len(development), 2)
+                development_parent = next(run for run in development if "mlflow.parentRunId" not in run.data.tags)
+                child = next(run for run in development if "mlflow.parentRunId" in run.data.tags)
+                self.assertEqual(child.data.tags["mlflow.parentRunId"], development_parent.info.run_id)
+                self.assertEqual(child.data.tags["candidate"], "all-r8-low")
             finally:
                 os.chdir(cwd)
                 mlflow.set_tracking_uri(previous_uri)
@@ -247,10 +354,58 @@ sweep.main(sys.argv[1:])
             with self.assertRaises(ValueError):
                 verify_provenance(params, before)
 
+    def test_auxiliary_ids_are_consumed_each_epoch_and_aux_changes_invalidate_provenance(self):
+        params = copy.deepcopy(PARAMS)
+        params["sampling"]["method"] = "full_shuffle"
+        params["train"].update(train_limit=4, val_limit=2, epochs=2, max_steps=4, batch_size=4, grad_accum=1)
+        blobs = {}
+        with tempfile.TemporaryDirectory() as directory:
+            for split, count, year in (("train", 4, 1999), ("val", 2, 2001)):
+                rows = [{"id": f"{split}-{index}", "topic": f"release_year:{year}", "messages": [
+                    {"role": "user", "content": f"Original {split} story number {index}."},
+                    {"role": "assistant", "content": "драма, комедия"}]} for index in range(count)]
+                path = Path(directory, split + ".jsonl")
+                path.write_text("".join(json.dumps(row) + "\n" for row in rows))
+                params["data"][f"source_{split}"] = str(path)
+                blobs[params["data"][split]] = {"model": params["model"]["name"], "pad_token_id": 0,
+                                                "examples": [{"id": row["id"]} for row in rows]}
+            aux = {"version": 1, "train": [
+                {"id": "aux-refuse", "input": "Explain triangle angles.", "expected": "REFUSE",
+                 "kind": "refusal", "source": "author_synthetic", "group_id": "family:math"},
+                {"id": "aux-genre", "input": "A solemn reconciliation between relatives.", "expected": "драма",
+                 "kind": "genre", "source": "author_synthetic", "group_id": "family:relatives"}],
+                "dev": [{"id": "aux-dev", "input": "An absurd workplace accident with hilarious consequences.",
+                         "expected": "комедия", "kind": "genre", "source": "author_synthetic", "group_id": "family:office"}]}
+            path = Path(directory, "auxiliary.json")
+            path.write_text(json.dumps(aux))
+            params["data"]["auxiliary"] = str(path)
+            with patch.object(experiment_train, "load_split", side_effect=lambda path: copy.deepcopy(blobs[path])):
+                train, val, _, sampling = prepare_data(params)
+                manifest = expected_sampling_manifest(params)
+            self.assertEqual((len(train), len(val)), (6, 3))
+            self.assertEqual(sampling["val"]["original_selected_rows"], 2)
+            self.assertEqual(manifest["processed_train"]["count"], 12)
+            self.assertEqual(manifest["processed_train"]["unique_count"], 6)
+            from collections import Counter
+            self.assertEqual(set(Counter(manifest["processed_train"]["ids"]).values()), {2})
+            self.assertEqual(manifest["processed_train"]["kind_counts"]["refusal"], 2)
+            before = provenance(params)
+            aux["train"][1]["expected"] = "комедия"
+            path.write_text(json.dumps(aux))
+            after = provenance(params)
+            self.assertNotEqual(before["auxiliary_sha256"], after["auxiliary_sha256"])
+            self.assertNotEqual(before["config_sha256"], after["config_sha256"])
+            self.assertEqual(before["data_train_sha256"], after["data_train_sha256"])
+            with self.assertRaises(ValueError): verify_provenance(params, before)
+
     def test_real_tiny_training_records_exact_main_and_control_consumption(self):
         control = copy.deepcopy(PARAMS)
         control["train"].update(max_steps=4, train_limit=32, val_limit=8, eval_every=2)
-        for config, expected_count in ((PARAMS, 240), (control, 8)):
+        full = copy.deepcopy(PARAMS)
+        full["sampling"]["method"] = "full_shuffle"
+        full["train"].update(max_steps=2, train_limit=6, val_limit=6, eval_every=1,
+                             batch_size=4, grad_accum=2, eval_batch_size=4, epochs=2)
+        for config, expected_count in ((PARAMS, 240), (control, 8), (full, 12)):
             params = copy.deepcopy(config)
             params["model"].update(device="cpu", dtype="float32")
             params["train"]["response_format"] = "source"
@@ -278,11 +433,21 @@ sweep.main(sys.argv[1:])
                 proof = json.loads(Path(directory, "sampling.json").read_text())
                 self.assertEqual(metrics["steps"], params["train"]["max_steps"])
                 self.assertEqual(metrics["processed_examples"], expected_count)
-                self.assertEqual(metrics["processed_unique_examples"], expected_count)
+                self.assertEqual(metrics["processed_unique_examples"], min(expected_count, len(selected)))
                 self.assertEqual(metrics["processed_tokens"], 3 * expected_count)
                 self.assertEqual(metrics["processed_supervised_tokens"], expected_count)
-                self.assertEqual(proof["processed_train"]["ids"], sampling["train"]["ids"][:expected_count])
-                self.assertEqual(proof["epochs_started"], 1)
+                if config is full:
+                    expected_order = [row["id"] for epoch in range(2)
+                                      for row in experiment_train.ordered_epoch(selected, params, epoch)]
+                    self.assertEqual(proof["processed_train"]["ids"], expected_order)
+                    self.assertNotEqual(expected_order[:6], expected_order[6:])
+                else:
+                    self.assertEqual(proof["processed_train"]["ids"], sampling["train"]["ids"][:expected_count])
+                self.assertEqual(proof["epochs_started"], params["train"].get("epochs", 1))
+                checkpoint = json.loads(Path(directory, "checkpoint.json").read_text())
+                self.assertEqual(checkpoint["training_steps"], metrics["steps"])
+                self.assertEqual(checkpoint["selected_val_loss"], metrics["final_val_loss"])
+                self.assertEqual(checkpoint["adapter_sha256"], hashlib.sha256(Path(directory, "adapter_model.safetensors").read_bytes()).hexdigest())
                 self.assertEqual([step for step, values in observed if "train_loss" in values],
                                  list(range(1, params["train"]["max_steps"] + 1)))
                 self.assertEqual([step for step, values in observed if "val_loss" in values],

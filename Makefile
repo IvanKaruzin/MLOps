@@ -128,6 +128,7 @@ eval:
 check-eval:
 	uv run python -m unittest discover -s tests -p 'test_eval*.py' -v
 	uv run python -m unittest discover -s tests -p 'test_pipeline*.py' -v
+	uv run python -m unittest discover -s tests -p 'test_hw67*.py' -v
 
 check-negative:
 	uv run python -m evaluation.cli negative

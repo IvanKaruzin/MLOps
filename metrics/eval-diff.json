@@ -1,8 +1,18 @@
 {
   "improved": [
-    "movie-free-004",
-    "movie-free-046",
-    "movie-free-074"
+    "movie-free-007",
+    "movie-free-008",
+    "movie-free-034",
+    "movie-free-038",
+    "movie-free-039",
+    "movie-free-056",
+    "movie-free-060",
+    "movie-free-063",
+    "movie-free-066",
+    "movie-free-069",
+    "movie-free-071",
+    "movie-free-082",
+    "movie-free-084"
   ],
   "regressed": [
     "movie-free-018"
