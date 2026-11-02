@@ -27,10 +27,7 @@ class PipelineContract(unittest.TestCase):
         def set_alias(name, alias, version):
             self.mutations.append((alias, version)); self.alias = str(version)
         self.client = SimpleNamespace(set_registered_model_alias=set_alias,
-                                      get_model_version_by_alias=lambda *a: SimpleNamespace(version=self.alias, run_id='fixture-run'),
-                                      get_model_version=lambda *a: SimpleNamespace(run_id='fixture-run', status='READY',
-                                          source='runs:/fixture-run/model', tags={}),
-                                      get_run=lambda *a: SimpleNamespace(info=SimpleNamespace(artifact_uri='mlflow-artifacts:/fixture-run')))
+                                      get_model_version_by_alias=lambda *a: SimpleNamespace(version=self.alias, run_id='fixture-run'))
         self.stack.enter_context(patch.object(cli, 'tracking', return_value=({}, self.client)))
         self.stack.enter_context(patch.object(cli, 'candidate_model', return_value=self.spec))
         self.stack.enter_context(patch.object(cli, 'manifest_for', return_value=(self.manifest, None)))

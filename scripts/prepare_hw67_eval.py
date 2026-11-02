@@ -249,24 +249,14 @@ def main():
         "id": row["id"], "group_id": row["topic"], "input": source_parts(row)[0],
         "source_record_sha256": canonical_hash(row),
     } for row in splits["train"]]
-    # The leakage index must cover the complete active training corpus, not
-    # only the original HW4 source. The trainer never opens the sealed set.
-    from src.training_view import load_auxiliary
-    experiment = yaml.safe_load((ROOT / "conf/hw67.yaml").read_text())
-    auxiliary, auxiliary_proof = load_auxiliary(experiment)
-    training.extend({
-        "id": row["id"], "group_id": row["group_id"], "input": row["input"],
-        "source_record_sha256": canonical_hash(row),
-    } for row in auxiliary["train"])
     leakage = validate_golden(golden, training, behavioral)
     source_plot_leakage = {}
     for split in ("train", "val"):
         plots = {normalized(source_parts(record)[0]) for record in splits[split]}
-        plots.update(normalized(record["input"]) for record in auxiliary[split])
         intersections = [item["id"] for item in golden + behavioral if normalized(item["input"]) in plots]
         if intersections:
             raise ValueError(f"Evaluation plot intersects {split}: {intersections}")
-        source_plot_leakage[split] = dict(source_records_checked=len(splits[split]) + len(auxiliary[split]),
+        source_plot_leakage[split] = dict(source_records_checked=len(splits[split]),
                                          evaluation_items_checked=len(golden + behavioral),
                                          normalized_original_plot_intersections=0)
     tensor_links = verify_tensor_links(params, splits)
@@ -281,9 +271,6 @@ def main():
         "raw_source_sha256": source_sha256,
         "source_sha256": {name: digest(ROOT / f"data/{name}.jsonl") for name in splits},
         "source_counts": {name: len(rows) for name, rows in splits.items()},
-        "training_index": {"rows": len(training), "original_rows": len(splits["train"]),
-                           "auxiliary_rows": len(auxiliary["train"])},
-        "auxiliary": auxiliary_proof,
         "taxonomy": taxonomy, "refusal_label": "REFUSE",
         "answer_catalogue": {"count": len(choices), "sha256": canonical_hash(choices),
                              "source": "All distinct canonical genre combinations in the pinned source CSV plus all 18 singleton labels and REFUSE",
@@ -316,7 +303,7 @@ def main():
             "The balanced 6-cell sample is not prevalence-weighted test-set accuracy; the oldest single-genre cell is a census of 15 items.",
             "This formerly held-out test subset is now a development golden set, not an independent final audit.",
             "Exact/group comparisons do not rule out all semantic paraphrases, franchise overlap or model pretraining contamination.",
-            "Training includes independently authored refusal examples when auxiliary data is configured. Golden and behavioral cases are never training targets; labels and thresholds are not changed to hide failures.",
+            "Refusal was not trained as an auxiliary target. An untrained behavior may fail; labels and thresholds must not be changed to hide that failure.",
         ],
         "preparation_code_sha256": {name: digest(ROOT / name) for name in (
             "scripts/prepare_hw67_eval.py", "src/collect.py", "src/tokenize_data.py", "src/prompt.py")},

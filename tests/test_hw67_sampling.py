@@ -10,7 +10,7 @@ from unittest.mock import patch
 from collections import Counter
 from pathlib import Path
 
-from src.sampling import STRATA, epoch_order, sample_split, source_metadata, verify_tensor_sources
+from src.sampling import STRATA, sample_split, source_metadata, verify_tensor_sources
 
 
 class SamplingContract(unittest.TestCase):
@@ -129,93 +129,6 @@ class SamplingContract(unittest.TestCase):
         with self.assertRaises(ValueError): sample_split(self.blob, self.path.parent, 32, 42, "train")
         self.path.write_text("not json\n")
         with self.assertRaises(ValueError): self.sample()
-
-    def test_full_shuffle_preserves_uneven_and_absent_strata_without_quotas(self):
-        self.records = self.records[:50] + self.records[150:153] + self.records[-2:]
-        keep = {row["id"] for row in self.records}
-        self.blob["examples"] = [row for row in self.blob["examples"] if row["id"] in keep]
-        self.write_source()
-        selected, manifest = self.sample(len(keep), method="full_shuffle")
-        self.assertEqual({row["id"] for row in selected}, keep)
-        self.assertEqual(manifest["strata_counts"], manifest["source_strata_counts"])
-        self.assertEqual(manifest["strata_counts"]["before2000__single_genre"], 50)
-        self.assertEqual(manifest["strata_counts"]["before2000__two_genres"], 0)
-        with self.assertRaises(ValueError):
-            self.sample(len(keep), method="stratified_shuffle")
-
-    def test_full_shuffle_accepts_every_positive_limit_and_is_reproducible(self):
-        original = copy.deepcopy(self.blob)
-        for limit in (1, 2, 5, 8, 32, 300):
-            with self.subTest(limit=limit):
-                first = self.sample(limit, method="full_shuffle")
-                self.assertEqual(first, self.sample(limit, method="full_shuffle"))
-                self.assertEqual(first[1]["selected_rows"], limit)
-                actual_counts = Counter(item["stratum"] for item in first[1]["selected_records"])
-                self.assertEqual(first[1]["strata_counts"], {name: actual_counts[name] for name in STRATA})
-        main_ids = self.sample(300, method="full_shuffle")[1]["ids"]
-        self.assertEqual(self.sample(8, method="full_shuffle")[1]["ids"], main_ids[:8])
-        self.assertNotEqual(main_ids, [row["id"] for row in self.records])
-        self.assertNotEqual(main_ids, self.sample(300, seed=20261026, method="full_shuffle")[1]["ids"])
-        self.assertEqual(self.blob, original)
-        for limit in (False, 0, -1, 301, 1.5):
-            with self.subTest(invalid_limit=limit), self.assertRaises(ValueError):
-                self.sample(limit, method="full_shuffle")
-
-    def test_full_shuffle_is_independent_of_source_and_tensor_serialization_order(self):
-        selected, manifest = self.sample(32, method="full_shuffle")
-        random.Random(3).shuffle(self.blob["examples"])
-        random.Random(7).shuffle(self.records)
-        self.write_source()
-        actual, reordered_manifest = self.sample(32, method="full_shuffle")
-        self.assertEqual(actual, selected)
-        self.assertEqual(reordered_manifest["ids"], manifest["ids"])
-        self.assertNotEqual(reordered_manifest["source_sha256"], manifest["source_sha256"])
-
-    def test_full_train_4800_and_val_599_have_complete_disjoint_epoch_coverage(self):
-        full_ids = {}
-        for split, count in (("train", 4800), ("val", 599)):
-            records = [{"id": f"{split}-{index:05}", "topic": f"release_year:{1999 if index % 5 == 0 else 2000}",
-                        "messages": [{"role": "assistant", "content": "драма" if index % 7 == 0
-                                      else "драма, комедия, мелодрама"}]} for index in range(count)]
-            source = Path(self.directory.name, f"{split}-full.jsonl")
-            source.write_text("".join(json.dumps(row) + "\n" for row in records), encoding="utf-8")
-            blob = {"examples": [{"id": row["id"], "input_ids": [index]} for index, row in enumerate(records)]}
-            selected, manifest = sample_split(blob, source, count, 20261025, split, method="full_shuffle")
-            full_ids[split] = {row["id"] for row in records}
-            self.assertEqual(len(selected), count)
-            self.assertEqual(set(manifest["ids"]), full_ids[split])
-            self.assertEqual([row["id"] for row in selected], manifest["ids"])
-            self.assertEqual(manifest["strata_counts"], manifest["source_strata_counts"])
-            epochs = [epoch_order(selected, 20261025, epoch) for epoch in range(3)]
-            for order in epochs:
-                self.assertEqual(len(order), count)
-                self.assertEqual({row["id"] for row in order}, full_ids[split])
-            consumed = Counter(row["id"] for order in epochs for row in order)
-            self.assertEqual(set(consumed.values()), {3})
-        self.assertFalse(full_ids["train"] & full_ids["val"])
-
-    def test_epoch_order_is_repeatable_changes_per_epoch_and_keeps_rng_and_inputs(self):
-        examples = self.blob["examples"]
-        before = copy.deepcopy(examples)
-        state = random.getstate()
-        first = epoch_order(examples, 20261025, 0)
-        self.assertEqual(first, epoch_order(examples, 20261025, 0))
-        self.assertEqual(first, epoch_order(list(reversed(examples)), 20261025, 0))
-        self.assertNotEqual(first, epoch_order(examples, 20261025, 1))
-        self.assertNotEqual(first, epoch_order(examples, 20261026, 0))
-        ids = [row["id"] for row in examples]
-        self.assertEqual([row["id"] for row in first], epoch_order(ids, 20261025, 0))
-        self.assertEqual(examples, before)
-        self.assertEqual(random.getstate(), state)
-
-    def test_epoch_order_rejects_invalid_seed_epoch_or_identifiers(self):
-        for seed, epoch in ((True, 0), (-1, 0), (0, True), (0, -1), (1.5, 0), (0, 0.5)):
-            with self.subTest(seed=seed, epoch=epoch), self.assertRaises(ValueError):
-                epoch_order(["example"], seed, epoch)
-        for values in ([], ["id", "id"], [{"id": "id"}, {"id": "id"}], ["id", {"id": "other"}],
-                       [{"id": "id"}, "other"], [{"unknown": "id"}], [1], [" "], None):
-            with self.subTest(values=values), self.assertRaises(ValueError):
-                epoch_order(values, 20261025, 0)
 
     def test_full_reencoding_rejects_changed_plots_or_labels_with_identical_ids(self):
         import torch

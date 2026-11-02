@@ -10,27 +10,20 @@ data:
   source_train: data/train.jsonl
   source_val: data/val.jsonl
   tokenization_params: params.yaml
-  auxiliary: data/eval/auxiliary.json
 sampling:
-  method: full_shuffle
+  method: stratified_shuffle
   seed: 20261025
 train:
   seed: 42
-  max_steps: 2502
-  train_limit: 4800
-  val_limit: 599
-  batch_size: 4
-  grad_accum: 1
-  eval_every: 626
+  max_steps: 120
+  train_limit: 240
+  val_limit: 60
+  batch_size: 1
+  grad_accum: 2
+  eval_every: 30
   gradient_checkpointing: true
   response_format: json_genres
   view_max_seq_len: 768
-  eval_batch_size: 4
-  epochs: 1
-  warmup_ratio: 0.05
-  lr_schedule: cosine
-  checkpoint_selection: best_val
-  worker_timeout_seconds: 21600
 lora:
   dropout: 0.05
   alpha_over_r: 2

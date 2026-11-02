@@ -19,7 +19,7 @@ from src.prompt import build_chat_text
 from src.promote import validate_training_view
 from src.tokenize_data import encode_example
 from src.train import supervised_loss
-from src.training_view import build_training_view, fingerprint, load_auxiliary
+from src.training_view import build_training_view, fingerprint
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -39,7 +39,6 @@ class TrainingViewContract(unittest.TestCase):
         self.addCleanup(self.temporary.cleanup)
         self.directory = Path(self.temporary.name)
         self.params = copy.deepcopy(self.config)
-        self.params["data"].pop("auxiliary", None)
         self.params["model"].update(device="cpu", dtype="float32")
         source_config = yaml.safe_load((ROOT / "params.yaml").read_text())
         source_config["data"] = {}
@@ -115,55 +114,6 @@ class TrainingViewContract(unittest.TestCase):
         self.assertEqual(proof["response_format"], "source")
         self.assertIsNone(proof["system"])
         self.assert_originals_untouched()
-
-    def auxiliary(self):
-        rows = {"train": [{"id": "aux-train", "input": "Calculate the circumference of a circle.",
-                           "expected": "REFUSE", "group_id": "aux-family:geometry", "kind": "refusal",
-                           "source": "author_synthetic"}],
-                "dev": [{"id": "aux-dev", "input": "A tragic story of an isolated actor.", "expected": "драма",
-                         "group_id": "aux-family:actor", "kind": "genre", "source": "author_synthetic"}]}
-        path = self.directory / "auxiliary.json"
-        bundle = {"version": 1, **rows, "manifest": {"sealed_final": {"path": "must-never-be-opened.jsonl"}}}
-        path.write_text(json.dumps(bundle))
-        self.params["data"]["auxiliary"] = str(path)
-        return path, bundle
-
-    def test_auxiliary_refusal_json_supervision_proof_and_originals_are_separate(self):
-        path, bundle = self.auxiliary()
-        before = path.read_bytes()
-        with self.assertRaises(ValueError): self.build()
-        train, val, proof = build_training_view(self.params,
-            self.original["train"] + [{"id": "aux-train", "_auxiliary": True}],
-            self.original["val"] + [{"id": "aux-dev", "_auxiliary": True}], self.tokenizer)
-        self.assertEqual(proof["splits"]["train"]["auxiliary_ids"], ["aux-train"])
-        self.assertEqual(proof["splits"]["val"]["original_ids"], [row["id"] for row in self.original["val"]])
-        self.assertEqual(proof["auxiliary"]["train_rows"], 1)
-        target = [token for token, label in zip(train[-1]["input_ids"], train[-1]["labels"]) if label != -100]
-        self.assertEqual(self.tokenizer.decode(target, skip_special_tokens=False),
-                         '{"answer": "REFUSE"}' + self.tokenizer.eos_token)
-        self.assertEqual(self.tokenizer.decode([label for label in val[-1]["labels"] if label != -100],
-                                              skip_special_tokens=False), '{"answer": "драма"}' + self.tokenizer.eos_token)
-        self.assertEqual(path.read_bytes(), before)
-        self.assert_originals_untouched()
-
-    def test_auxiliary_rejects_overlap_lowercase_refusal_unknown_labels_and_holdout(self):
-        path, original = self.auxiliary()
-        for mutation in ("text", "id", "group", "case", "unknown", "order", "holdout"):
-            bundle = copy.deepcopy(original)
-            if mutation == "text": bundle["train"][0]["input"] = self.records["val"][0]["messages"][1]["content"].upper()
-            elif mutation == "id": bundle["dev"][0]["id"] = bundle["train"][0]["id"]
-            elif mutation == "group": bundle["dev"][0]["group_id"] = bundle["train"][0]["group_id"]
-            elif mutation == "case": bundle["train"][0]["expected"] = "refuse"
-            elif mutation == "unknown": bundle["dev"][0]["expected"] = "unknown"
-            elif mutation == "order": bundle["dev"][0]["expected"] = "комедия, драма"
-            else: bundle["sealed_final"] = []
-            path.write_text(json.dumps(bundle))
-            with self.subTest(mutation=mutation), self.assertRaises(ValueError): load_auxiliary(self.params)
-        path.write_text(json.dumps(original))
-        _, proof = load_auxiliary(self.params)
-        original["dev"][0]["expected"] = "комедия"
-        path.write_text(json.dumps(original))
-        self.assertNotEqual(load_auxiliary(self.params)[1]["sha256"], proof["sha256"])
 
     def test_truncation_missing_ids_and_invalid_finite_labels_are_rejected(self):
         params = copy.deepcopy(self.params)

@@ -2,7 +2,7 @@
   "passed": false,
   "reason": "Не все обязательные behavioral-кейсы пройдены",
   "reports_verified": true,
-  "evaluation_run_id": "b494140e67d24817b2e14efe3a93159a",
+  "evaluation_run_id": "ef925fe3d3cc4a5f881beea453e3a463",
   "baseline_model": {
     "kind": "base",
     "name": "Qwen/Qwen3-0.6B",
@@ -11,14 +11,14 @@
   "candidate_model": {
     "kind": "adapter",
     "name": "my-qwen-adapter",
-    "version": "6",
-    "run_id": "6dc3386897fc42ec873c99937218ecb1",
-    "uri": "models:/my-qwen-adapter/6"
+    "version": "5",
+    "run_id": "724f89d55d204ee1a24b6373fb6539dd",
+    "uri": "models:/my-qwen-adapter/5"
   },
-  "protocol_sha256": "5b07bb6728754afd4e389eb67aae0382add1db0dd261c0a7eadb8a3d527eaa37",
+  "protocol_sha256": "59cf5865bd47bf3a9faa885832e0c22ba95b555354044d05a5371c5d3bb11ab0",
   "golden_sha256": "1a726c9218aa0400e054293d481bb008071d3eb1acb00f46aa6b358fad07ada2",
   "baseline_spec_sha256": "f71269b95f6b4e1e160fa25e9af6c973517cfebad15880b75b56c8184680b163",
-  "baseline_outputs_sha256": "985f33b32bfdec28d28660912bfd62ee90de4106e90712d7951153676cd5cc7a",
-  "candidate_outputs_sha256": "9bc7cd99e175bef57dc58bea0921d056c88b09e5853afff9f237e635bf0158b5",
-  "gate_run_id": "8644fb60d5724c9193aaf690e5c12bc4"
+  "baseline_outputs_sha256": "327b9ec549fc061969600229af2c8e5f2046b623334e2d3d3017c7cd6ba07c5a",
+  "candidate_outputs_sha256": "2b14f16a10fd4aa75a35ccfbfcd6e10850f166876951b835b75bbbdcbbe921e3",
+  "gate_run_id": "89fddfeb329e4659a314b24f10eb026f"
 }
