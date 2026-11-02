@@ -1,0 +1,226 @@
+test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file (test_integration.ReleaseIntegration.test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file)
+A real child process injects a replacement failure without damaging the disk. ... OBSERVATION {"event": "replace_error", "old_pointer_preserved": false, "replace_failure_propagated": false, "temporary_files": [], "test": "test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file"}
+FAIL
+test_cache_survives_fresh_process_and_invalidates_content_and_config (test_integration.ReleaseIntegration.test_cache_survives_fresh_process_and_invalidates_content_and_config)
+Failure/retry reuses preparation, but input and every config change do not. ... OBSERVATION {"event": "fresh_process_retry", "first_exit": 1, "retry_exit": 0, "retry_output": "CACHE_HIT 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4\nPUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+OBSERVATION {"event": "input_changed_same_path", "output": "CACHE_HIT 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4\nPUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+FAIL
+test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend)
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... OBSERVATION {"calls_after": 1, "calls_before": 0, "event": "invalid_request", "http_status": 200, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+
+  test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': '', 'max_new_tokens': 32})
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... FAIL
+OBSERVATION {"calls_after": 2, "calls_before": 0, "event": "invalid_request", "http_status": 200, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+  test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': '   ', 'max_new_tokens': 32})
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... FAIL
+OBSERVATION {"calls_after": 3, "calls_before": 0, "event": "invalid_request", "http_status": 200, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+  test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': None, 'max_new_tokens': 32})
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... FAIL
+OBSERVATION {"calls_after": 4, "calls_before": 0, "event": "invalid_request", "http_status": 200, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+  test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': [], 'max_new_tokens': 32})
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... FAIL
+OBSERVATION {"calls_after": 5, "calls_before": 0, "event": "invalid_request", "http_status": 200, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+  test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': 'valid', 'max_new_tokens': 0})
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... FAIL
+OBSERVATION {"calls_after": 6, "calls_before": 0, "event": "invalid_request", "http_status": 200, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+  test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': 'valid', 'max_new_tokens': 100000})
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... FAIL
+OBSERVATION {"calls_after": 7, "calls_before": 0, "event": "invalid_request", "http_status": 200, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+  test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': 'valid', 'max_new_tokens': '32'})
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... FAIL
+OBSERVATION {"calls_after": 8, "calls_before": 0, "event": "invalid_request", "http_status": 200, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+  test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': 'valid', 'max_new_tokens': True})
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... FAIL
+OBSERVATION {"calls_after": 9, "calls_before": 0, "event": "invalid_request", "http_status": 200, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+  test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': 'valid', 'max_new_tokens': 32, 'temperature': 0.7})
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... FAIL
+test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend)
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... FAIL
+test_http_loaded_version_changes_only_after_restart_and_supports_rollback (test_integration.ReleaseIntegration.test_http_loaded_version_changes_only_after_restart_and_supports_rollback)
+Publish B while A is loaded, restart onto B, then atomically restore A and reload. ... OBSERVATION {"event": "initial_loaded_A", "response": {"answer": "STUB ONLY: fixture-A", "generation_seconds": 0.01271750000000793, "model_id": "fixture-A", "output_tokens": 1, "request_id": "ed166dcd-2dac-480c-af14-261652cff89f", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547"}, "test": "test_http_loaded_version_changes_only_after_restart_and_supports_rollback"}
+OBSERVATION {"accepted_id": "fixture-B", "event": "accepted_B_while_A_loaded", "response": {"answer": "STUB ONLY: fixture-A", "generation_seconds": 0.012661707999995997, "model_id": "fixture-B", "output_tokens": 1, "request_id": "5eeb726b-7cd4-4bfd-bbe0-8569bffaf525", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547"}, "test": "test_http_loaded_version_changes_only_after_restart_and_supports_rollback"}
+FAIL
+test_http_ready_and_generation_wait_for_actual_warmup (test_integration.ReleaseIntegration.test_http_ready_and_generation_wait_for_actual_warmup)
+Liveness is independent from readiness and does not permit early computation. ... OBSERVATION {"debug": {"calls": 0, "loaded_id": "fixture-A", "warmup_finished": false}, "event": "during_warmup", "ready_status": 200, "test": "test_http_ready_and_generation_wait_for_actual_warmup"}
+FAIL
+test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes (test_integration.ReleaseIntegration.test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes)
+Each rejection uses a new workspace and a separate actual release process. ... OBSERVATION {"accepted_after_sha256": "0bb6ec1a07f2c71016d90b62af8865121cb2b7b4bc8d6cd5d0336af99ad0a7d3", "accepted_before_sha256": "aca0bc1332936349f868b84d800dec94e1a042f4aec3196fe4c4c031c3b5c6d1", "event": "report_decision", "exit_code": 0, "report": "report-incomplete.json", "test": "test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes"}
+
+  test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes (test_integration.ReleaseIntegration.test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes) (report='report-incomplete.json')
+Each rejection uses a new workspace and a separate actual release process. ... FAIL
+OBSERVATION {"accepted_after_sha256": "0bb6ec1a07f2c71016d90b62af8865121cb2b7b4bc8d6cd5d0336af99ad0a7d3", "accepted_before_sha256": "aca0bc1332936349f868b84d800dec94e1a042f4aec3196fe4c4c031c3b5c6d1", "event": "report_decision", "exit_code": 0, "report": "report-A.json", "test": "test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes"}
+  test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes (test_integration.ReleaseIntegration.test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes) (report='report-A.json')
+Each rejection uses a new workspace and a separate actual release process. ... FAIL
+OBSERVATION {"accepted_after_sha256": "aca0bc1332936349f868b84d800dec94e1a042f4aec3196fe4c4c031c3b5c6d1", "accepted_before_sha256": "aca0bc1332936349f868b84d800dec94e1a042f4aec3196fe4c4c031c3b5c6d1", "event": "report_decision", "exit_code": 1, "report": "report-reject.json", "test": "test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes"}
+test_release_is_idempotent_and_recovers_pointer_journal_failure (test_integration.ReleaseIntegration.test_release_is_idempotent_and_recovers_pointer_journal_failure)
+A repeated release and an interrupted pointer/journal write each emit one event. ... OBSERVATION {"attempts": 2, "event": "repeated_release", "publication_events": 2, "test": "test_release_is_idempotent_and_recovers_pointer_journal_failure"}
+FAIL
+
+======================================================================
+FAIL: test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file (test_integration.ReleaseIntegration.test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file)
+A real child process injects a replacement failure without damaging the disk.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 115, in test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file
+    self.assertTrue(evidence["replace_failure_propagated"], f"Atomic replacement must be attempted: {evidence}")
+AssertionError: False is not true : Atomic replacement must be attempted: {'replace_failure_propagated': False, 'old_pointer_preserved': False, 'temporary_files': []}
+
+======================================================================
+FAIL: test_cache_survives_fresh_process_and_invalidates_content_and_config (test_integration.ReleaseIntegration.test_cache_survives_fresh_process_and_invalidates_content_and_config)
+Failure/retry reuses preparation, but input and every config change do not.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 52, in test_cache_survives_fresh_process_and_invalidates_content_and_config
+    self.assertIn("PREPARED", changed.stdout,
+AssertionError: 'PREPARED' not found in 'CACHE_HIT 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4\nPUBLISHED fixture-B\n' : Changing input bytes at an unchanged path must invalidate preparation: CACHE_HIT 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4
+PUBLISHED fixture-B
+
+
+======================================================================
+FAIL: test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': '', 'max_new_tokens': 32})
+Invalid shape, prompt, types, bounds and generation options fail before computation.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 252, in test_http_invalid_requests_do_not_invoke_backend
+    self.assertTrue(400 <= status < 500, f"Invalid request was accepted: {payload!r}; {body}")
+AssertionError: False is not true : Invalid request was accepted: {'prompt': '', 'max_new_tokens': 32}; {'answer': 'STUB ONLY: fixture-A', 'output_tokens': 1, 'model_id': 'fixture-A', 'runtime_sha256': 'bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547', 'request_id': '1b1502b1-2ec5-46ac-ad19-7ddc6286885f', 'generation_seconds': 0.012682541999993191}
+
+======================================================================
+FAIL: test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': '   ', 'max_new_tokens': 32})
+Invalid shape, prompt, types, bounds and generation options fail before computation.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 252, in test_http_invalid_requests_do_not_invoke_backend
+    self.assertTrue(400 <= status < 500, f"Invalid request was accepted: {payload!r}; {body}")
+AssertionError: False is not true : Invalid request was accepted: {'prompt': '   ', 'max_new_tokens': 32}; {'answer': 'STUB ONLY: fixture-A', 'output_tokens': 1, 'model_id': 'fixture-A', 'runtime_sha256': 'bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547', 'request_id': '42cf19e8-e585-4c41-be0a-234fc446778c', 'generation_seconds': 0.012732416000062585}
+
+======================================================================
+FAIL: test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': None, 'max_new_tokens': 32})
+Invalid shape, prompt, types, bounds and generation options fail before computation.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 252, in test_http_invalid_requests_do_not_invoke_backend
+    self.assertTrue(400 <= status < 500, f"Invalid request was accepted: {payload!r}; {body}")
+AssertionError: False is not true : Invalid request was accepted: {'prompt': None, 'max_new_tokens': 32}; {'answer': 'STUB ONLY: fixture-A', 'output_tokens': 1, 'model_id': 'fixture-A', 'runtime_sha256': 'bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547', 'request_id': '843a7dc4-4f80-4a8c-a8de-dfa5a484e1fc', 'generation_seconds': 0.010189209000031951}
+
+======================================================================
+FAIL: test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': [], 'max_new_tokens': 32})
+Invalid shape, prompt, types, bounds and generation options fail before computation.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 252, in test_http_invalid_requests_do_not_invoke_backend
+    self.assertTrue(400 <= status < 500, f"Invalid request was accepted: {payload!r}; {body}")
+AssertionError: False is not true : Invalid request was accepted: {'prompt': [], 'max_new_tokens': 32}; {'answer': 'STUB ONLY: fixture-A', 'output_tokens': 1, 'model_id': 'fixture-A', 'runtime_sha256': 'bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547', 'request_id': '3bc49f62-7228-4fd1-9d47-66ba1b632c05', 'generation_seconds': 0.010321875000045111}
+
+======================================================================
+FAIL: test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': 'valid', 'max_new_tokens': 0})
+Invalid shape, prompt, types, bounds and generation options fail before computation.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 252, in test_http_invalid_requests_do_not_invoke_backend
+    self.assertTrue(400 <= status < 500, f"Invalid request was accepted: {payload!r}; {body}")
+AssertionError: False is not true : Invalid request was accepted: {'prompt': 'valid', 'max_new_tokens': 0}; {'answer': 'STUB ONLY: fixture-A', 'output_tokens': 1, 'model_id': 'fixture-A', 'runtime_sha256': 'bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547', 'request_id': '6ac762f8-fd86-4f4f-9a67-3612ba0da5c1', 'generation_seconds': 0.01275925000004463}
+
+======================================================================
+FAIL: test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': 'valid', 'max_new_tokens': 100000})
+Invalid shape, prompt, types, bounds and generation options fail before computation.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 252, in test_http_invalid_requests_do_not_invoke_backend
+    self.assertTrue(400 <= status < 500, f"Invalid request was accepted: {payload!r}; {body}")
+AssertionError: False is not true : Invalid request was accepted: {'prompt': 'valid', 'max_new_tokens': 100000}; {'answer': 'STUB ONLY: fixture-A', 'output_tokens': 1, 'model_id': 'fixture-A', 'runtime_sha256': 'bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547', 'request_id': 'f16150c9-e33e-4c4f-85c2-337cbea87649', 'generation_seconds': 0.012725458000090839}
+
+======================================================================
+FAIL: test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': 'valid', 'max_new_tokens': '32'})
+Invalid shape, prompt, types, bounds and generation options fail before computation.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 252, in test_http_invalid_requests_do_not_invoke_backend
+    self.assertTrue(400 <= status < 500, f"Invalid request was accepted: {payload!r}; {body}")
+AssertionError: False is not true : Invalid request was accepted: {'prompt': 'valid', 'max_new_tokens': '32'}; {'answer': 'STUB ONLY: fixture-A', 'output_tokens': 1, 'model_id': 'fixture-A', 'runtime_sha256': 'bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547', 'request_id': 'ddfbda3c-7cae-40fc-ab11-cd5aafaa0e72', 'generation_seconds': 0.012724040999955832}
+
+======================================================================
+FAIL: test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': 'valid', 'max_new_tokens': True})
+Invalid shape, prompt, types, bounds and generation options fail before computation.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 252, in test_http_invalid_requests_do_not_invoke_backend
+    self.assertTrue(400 <= status < 500, f"Invalid request was accepted: {payload!r}; {body}")
+AssertionError: False is not true : Invalid request was accepted: {'prompt': 'valid', 'max_new_tokens': True}; {'answer': 'STUB ONLY: fixture-A', 'output_tokens': 1, 'model_id': 'fixture-A', 'runtime_sha256': 'bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547', 'request_id': '3296b84d-db66-4b2e-83ca-7d6d67b63eae', 'generation_seconds': 0.012767166999992696}
+
+======================================================================
+FAIL: test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend) (payload={'prompt': 'valid', 'max_new_tokens': 32, 'temperature': 0.7})
+Invalid shape, prompt, types, bounds and generation options fail before computation.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 252, in test_http_invalid_requests_do_not_invoke_backend
+    self.assertTrue(400 <= status < 500, f"Invalid request was accepted: {payload!r}; {body}")
+AssertionError: False is not true : Invalid request was accepted: {'prompt': 'valid', 'max_new_tokens': 32, 'temperature': 0.7}; {'answer': 'STUB ONLY: fixture-A', 'output_tokens': 1, 'model_id': 'fixture-A', 'runtime_sha256': 'bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547', 'request_id': '8605feac-ce45-415f-a04f-91948bc41a5e', 'generation_seconds': 0.011087875000043823}
+
+======================================================================
+FAIL: test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend)
+Invalid shape, prompt, types, bounds and generation options fail before computation.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 255, in test_http_invalid_requests_do_not_invoke_backend
+    self.assertEqual(final["calls"], before["calls"])
+AssertionError: 9 != 0
+
+======================================================================
+FAIL: test_http_loaded_version_changes_only_after_restart_and_supports_rollback (test_integration.ReleaseIntegration.test_http_loaded_version_changes_only_after_restart_and_supports_rollback)
+Publish B while A is loaded, restart onto B, then atomically restore A and reload.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 202, in test_http_loaded_version_changes_only_after_restart_and_supports_rollback
+    self.assertEqual(still_a["model_id"], "fixture-A",
+AssertionError: 'fixture-B' != 'fixture-A'
+- fixture-B
+?         ^
++ fixture-A
+?         ^
+ : Metadata must identify loaded A, not newly accepted B: {'answer': 'STUB ONLY: fixture-A', 'output_tokens': 1, 'model_id': 'fixture-B', 'runtime_sha256': 'bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547', 'request_id': '5eeb726b-7cd4-4bfd-bbe0-8569bffaf525', 'generation_seconds': 0.012661707999995997}
+
+======================================================================
+FAIL: test_http_ready_and_generation_wait_for_actual_warmup (test_integration.ReleaseIntegration.test_http_ready_and_generation_wait_for_actual_warmup)
+Liveness is independent from readiness and does not permit early computation.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 181, in test_http_ready_and_generation_wait_for_actual_warmup
+    self.assertEqual(status, 503, f"Ready became green before warmup: {body}")
+AssertionError: 200 != 503 : Ready became green before warmup: {'ready': True}
+
+======================================================================
+FAIL: test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes (test_integration.ReleaseIntegration.test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes) (report='report-incomplete.json')
+Each rejection uses a new workspace and a separate actual release process.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 84, in test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes
+    self.assertNotEqual(rejected.returncode, 0,
+AssertionError: 0 == 0 : Incomplete/foreign/refused report report-incomplete.json must fail, observed: PREPARED 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4
+PUBLISHED fixture-B
+
+
+======================================================================
+FAIL: test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes (test_integration.ReleaseIntegration.test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes) (report='report-A.json')
+Each rejection uses a new workspace and a separate actual release process.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 84, in test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes
+    self.assertNotEqual(rejected.returncode, 0,
+AssertionError: 0 == 0 : Incomplete/foreign/refused report report-A.json must fail, observed: PREPARED 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4
+PUBLISHED fixture-B
+
+
+======================================================================
+FAIL: test_release_is_idempotent_and_recovers_pointer_journal_failure (test_integration.ReleaseIntegration.test_release_is_idempotent_and_recovers_pointer_journal_failure)
+A repeated release and an interrupted pointer/journal write each emit one event.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_integration.py", line 126, in test_release_is_idempotent_and_recovers_pointer_journal_failure
+    self.assertEqual(len(records), 1, f"Two attempts created duplicate publication events: {records}")
+AssertionError: 2 != 1 : Two attempts created duplicate publication events: [{'model_id': 'fixture-B', 'prepared': '88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4'}, {'model_id': 'fixture-B', 'prepared': '88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4'}]
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.771s
+
+FAILED (failures=17)

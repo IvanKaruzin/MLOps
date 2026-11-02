@@ -1,0 +1,556 @@
+test_changed_bytes_at_same_path_invalidate_cache (test_release.ReleaseContractTests.test_changed_bytes_at_same_path_invalidate_cache) ... FAIL
+test_complete_bound_report_allowed (test_release.ReleaseContractTests.test_complete_bound_report_allowed) ... ok
+test_every_preparation_setting_invalidates_cache (test_release.ReleaseContractTests.test_every_preparation_setting_invalidates_cache) ... 
+  test_every_preparation_setting_invalidates_cache (test_release.ReleaseContractTests.test_every_preparation_setting_invalidates_cache) (key='tokenizer_revision') ... FAIL
+  test_every_preparation_setting_invalidates_cache (test_release.ReleaseContractTests.test_every_preparation_setting_invalidates_cache) (key='template_sha256') ... FAIL
+  test_every_preparation_setting_invalidates_cache (test_release.ReleaseContractTests.test_every_preparation_setting_invalidates_cache) (key='max_length') ... FAIL
+  test_every_preparation_setting_invalidates_cache (test_release.ReleaseContractTests.test_every_preparation_setting_invalidates_cache) (key='code_revision') ... FAIL
+test_failed_atomic_replace_preserves_previous_bytes (test_release.ReleaseContractTests.test_failed_atomic_replace_preserves_previous_bytes) ... FAIL
+test_incomplete_false_and_truthy_string_rejected (test_release.ReleaseContractTests.test_incomplete_false_and_truthy_string_rejected) ... 
+  test_incomplete_false_and_truthy_string_rejected (test_release.ReleaseContractTests.test_incomplete_false_and_truthy_string_rejected) (key='status', value='failed') ... FAIL
+  test_incomplete_false_and_truthy_string_rejected (test_release.ReleaseContractTests.test_incomplete_false_and_truthy_string_rejected) (key='status', value='running') ... FAIL
+  test_incomplete_false_and_truthy_string_rejected (test_release.ReleaseContractTests.test_incomplete_false_and_truthy_string_rejected) (key='passed', value='true') ... FAIL
+  test_incomplete_false_and_truthy_string_rejected (test_release.ReleaseContractTests.test_incomplete_false_and_truthy_string_rejected) (key='evaluation_run_id', value='') ... FAIL
+test_invalid_digest_and_schema_rejected (test_release.ReleaseContractTests.test_invalid_digest_and_schema_rejected) ... 
+  test_invalid_digest_and_schema_rejected (test_release.ReleaseContractTests.test_invalid_digest_and_schema_rejected) (key='schema_version') ... FAIL
+  test_invalid_digest_and_schema_rejected (test_release.ReleaseContractTests.test_invalid_digest_and_schema_rejected) (key='schema_version') ... FAIL
+  test_invalid_digest_and_schema_rejected (test_release.ReleaseContractTests.test_invalid_digest_and_schema_rejected) (key='model_sha256') ... FAIL
+  test_invalid_digest_and_schema_rejected (test_release.ReleaseContractTests.test_invalid_digest_and_schema_rejected) (key='model_id') ... FAIL
+  test_invalid_digest_and_schema_rejected (test_release.ReleaseContractTests.test_invalid_digest_and_schema_rejected) (key='artifact_uri') ... FAIL
+test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) ... 
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=nan, metric='accuracy') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=nan, metric='format_rate') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=inf, metric='accuracy') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=inf, metric='format_rate') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=-0.1, metric='accuracy') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=-0.1, metric='format_rate') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=1.1, metric='accuracy') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=1.1, metric='format_rate') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=True, metric='accuracy') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=True, metric='format_rate') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value='0.8', metric='accuracy') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value='0.8', metric='format_rate') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=None, metric='accuracy') ... FAIL
+  test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=None, metric='format_rate') ... FAIL
+test_key_ignores_path_and_mapping_order (test_release.ReleaseContractTests.test_key_ignores_path_and_mapping_order) ... FAIL
+test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) ... 
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='schema_version') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='model_id') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='model_sha256') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='protocol_sha256') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='golden_sha256') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='runtime_sha256') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='runtime') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='artifact_uri') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='status') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='evaluation_run_id') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='model_id') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='model_sha256') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='protocol_sha256') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='golden_sha256') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='runtime_sha256') ... FAIL
+  test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='metrics') ... FAIL
+test_publish_and_repeat (test_release.ReleaseContractTests.test_publish_and_repeat) ... ok
+test_rejection_preserves_previous_bytes (test_release.ReleaseContractTests.test_rejection_preserves_previous_bytes) ... ok
+test_report_binding_mismatch_rejected (test_release.ReleaseContractTests.test_report_binding_mismatch_rejected) ... 
+  test_report_binding_mismatch_rejected (test_release.ReleaseContractTests.test_report_binding_mismatch_rejected) (key='model_id') ... FAIL
+  test_report_binding_mismatch_rejected (test_release.ReleaseContractTests.test_report_binding_mismatch_rejected) (key='model_sha256') ... FAIL
+  test_report_binding_mismatch_rejected (test_release.ReleaseContractTests.test_report_binding_mismatch_rejected) (key='protocol_sha256') ... FAIL
+  test_report_binding_mismatch_rejected (test_release.ReleaseContractTests.test_report_binding_mismatch_rejected) (key='golden_sha256') ... FAIL
+  test_report_binding_mismatch_rejected (test_release.ReleaseContractTests.test_report_binding_mismatch_rejected) (key='runtime_sha256') ... FAIL
+test_runtime_change_with_stale_hash_rejected (test_release.ReleaseContractTests.test_runtime_change_with_stale_hash_rejected) ... 
+  test_runtime_change_with_stale_hash_rejected (test_release.ReleaseContractTests.test_runtime_change_with_stale_hash_rejected) (key='dtype') ... FAIL
+  test_runtime_change_with_stale_hash_rejected (test_release.ReleaseContractTests.test_runtime_change_with_stale_hash_rejected) (key='template_sha256') ... FAIL
+  test_runtime_change_with_stale_hash_rejected (test_release.ReleaseContractTests.test_runtime_change_with_stale_hash_rejected) (key='generation') ... FAIL
+
+======================================================================
+FAIL: test_changed_bytes_at_same_path_invalidate_cache (test_release.ReleaseContractTests.test_changed_bytes_at_same_path_invalidate_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 42, in test_changed_bytes_at_same_path_invalidate_cache
+    self.assertNotEqual(old,release.cache_key(self.data,self.config))
+AssertionError: '8fe87fc7fed4d052f84b007ddd314b5807585c4a2bb80a19cfb60905174b16fb' == '8fe87fc7fed4d052f84b007ddd314b5807585c4a2bb80a19cfb60905174b16fb'
+
+======================================================================
+FAIL: test_every_preparation_setting_invalidates_cache (test_release.ReleaseContractTests.test_every_preparation_setting_invalidates_cache) (key='tokenizer_revision')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 48, in test_every_preparation_setting_invalidates_cache
+    config={**self.config,key:value};self.assertNotEqual(old,release.cache_key(self.data,config))
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'a39e750a5395deba0e05fbad8b1dd93e749fcadb0f59229412a13d1b34dd584c' == 'a39e750a5395deba0e05fbad8b1dd93e749fcadb0f59229412a13d1b34dd584c'
+
+======================================================================
+FAIL: test_every_preparation_setting_invalidates_cache (test_release.ReleaseContractTests.test_every_preparation_setting_invalidates_cache) (key='template_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 48, in test_every_preparation_setting_invalidates_cache
+    config={**self.config,key:value};self.assertNotEqual(old,release.cache_key(self.data,config))
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'a39e750a5395deba0e05fbad8b1dd93e749fcadb0f59229412a13d1b34dd584c' == 'a39e750a5395deba0e05fbad8b1dd93e749fcadb0f59229412a13d1b34dd584c'
+
+======================================================================
+FAIL: test_every_preparation_setting_invalidates_cache (test_release.ReleaseContractTests.test_every_preparation_setting_invalidates_cache) (key='max_length')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 48, in test_every_preparation_setting_invalidates_cache
+    config={**self.config,key:value};self.assertNotEqual(old,release.cache_key(self.data,config))
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'a39e750a5395deba0e05fbad8b1dd93e749fcadb0f59229412a13d1b34dd584c' == 'a39e750a5395deba0e05fbad8b1dd93e749fcadb0f59229412a13d1b34dd584c'
+
+======================================================================
+FAIL: test_every_preparation_setting_invalidates_cache (test_release.ReleaseContractTests.test_every_preparation_setting_invalidates_cache) (key='code_revision')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 48, in test_every_preparation_setting_invalidates_cache
+    config={**self.config,key:value};self.assertNotEqual(old,release.cache_key(self.data,config))
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'a39e750a5395deba0e05fbad8b1dd93e749fcadb0f59229412a13d1b34dd584c' == 'a39e750a5395deba0e05fbad8b1dd93e749fcadb0f59229412a13d1b34dd584c'
+
+======================================================================
+FAIL: test_failed_atomic_replace_preserves_previous_bytes (test_release.ReleaseContractTests.test_failed_atomic_replace_preserves_previous_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 105, in test_failed_atomic_replace_preserves_previous_bytes
+    with self.assertRaises(OSError):release.publish(self.manifest,self.report,self.target)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: OSError not raised
+
+======================================================================
+FAIL: test_incomplete_false_and_truthy_string_rejected (test_release.ReleaseContractTests.test_incomplete_false_and_truthy_string_rejected) (key='status', value='failed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 57, in test_incomplete_false_and_truthy_string_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,bad)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_incomplete_false_and_truthy_string_rejected (test_release.ReleaseContractTests.test_incomplete_false_and_truthy_string_rejected) (key='status', value='running')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 57, in test_incomplete_false_and_truthy_string_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,bad)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_incomplete_false_and_truthy_string_rejected (test_release.ReleaseContractTests.test_incomplete_false_and_truthy_string_rejected) (key='passed', value='true')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 57, in test_incomplete_false_and_truthy_string_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,bad)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_incomplete_false_and_truthy_string_rejected (test_release.ReleaseContractTests.test_incomplete_false_and_truthy_string_rejected) (key='evaluation_run_id', value='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 57, in test_incomplete_false_and_truthy_string_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,bad)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_digest_and_schema_rejected (test_release.ReleaseContractTests.test_invalid_digest_and_schema_rejected) (key='schema_version')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 90, in test_invalid_digest_and_schema_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,self.report)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_digest_and_schema_rejected (test_release.ReleaseContractTests.test_invalid_digest_and_schema_rejected) (key='schema_version')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 90, in test_invalid_digest_and_schema_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,self.report)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_digest_and_schema_rejected (test_release.ReleaseContractTests.test_invalid_digest_and_schema_rejected) (key='model_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 90, in test_invalid_digest_and_schema_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,self.report)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_digest_and_schema_rejected (test_release.ReleaseContractTests.test_invalid_digest_and_schema_rejected) (key='model_id')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 90, in test_invalid_digest_and_schema_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,self.report)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_digest_and_schema_rejected (test_release.ReleaseContractTests.test_invalid_digest_and_schema_rejected) (key='artifact_uri')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 90, in test_invalid_digest_and_schema_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,self.report)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=nan, metric='accuracy')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=nan, metric='format_rate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=inf, metric='accuracy')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=inf, metric='format_rate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=-0.1, metric='accuracy')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=-0.1, metric='format_rate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=1.1, metric='accuracy')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=1.1, metric='format_rate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=True, metric='accuracy')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=True, metric='format_rate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value='0.8', metric='accuracy')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value='0.8', metric='format_rate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=None, metric='accuracy')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) (value=None, metric='format_rate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 84, in test_invalid_metric_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_key_ignores_path_and_mapping_order (test_release.ReleaseContractTests.test_key_ignores_path_and_mapping_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 38, in test_key_ignores_path_and_mapping_order
+    self.assertEqual(key,release.cache_key(other,dict(reversed(list(self.config.items())))))
+AssertionError: 'e755bab821bfcda5c1fcbe35554c7db97662c764b94bab834f3f7fc79654f91e' != '0b07520b23697d990197bc4e01d6edec3bb0f0162df4f7c2cdb0b22e338208cd'
+- e755bab821bfcda5c1fcbe35554c7db97662c764b94bab834f3f7fc79654f91e
++ 0b07520b23697d990197bc4e01d6edec3bb0f0162df4f7c2cdb0b22e338208cd
+
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='schema_version')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='model_id')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='model_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='protocol_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='golden_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='runtime_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='runtime')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='manifest', key='artifact_uri')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='status')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='evaluation_run_id')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='model_id')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='model_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='protocol_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='golden_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='runtime_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) (side='report', key='metrics')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 65, in test_missing_fields_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,r)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_report_binding_mismatch_rejected (test_release.ReleaseContractTests.test_report_binding_mismatch_rejected) (key='model_id')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 71, in test_report_binding_mismatch_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,bad)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_report_binding_mismatch_rejected (test_release.ReleaseContractTests.test_report_binding_mismatch_rejected) (key='model_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 71, in test_report_binding_mismatch_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,bad)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_report_binding_mismatch_rejected (test_release.ReleaseContractTests.test_report_binding_mismatch_rejected) (key='protocol_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 71, in test_report_binding_mismatch_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,bad)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_report_binding_mismatch_rejected (test_release.ReleaseContractTests.test_report_binding_mismatch_rejected) (key='golden_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 71, in test_report_binding_mismatch_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,bad)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_report_binding_mismatch_rejected (test_release.ReleaseContractTests.test_report_binding_mismatch_rejected) (key='runtime_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 71, in test_report_binding_mismatch_rejected
+    with self.assertRaises(ValueError):release.validate_release(self.manifest,bad)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_runtime_change_with_stale_hash_rejected (test_release.ReleaseContractTests.test_runtime_change_with_stale_hash_rejected) (key='dtype')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 77, in test_runtime_change_with_stale_hash_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,self.report)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_runtime_change_with_stale_hash_rejected (test_release.ReleaseContractTests.test_runtime_change_with_stale_hash_rejected) (key='template_sha256')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 77, in test_runtime_change_with_stale_hash_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,self.report)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_runtime_change_with_stale_hash_rejected (test_release.ReleaseContractTests.test_runtime_change_with_stale_hash_rejected) (key='generation')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/tests_hw8910/test_release.py", line 77, in test_runtime_change_with_stale_hash_rejected
+    with self.assertRaises(ValueError):release.validate_release(m,self.report)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.007s
+
+FAILED (failures=54)

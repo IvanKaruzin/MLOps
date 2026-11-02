@@ -1,0 +1,127 @@
+/Library/Developer/CommandLineTools/usr/bin/make check-hw67
+bash tests/check_hw67.sh
+PASS 1. Минимум шесть отдельных законченных runs
+PASS 2. Код, данные, конфиг и база имеют версии
+PASS 3. Конфигурации и кривые соответствуют бюджету
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 15087.42it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 8128.50it/s] 
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 387.46it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 377.93it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 429.57it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 413.23it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 411.53it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 399.99it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 575.35it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 556.86it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 451.88it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 443.47it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 479.90it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 470.21it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 497.96it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 485.40it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 434.78it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 426.08it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 461.47it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 452.07it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 571.43it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 556.13it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 616.08it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 595.53it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 581.01it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 565.65it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 404.04it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 396.81it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 556.79it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 542.32it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 503.76it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 492.12it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 578.76it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 564.13it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 551.37it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 539.39it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 559.91it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 548.78it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 651.49it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 633.29it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 540.78it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 528.52it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 494.61it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 482.88it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 606.46it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 591.08it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 450.47it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 442.44it/s]
+PASS 4. Реальный адаптер, токенизатор, signature и пример входа
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 788.55it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 766.22it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 581.73it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 567.49it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 637.72it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 623.13it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 588.92it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 575.35it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 479.18it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 469.90it/s]
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 766.22it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 746.32it/s]
+PASS 5. Одинаковые промпты и непустые примеры генерации
+PASS 6. Запрет регистрации при непройденном пороге
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 739.61it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 715.75it/s]
+PASS 7. Загрузка из реестра в новом процессе, без локального конфига
+Downloading artifacts:   0%|          | 0/1 [00:00<?, ?it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 394.16it/s]Downloading artifacts: 100%|██████████| 1/1 [00:00<00:00, 383.99it/s]
+PASS 8. Артефакт пережил пересоздание контейнера
+PASS 9. Есть сравнение, вывод и разбор дефектов (смысл проверяет преподаватель)
+Итог: 9/9
+Отпечаток всех файлов tests/: 668541c5fccd
+/Library/Developer/CommandLineTools/usr/bin/make check-eval
+uv run python -m unittest discover -s tests -p 'test_eval*.py' -v
+test_behavioral_failure_rejected (test_eval.GateContract.test_behavioral_failure_rejected) ... ok
+test_critical_regression_despite_average_growth (test_eval.GateContract.test_critical_regression_despite_average_growth) ... ok
+test_equal_passes (test_eval.GateContract.test_equal_passes) ... ok
+test_improvement_passes (test_eval.GateContract.test_improvement_passes) ... ok
+test_missing_critical_slice_rejected (test_eval.GateContract.test_missing_critical_slice_rejected) ... ok
+test_missing_nan_empty_error_and_incompatible_rejected (test_eval.GateContract.test_missing_nan_empty_error_and_incompatible_rejected) ... ok
+test_regression_rejected (test_eval.GateContract.test_regression_rejected) ... ok
+test_clean_data (test_eval.LeakageContract.test_clean_data) ... ok
+test_duplicate_golden_questions_rejected (test_eval.LeakageContract.test_duplicate_golden_questions_rejected) ... ok
+test_exact_overlap (test_eval.LeakageContract.test_exact_overlap) ... ok
+test_group_overlap (test_eval.LeakageContract.test_group_overlap) ... ok
+test_too_small_or_missing_behavior (test_eval.LeakageContract.test_too_small_or_missing_behavior) ... ok
+test_no_registry_mutation_when_gate_rejects (test_eval.PromotionContract.test_no_registry_mutation_when_gate_rejects) ... ok
+test_accuracy_uses_all_questions (test_eval.ScoreContract.test_accuracy_uses_all_questions) ... ok
+test_missing_duplicate_empty_rejected (test_eval.ScoreContract.test_missing_duplicate_empty_rejected) ... ok
+test_reordered_outputs_are_matched_by_id (test_eval.ScoreContract.test_reordered_outputs_are_matched_by_id) ... ok
+test_slice_counts_and_per_item (test_eval.ScoreContract.test_slice_counts_and_per_item) ... ok
+test_strict_json_and_label (test_eval.ScoreContract.test_strict_json_and_label) ... ok
+test_wrong_label_is_valid_but_incorrect (test_eval.ScoreContract.test_wrong_label_is_valid_but_incorrect) ... ok
+test_behavioral_train_overlap_rejected (test_eval_adversarial.BehavioralLeakage.test_behavioral_train_overlap_rejected) ... ok
+test_broken_explicit_paraphrase_pair_rejected (test_eval_adversarial.BehavioralLeakage.test_broken_explicit_paraphrase_pair_rejected) ... ok
+test_baseline_generation_error_rejected_too (test_eval_adversarial.DefensiveGate.test_baseline_generation_error_rejected_too) ... ok
+test_bool_counts_and_infinite_rates_rejected (test_eval_adversarial.DefensiveGate.test_bool_counts_and_infinite_rates_rejected) ... ok
+test_critical_regression_rejected_even_with_overall_improvement (test_eval_adversarial.DefensiveGate.test_critical_regression_rejected_even_with_overall_improvement) ... ok
+test_empty_critical_list_rejected (test_eval_adversarial.DefensiveGate.test_empty_critical_list_rejected) ... ok
+test_failure_recorded_before_release (test_eval_adversarial.DefensiveGate.test_failure_recorded_before_release) ... ok
+test_inconsistent_slice_or_per_item_rejected (test_eval_adversarial.DefensiveGate.test_inconsistent_slice_or_per_item_rejected) ... ok
+test_real_model_specs_require_pinned_revision_and_uri (test_eval_adversarial.DefensiveGate.test_real_model_specs_require_pinned_revision_and_uri) ... ok
+test_registry_model_source_is_bound_to_training_run (test_eval_adversarial.DefensiveGate.test_registry_model_source_is_bound_to_training_run) ... ok
+test_mlflow_gate_tags_link_verified_evaluation_and_candidate (test_eval_adversarial.GateEvidence.test_mlflow_gate_tags_link_verified_evaluation_and_candidate) ... ok
+test_quality_rejection_keeps_verified_models_protocol_and_raw_hashes (test_eval_adversarial.GateEvidence.test_quality_rejection_keeps_verified_models_protocol_and_raw_hashes) ... ok
+test_repeat_evaluation_does_not_log_stale_negative_reports (test_eval_adversarial.GateEvidence.test_repeat_evaluation_does_not_log_stale_negative_reports) ... ok
+test_duplicate_json_keys_and_nonfinite_constants_are_invalid (test_eval_adversarial.StrictScoring.test_duplicate_json_keys_and_nonfinite_constants_are_invalid) ... ok
+test_duplicate_rows_and_slices_are_contract_errors (test_eval_adversarial.StrictScoring.test_duplicate_rows_and_slices_are_contract_errors) ... ok
+test_error_with_correct_raw_remains_in_denominator (test_eval_adversarial.StrictScoring.test_error_with_correct_raw_remains_in_denominator) ... ok
+test_json_files_reject_duplicate_keys (test_eval_adversarial.StrictScoring.test_json_files_reject_duplicate_keys) ... ok
+test_nonstring_raw_is_contract_error (test_eval_adversarial.StrictScoring.test_nonstring_raw_is_contract_error) ... ok
+test_behavioral_refusal_is_required_even_if_baseline_also_fails (test_eval_multilabel.MultilabelGate.test_behavioral_refusal_is_required_even_if_baseline_also_fails) ... ok
+test_consistently_recomputed_changed_truth_is_still_incompatible (test_eval_multilabel.MultilabelGate.test_consistently_recomputed_changed_truth_is_still_incompatible) ... ok
+test_critical_micro_regression_is_rejected_with_equal_overall_metrics (test_eval_multilabel.MultilabelGate.test_critical_micro_regression_is_rejected_with_equal_overall_metrics) ... ok
+test_different_recomputed_catalogs_with_same_taxonomy_are_incompatible (test_eval_multilabel.MultilabelGate.test_different_recomputed_catalogs_with_same_taxonomy_are_incompatible) ... ok
+test_equal_reports_pass (test_eval_multilabel.MultilabelGate.test_equal_reports_pass) ... ok
+test_macro_regression_is_rejected_with_equal_micro_accuracy_and_format (test_eval_multilabel.MultilabelGate.test_macro_regression_is_rejected_with_equal_micro_accuracy_and_format) ... ok
+test_micro_f1_regression_is_rejected_when_accuracy_and_format_are_equal (test_eval_multilabel.MultilabelGate.test_micro_f1_regression_is_rejected_when_accuracy_and_format_are_equal) ... ok
+test_missing_nan_wrong_labels_expected_and_prediction_are_rejected (test_eval_multilabel.MultilabelGate.test_missing_nan_wrong_labels_expected_and_prediction_are_rejected) ... ok
+test_reconstructed_score_keeps_literal_expected_and_full_choices (test_eval_multilabel.MultilabelGate.test_reconstructed_score_keeps_literal_expected_and_full_choices) ... ok
+test_case_order_whitespace_and_nonliteral_refusal_are_invalid (test_eval_multilabel.MultilabelScore.test_case_order_whitespace_and_nonliteral_refusal_are_invalid) ... ok
+test_expected_must_be_an_exact_choice_for_all_tasks (test_eval_multilabel.MultilabelScore.test_expected_must_be_an_exact_choice_for_all_tasks) ... ok
+test_macro_uses_all_eighteen_classes_including_zero_support (test_eval_multilabel.MultilabelScore.test_macro_uses_all_eighteen_classes_including_zero_support) ... ok
+test_matches_independent_sklearn_oracle_with_invalid_and_refusal (test_eval_multilabel.MultilabelScore.test_matches_independent_sklearn_oracle_with_invalid_and_refusal) ... ok
+test_multilabel_contract_and_slice_counts (test_eval_multilabel.MultilabelScore.test_multilabel_contract_and_slice_counts) ... ok
+test_refusal_is_not_a_genre_or_credit_for_missing_answer (test_eval_multilabel.MultilabelScore.test_refusal_is_not_a_genre_or_credit_for_missing_answer) ... ok
+test_shared_atomic_taxonomy_does_not_allow_different_choice_catalogs (test_eval_multilabel.MultilabelScore.test_shared_atomic_taxonomy_does_not_allow_different_choice_catalogs) ... ok
+test_taxonomy_flattens_canonical_choices_and_rejects_malformed_catalog (test_eval_multilabel.MultilabelScore.test_taxonomy_flattens_canonical_choices_and_rejects_malformed_catalog) ... ok
+test_unknown_duplicate_empty_alias_and_extra_fields_are_invalid (test_eval_multilabel.MultilabelScore.test_unknown_duplicate_empty_alias_and_extra_fields_are_invalid) ... ok
+test_unlisted_combination_is_invalid_even_when_all_genres_are_known (test_eval_multilabel.MultilabelScore.test_unlisted_combination_is_invalid_even_when_all_genres_are_known) ... ok
+
+----------------------------------------------------------------------
+Ran 56 tests in 0.100s
+
+OK
+Отчёты всех ролей и сырые ответы сохранены. Далее: make eval; только после PASS - make promote
+uv run python -m unittest discover -s tests -p 'test_pipeline*.py' -v
+test_baseline_init_refuses_overwrite (test_pipeline.PipelineContract.test_baseline_init_refuses_overwrite) ... ok
+test_negative_check_does_not_mutate_model_or_alias (test_pipeline.PipelineContract.test_negative_check_does_not_mutate_model_or_alias) ... ok
+test_pass_release_and_explicit_baseline_update (test_pipeline.PipelineContract.test_pass_release_and_explicit_baseline_update) ... ok
+test_protocol_or_raw_changes_rejected (test_pipeline.PipelineContract.test_protocol_or_raw_changes_rejected) ... ok
+test_refused_candidate_keeps_alias (test_pipeline.PipelineContract.test_refused_candidate_keeps_alias) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.027s
+
+OK
+Отчёты всех ролей и сырые ответы сохранены. Далее: make eval; только после PASS - make promote
+PASS: испорченные ответы отклонены, alias не менялся
+Отчёты всех ролей и сырые ответы сохранены. Далее: make eval; только после PASS - make promote
+champion -> models:/fixture-model/2
+Baseline обновлён явно; старый сохранён. Следующая оценка сравнит с принятой версией
+Отчёты всех ролей и сырые ответы сохранены. Далее: make eval; только после PASS - make promote
+Отчёты всех ролей и сырые ответы сохранены. Далее: make eval; только после PASS - make promote

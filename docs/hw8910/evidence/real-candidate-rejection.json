@@ -1,0 +1,61 @@
+{
+  "command": [
+    "/Users/imkaruzin/MLOps/.venv-prefect/bin/python",
+    "-B",
+    "flow.py",
+    "--workspace",
+    "/Users/imkaruzin/MLOps/data/hw8910",
+    "--manifest",
+    "manifest-candidate.json",
+    "--report",
+    "release-report.json"
+  ],
+  "exit_code": 1,
+  "elapsed_seconds": 22.22870445800004,
+  "accepted_before_sha256": "75fc86f5a08b26d9834890d83b5af4561610a9176d3447b19b545915f2851211",
+  "accepted_after_sha256": "75fc86f5a08b26d9834890d83b5af4561610a9176d3447b19b545915f2851211",
+  "attempt": {
+    "accepted_after_sha256": "75fc86f5a08b26d9834890d83b5af4561610a9176d3447b19b545915f2851211",
+    "accepted_before_sha256": "75fc86f5a08b26d9834890d83b5af4561610a9176d3447b19b545915f2851211",
+    "attempt_id": "f5e91db6-9c9d-4f19-aad6-c753a2464975",
+    "error": "ValueError: Candidate evaluation is incomplete or rejected",
+    "execution": "prefect",
+    "flow_run_id": "ac3e38cc-b33c-49c3-a9d1-8b4ba441f30c",
+    "state": "rejected",
+    "task_states": {
+      "admission": "Failed",
+      "artifact": "Completed",
+      "prepare": "Completed"
+    },
+    "timestamp_utc": "2026-11-02T10:23:30.003656+00:00"
+  },
+  "candidate_passed": false,
+  "baseline_remained_accepted": true,
+  "preparation_config": {
+    "tokenizer_revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+    "template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+    "max_length": 512,
+    "code_revision": "4b6eee3de2941d70ebd9a40ff61a10dea66767745c0d81fe13373c5ccd0c0ccb",
+    "format": "jsonl",
+    "tokenizer_sha256": "90a2903e36317f2a873560235218be86367fa0ed4209f53096b6d59325fed333"
+  },
+  "preparation_cache": [
+    {
+      "cache_key": "cd2771eeb59ce35f6d4863ef984839db8cfc70f4fcb9b517280a1e6c32299835",
+      "config": {
+        "code_revision": "4b6eee3de2941d70ebd9a40ff61a10dea66767745c0d81fe13373c5ccd0c0ccb",
+        "format": "jsonl",
+        "max_length": 512,
+        "template_sha256": "a55ee1b1660128b7098723e0abcd92caa0788061051c62d51cbe87d9cf1974d8",
+        "tokenizer_revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+        "tokenizer_sha256": "90a2903e36317f2a873560235218be86367fa0ed4209f53096b6d59325fed333"
+      },
+      "input_sha256": "71f5f849f147b58158b6fd82f37cdf3b3ee0b7ed679617d92c6f87c1a95f2101",
+      "lexical_summary_sha256": "553394cffb34a7d070ba52cfb96d274a184dc255909f32b0e89066d1d77d8ad6",
+      "lexical_tokens": 231935,
+      "rows": 4800,
+      "stage": "utf8_record_validation_and_lexical_summary",
+      "truncated_rows": 0
+    }
+  ]
+}

@@ -1,0 +1,839 @@
+--- a/hw8910-broken/release.py
++++ b/release.py
+@@ -1,19 +1,150 @@
+-"""Учебный прототип выпуска. Реализация содержит дефекты; см. CONTRACTS.txt."""
++"""Strict release metadata, artifact integrity and atomic pointer publication."""
+ import hashlib
+ import json
+-from pathlib import Path
++import math
++import os
++from pathlib import Path, PurePosixPath
++import re
++import tempfile
++from urllib.parse import unquote, urlsplit
++
++
++HASH_FIELDS = ('model_sha256', 'protocol_sha256', 'golden_sha256', 'runtime_sha256')
++
++
++def canonical(value):
++    return json.dumps(value, sort_keys=True, separators=(',', ':'),
++                      ensure_ascii=False, allow_nan=False).encode('utf-8')
++
++
++def digest(data):
++    return hashlib.sha256(data).hexdigest()
++
++
++def file_sha256(path):
++    with Path(path).open('rb') as stream:
++        return hashlib.file_digest(stream, 'sha256').hexdigest()
++
++
++def cache_key_for_bytes(payload, config):
++    if not isinstance(config, dict):
++        raise ValueError('Preparation config must be an object')
++    return digest(canonical({'data_sha256': digest(payload), 'config': config}))
+ 
+ 
+ def cache_key(data_path: Path, config: dict) -> str:
+-    return hashlib.sha256(str(data_path).encode()).hexdigest()
++    return cache_key_for_bytes(Path(data_path).read_bytes(), config)
++
++
++def is_digest(value):
++    return isinstance(value, str) and re.fullmatch(r'[0-9a-f]{64}', value) is not None
+ 
+ 
+ def validate_release(manifest: dict, report: dict) -> None:
+-    if not report.get('passed'):
+-        raise ValueError('Кандидат отклонён')
++    """Metadata only: artifact I/O and the full quality gate are separate."""
++    if not isinstance(manifest, dict) or not isinstance(report, dict):
++        raise ValueError('Manifest and report must be objects')
++    if type(manifest.get('schema_version')) is not int or manifest['schema_version'] != 1:
++        raise ValueError('Unsupported manifest schema_version')
++    for key in ('model_id', 'artifact_uri'):
++        if not isinstance(manifest.get(key), str) or not manifest[key].strip():
++            raise ValueError(f'Manifest requires a nonempty {key}')
++    for key in HASH_FIELDS:
++        if not is_digest(manifest.get(key)):
++            raise ValueError(f'Manifest requires lowercase SHA-256 {key}')
++    runtime = manifest.get('runtime')
++    if not isinstance(runtime, dict) or not runtime:
++        raise ValueError('Manifest requires a nonempty runtime object')
++    try:
++        runtime_sha = digest(canonical(runtime))
++    except (ValueError, TypeError, OverflowError) as exc:
++        raise ValueError('Runtime is not canonical finite JSON') from exc
++    if runtime_sha != manifest['runtime_sha256']:
++        raise ValueError('Runtime content does not match runtime_sha256')
++    if report.get('status') != 'complete' or report.get('passed') is not True:
++        raise ValueError('Candidate evaluation is incomplete or rejected')
++    if not isinstance(report.get('evaluation_run_id'), str) or not report['evaluation_run_id'].strip():
++        raise ValueError('Report requires a nonempty evaluation_run_id')
++    for key in ('model_id', *HASH_FIELDS):
++        if report.get(key) != manifest[key]:
++            raise ValueError(f'Report is bound to a different {key}')
++    metrics = report.get('metrics')
++    if not isinstance(metrics, dict):
++        raise ValueError('Report requires metrics')
++    for key in ('accuracy', 'format_rate'):
++        value = metrics.get(key)
++        if type(value) not in (int, float) or not 0 <= value <= 1 or not math.isfinite(value):
++            raise ValueError(f'Invalid report metric {key}')
++
++
++def verify_artifact(manifest, workspace):
++    """Rehash declared real files and reject unsafe paths/aggregate mismatches."""
++    files = manifest.get('file_hashes')
++    if not isinstance(files, dict) or not files:
++        raise ValueError('Artifact requires a nonempty file_hashes map')
++    uri = manifest.get('artifact_uri')
++    if not isinstance(uri, str) or not uri.strip():
++        raise ValueError('Artifact URI is missing')
++    if uri.startswith('file://'):
++        parsed = urlsplit(uri)
++        if parsed.netloc not in ('', 'localhost') or parsed.query or parsed.fragment:
++            raise ValueError('Only local file artifact URIs are supported')
++        location = Path(unquote(parsed.path))
++    elif '://' in uri or uri.startswith(('models:', 'runs:')):
++        raise ValueError('Resolve artifact URI to a verified local directory first')
++    else:
++        location = Path(uri)
++    if not location.is_absolute():
++        root = Path(workspace).resolve()
++        location = (root / location).resolve()
++        if not location.is_relative_to(root):
++            raise ValueError('Relative artifact URI escapes workspace')
++    location = location.resolve(strict=True)
++    base = location if location.is_dir() else location.parent
++    actual = {}
++    for name, expected in files.items():
++        if (not isinstance(name, str) or not name or '\\' in name
++                or PurePosixPath(name).is_absolute()
++                or any(part in ('', '.', '..') for part in name.split('/')) or not is_digest(expected)):
++            raise ValueError('Unsafe artifact path or invalid file digest')
++        path = (base / name).resolve(strict=True)
++        if not path.is_relative_to(base) or not path.is_file():
++            raise ValueError('Artifact file escapes its root or is not a file')
++        actual[name] = file_sha256(path)
++        if actual[name] != expected:
++            raise ValueError(f'Artifact file hash changed: {name}')
++    if location.is_file() and location.name not in files:
++        raise ValueError('File artifact URI is absent from file_hashes')
++    if digest(canonical(actual)) != manifest.get('model_sha256'):
++        raise ValueError('Actual artifact files do not match model_sha256')
++    return actual
++
++
++def atomic_write_bytes(target, payload):
++    target = Path(target)
++    target.parent.mkdir(parents=True, exist_ok=True)
++    if target.is_file() and not target.is_symlink() and target.read_bytes() == payload:
++        return
++    temporary = None
++    try:
++        with tempfile.NamedTemporaryFile(mode='wb', prefix=f'.{target.name}.', suffix='.tmp',
++                                         dir=target.parent, delete=False) as stream:
++            temporary = Path(stream.name)
++            stream.write(payload)
++            stream.flush()
++            os.fsync(stream.fileno())
++        os.replace(temporary, target)
++    finally:
++        if temporary is not None:
++            temporary.unlink(missing_ok=True)
++
++
++def write_json_atomic(target, value):
++    payload = json.dumps(value, ensure_ascii=False, sort_keys=True,
++                         indent=2, allow_nan=False).encode('utf-8') + b'\n'
++    atomic_write_bytes(target, payload)
+ 
+ 
+ def publish(manifest: dict, report: dict, target: Path) -> None:
+     validate_release(manifest, report)
+-    target.parent.mkdir(parents=True, exist_ok=True)
+-    target.write_text(json.dumps(manifest, ensure_ascii=False, indent=2))
++    write_json_atomic(target, manifest)
+--- a/hw8910-broken/lab.py
++++ b/lab.py
+@@ -1,84 +1,280 @@
+-"""Исполняемый прототип для расследования. Только синтетические данные, без модели.
+-
+-Запускайте в отдельном каталоге .lab. Этот последовательный прототип надо
+-превратить в корректный Prefect-flow; его зелёный статус не доказывает корректность.
++"""Shared release operations and compatible lightweight STUB laboratory CLI.
++
++Production orchestration is flow.py. Both paths use these same operations;
++no training is performed. Workspaces hold cache, attempts and pointers.
+ """
+ import argparse
+-import hashlib
++from datetime import datetime, timezone
+ import json
+ from pathlib import Path
++import uuid
++
+ import release
+ 
+ 
+-def canonical(value):
+-    return json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()
+-
+-
+-def digest(data):
+-    return hashlib.sha256(data).hexdigest()
++canonical = release.canonical
++digest = release.digest
+ 
+ 
+ def read(path):
+-    return json.loads(Path(path).read_text())
+-
+-
+-def write(path,value):
+-    Path(path).write_text(json.dumps(value,ensure_ascii=False,indent=2))
++    def reject(value):
++        raise ValueError(f'Nonfinite JSON constant: {value}')
++    def unique(pairs):
++        result = {}
++        for key, value in pairs:
++            if key in result:
++                raise ValueError(f'Duplicate JSON key: {key}')
++            result[key] = value
++        return result
++    return json.loads(Path(path).read_text(encoding='utf-8'),
++                      parse_constant=reject, object_pairs_hook=unique)
++
++
++def write(path, value):
++    release.write_json_atomic(path, value)
++
++
++def workspace_file(root, name):
++    root = Path(root).resolve()
++    path = (root / name).resolve()
++    if not path.is_relative_to(root):
++        raise ValueError('Workspace file escapes workspace')
++    return path
+ 
+ 
+ def initialize(root):
++    root = Path(root)
+     if root.exists():
+         raise FileExistsError('Рабочий каталог уже существует. Выберите новый --workspace.')
+     root.mkdir(parents=True)
+-    runtime={'base_revision':'fixture-only','tokenizer_sha256':'a'*64,
+-             'template_sha256':'b'*64,'generation':{'max_new_tokens':32,'do_sample':False},'dtype':'float32'}
+-    for version in ['A','B']:
+-        artifact=root/f'model-{version}.txt';artifact.write_text(f'STUB ONLY — version {version}\n')
+-        files={artifact.name:digest(artifact.read_bytes())}
+-        m={'schema_version':1,'model_id':f'fixture-{version}',
+-           'artifact_uri':artifact.name,'model_sha256':digest(canonical(files)),
+-           'protocol_sha256':'d'*64,'golden_sha256':'e'*64,
+-           'runtime_sha256':digest(canonical(runtime)),'runtime':runtime,'file_hashes':files}
+-        report={k:m[k] for k in ['model_id','model_sha256','protocol_sha256','golden_sha256','runtime_sha256']}
+-        report.update(status='complete',passed=True,evaluation_run_id=f'fixture-eval-{version}',metrics={'accuracy':.8,'format_rate':1.0},synthetic=True)
+-        write(root/f'manifest-{version}.json',m);write(root/f'report-{version}.json',report)
+-    write(root/'accepted.json',read(root/'manifest-A.json'))
+-    report=read(root/'report-B.json');report['status']='running';report['passed']='false'
+-    write(root/'report-incomplete.json',report)
+-    report=read(root/'report-B.json');report['passed']=False
+-    write(root/'report-reject.json',report)
+-    write(root/'config.json',{'tokenizer_revision':'r1','template_sha256':'b'*64,'max_length':128,'code_revision':'prepare-v1'})
+-    (root/'input.txt').write_text('Первый пример\nВторой пример\n')
+-    print('Создан синтетический стенд:',root)
++    runtime = {'base_revision': 'fixture-only', 'tokenizer_sha256': 'a' * 64,
++               'template_sha256': 'b' * 64,
++               'generation': {'max_new_tokens': 32, 'do_sample': False}, 'dtype': 'float32'}
++    for version in ('A', 'B'):
++        artifact = root / f'model-{version}.txt'
++        artifact.write_text(f'STUB ONLY — version {version}\n', encoding='utf-8')
++        files = {artifact.name: release.file_sha256(artifact)}
++        manifest = {'schema_version': 1, 'model_id': f'fixture-{version}', 'synthetic': True,
++                    'artifact_uri': artifact.name, 'model_sha256': digest(canonical(files)),
++                    'protocol_sha256': 'd' * 64, 'golden_sha256': 'e' * 64,
++                    'runtime_sha256': digest(canonical(runtime)), 'runtime': runtime, 'file_hashes': files}
++        report = {key: manifest[key] for key in ('model_id', *release.HASH_FIELDS)}
++        report.update(status='complete', passed=True, evaluation_run_id=f'fixture-eval-{version}',
++                      metrics={'accuracy': .8, 'format_rate': 1.0}, synthetic=True)
++        write(root / f'manifest-{version}.json', manifest)
++        write(root / f'report-{version}.json', report)
++    write(root / 'accepted.json', read(root / 'manifest-A.json'))
++    report = read(root / 'report-B.json')
++    report.update(status='running', passed='false')
++    write(root / 'report-incomplete.json', report)
++    report = read(root / 'report-B.json')
++    report['passed'] = False
++    write(root / 'report-reject.json', report)
++    write(root / 'config.json', {'tokenizer_revision': 'r1', 'template_sha256': 'b' * 64,
++                                'max_length': 128, 'code_revision': 'prepare-v2', 'format': 'text'})
++    (root / 'input.txt').write_text('Первый пример\nВторой пример\n', encoding='utf-8')
++    print('Создан синтетический стенд STUB ONLY:', root)
++
++
++def preparation_inputs(root):
++    root = Path(root)
++    config = read(root / 'config.json')
++    for key in ('tokenizer_revision', 'template_sha256', 'code_revision'):
++        if not isinstance(config.get(key), str) or not config[key].strip():
++            raise ValueError(f'Preparation config requires {key}')
++    if type(config.get('max_length')) is not int or config['max_length'] <= 0:
++        raise ValueError('Preparation max_length must be a positive integer')
++    payload = (root / 'input.txt').read_bytes()
++    return config, payload, release.cache_key_for_bytes(payload, config)
++
++
++def preparation_key(root):
++    return preparation_inputs(root)[2]
+ 
+ 
+ def prepare(root):
+-    config=read(root/'config.json');key=release.cache_key(root/'input.txt',config)
+-    cache=root/'cache';cache.mkdir(exist_ok=True);entry=cache/(key+'.json')
++    """Validate UTF-8 records and summarize lexical tokens, not HF tokenization."""
++    root = Path(root)
++    config, payload, key = preparation_inputs(root)
++    cache = root / 'cache'
++    cache.mkdir(exist_ok=True)
++    entry = cache / f'{key}.json'
+     if entry.exists():
+-        result=read(entry);print('CACHE_HIT',result['input_sha256']);return result
+-    payload=(root/'input.txt').read_bytes()
+-    result={'input_sha256':digest(payload),'rows':len(payload.splitlines()),'config':config}
+-    write(entry,result);print('PREPARED',result['input_sha256']);return result
+-
+-
+-def run(root,report_name,fail_after_prepare=False):
+-    prepared=prepare(root)
+-    if fail_after_prepare:raise RuntimeError('Инъекция сбоя после подготовки')
+-    manifest=read(root/'manifest-B.json');report=read(root/report_name)
+-    release.publish(manifest,report,root/'accepted.json')
+-    with (root/'publications.jsonl').open('a') as f:
+-        f.write(json.dumps({'model_id':manifest['model_id'],'prepared':prepared['input_sha256']})+'\n')
+-    print('PUBLISHED',manifest['model_id'])
++        envelope = read(entry)
++        result = envelope.get('result', {})
++        if (envelope.get('cache_key') != key or envelope.get('result_sha256') != digest(canonical(result))
++                or result.get('input_sha256') != digest(payload) or result.get('config') != config):
++            raise ValueError('Corrupted persisted preparation cache')
++        print('CACHE_HIT', result['input_sha256'])
++        return result
++    lines = [line for line in payload.decode('utf-8').splitlines() if line.strip()]
++    if not lines:
++        raise ValueError('Preparation input is empty')
++    texts, identities = [], set()
++    for line in lines:
++        if config.get('format', 'text') == 'jsonl':
++            record = json.loads(line)
++            if (not isinstance(record, dict) or not isinstance(record.get('id'), str)
++                    or not record['id'] or record['id'] in identities
++                    or not isinstance(record.get('input'), str) or not record['input'].strip()):
++                raise ValueError('Preparation JSONL requires unique ids and nonempty inputs')
++            identities.add(record['id'])
++            texts.append(record['input'])
++        else:
++            texts.append(line)
++    lexical = [text.split() for text in texts]
++    selected = [tokens[:config['max_length']] for tokens in lexical]
++    result = {'input_sha256': digest(payload), 'rows': len(texts), 'config': config,
++              'cache_key': key, 'stage': 'utf8_record_validation_and_lexical_summary',
++              'lexical_tokens': sum(map(len, selected)),
++              'truncated_rows': sum(len(tokens) > config['max_length'] for tokens in lexical),
++              'lexical_summary_sha256': digest(canonical(selected))}
++    write(entry, {'cache_key': key, 'result_sha256': digest(canonical(result)), 'result': result})
++    print('PREPARED', result['input_sha256'])
++    return result
++
++
++def pointer_sha(root):
++    path = Path(root) / 'accepted.json'
++    return release.file_sha256(path) if path.exists() else None
++
++
++def release_identity(manifest, report):
++    return digest(canonical({'manifest': manifest, 'admission': report}))
++
++
++def read_journal(path):
++    path = Path(path)
++    if not path.exists():
++        return []
++    records = [json.loads(line) for line in path.read_text(encoding='utf-8').splitlines() if line.strip()]
++    if any(not isinstance(record, dict) for record in records):
++        raise ValueError('Journal records must be objects')
++    return records
++
++
++def write_journal(path, records):
++    payload = b''.join(canonical(record) + b'\n' for record in records)
++    release.atomic_write_bytes(path, payload)
++
++
++def record_attempt(root, attempt_id, state, before, **details):
++    path = Path(root) / 'attempts.jsonl'
++    records = read_journal(path)
++    records.append({'attempt_id': attempt_id, 'state': state,
++                    'timestamp_utc': datetime.now(timezone.utc).isoformat(),
++                    'accepted_before_sha256': before, 'accepted_after_sha256': pointer_sha(root), **details})
++    write_journal(path, records)
++
++
++def check_admission(root, manifest, report):
++    release.verify_artifact(manifest, root)
++    if manifest.get('synthetic') is True and report.get('synthetic') is True:
++        if (not manifest.get('model_id', '').startswith('fixture-')
++                or manifest.get('runtime', {}).get('base_revision') != 'fixture-only'):
++            raise ValueError('Synthetic admission is restricted to the explicit STUB laboratory')
++    else:
++        from hw8910.runtime import verify_release_evidence
++        verify_release_evidence(manifest, report, Path(root))
++    release.validate_release(manifest, report)
++
++
++def recover_publication(root):
++    """Complete a previously validated one-writer intent before a new release."""
++    root = Path(root)
++    pending = root / 'publication-intent.json'
++    if not pending.exists():
++        return False
++    intent = read(pending)
++    manifest, report = intent['manifest'], intent['report']
++    check_admission(root, manifest, report)
++    identity = release_identity(manifest, report)
++    if identity != intent.get('release_id'):
++        raise ValueError('Pending release identity is corrupted')
++    record = intent.get('record')
++    bound = {'release_id': identity, 'model_id': manifest['model_id'],
++             'model_sha256': manifest['model_sha256'], 'runtime_sha256': manifest['runtime_sha256'],
++             'evaluation_run_id': report['evaluation_run_id'], 'report_sha256': digest(canonical(report))}
++    if (not isinstance(record, dict) or any(record.get(key) != value for key, value in bound.items())
++            or not release.is_digest(record.get('prepared'))
++            or not isinstance(record.get('timestamp_utc'), str) or not record['timestamp_utc']):
++        raise ValueError('Pending journal record is not bound to the validated release')
++    journal = root / 'publications.jsonl'
++    records = read_journal(journal)
++    identities = [item.get('release_id') for item in records]
++    if any(not release.is_digest(value) for value in identities) or len(identities) != len(set(identities)):
++        raise ValueError('Duplicate release identities in publication journal')
++    release.publish(manifest, report, root / 'accepted.json')
++    if identity not in identities:
++        records.append(record)
++        write_journal(journal, records)
++    pending.unlink()
++    return True
++
++
++def publish_release(root, manifest, report, prepared):
++    root = Path(root)
++    recover_publication(root)
++    check_admission(root, manifest, report)
++    identity = release_identity(manifest, report)
++    journal = root / 'publications.jsonl'
++    records = read_journal(journal)
++    identities = [item.get('release_id') for item in records]
++    if any(not release.is_digest(value) for value in identities) or len(identities) != len(set(identities)):
++        raise ValueError('Duplicate release identities in publication journal')
++    already_current = (root / 'accepted.json').exists() and read(root / 'accepted.json') == manifest
++    if identity in identities and already_current:
++        return {'status': 'already_published', 'release_id': identity, 'model_id': manifest['model_id']}
++    record = {'release_id': identity, 'model_id': manifest['model_id'],
++              'model_sha256': manifest['model_sha256'], 'runtime_sha256': manifest['runtime_sha256'],
++              'evaluation_run_id': report['evaluation_run_id'], 'report_sha256': digest(canonical(report)),
++              'prepared': prepared['input_sha256'], 'timestamp_utc': datetime.now(timezone.utc).isoformat()}
++    write(root / 'publication-intent.json', {'release_id': identity, 'manifest': manifest,
++                                          'report': report, 'record': record})
++    release.publish(manifest, report, root / 'accepted.json')
++    if identity not in identities:
++        records.append(record)
++        write_journal(journal, records)
++    (root / 'publication-intent.json').unlink()
++    return {'status': 'published', 'release_id': identity, 'model_id': manifest['model_id']}
++
++
++def run(root, report_name, fail_after_prepare=False, manifest_name='manifest-B.json'):
++    root = Path(root).resolve()
++    attempt_id, before = str(uuid.uuid4()), pointer_sha(root)
++    try:
++        prepared = prepare(root)
++        if fail_after_prepare:
++            raise RuntimeError('Инъекция сбоя после подготовки')
++        manifest = read(workspace_file(root, manifest_name))
++        report = read(workspace_file(root, report_name))
++        check_admission(root, manifest, report)
++        result = publish_release(root, manifest, report, prepared)
++        record_attempt(root, attempt_id, result['status'], before, **result,
++                       prepared_key=prepared['cache_key'])
++        print(result['status'].upper(), manifest['model_id'])
++        return result
++    except Exception as exc:
++        record_attempt(root, attempt_id, 'rejected' if isinstance(exc, ValueError) else 'failed', before,
++                       error=f'{type(exc).__name__}: {exc}')
++        raise
+ 
+ 
+ def main():
+-    parser=argparse.ArgumentParser();parser.add_argument('--workspace',type=Path,default=Path('.lab'))
+-    sub=parser.add_subparsers(dest='command',required=True);sub.add_parser('init')
+-    run_parser=sub.add_parser('run');run_parser.add_argument('--report',default='report-B.json');run_parser.add_argument('--fail-after-prepare',action='store_true')
+-    args=parser.parse_args()
+-    if args.command=='init':initialize(args.workspace)
+-    else:run(args.workspace,args.report,args.fail_after_prepare)
+-
+-
+-if __name__=='__main__':main()
++    parser = argparse.ArgumentParser()
++    parser.add_argument('--workspace', type=Path, default=Path('.lab'))
++    sub = parser.add_subparsers(dest='command', required=True)
++    sub.add_parser('init')
++    run_parser = sub.add_parser('run')
++    run_parser.add_argument('--report', default='report-B.json')
++    run_parser.add_argument('--manifest', default='manifest-B.json')
++    run_parser.add_argument('--fail-after-prepare', action='store_true')
++    args = parser.parse_args()
++    if args.command == 'init':
++        initialize(args.workspace)
++    else:
++        run(args.workspace, args.report, args.fail_after_prepare, args.manifest)
++
++
++if __name__ == '__main__':
++    main()
+--- a/hw8910-broken/service.py
++++ b/service.py
+@@ -1,80 +1,269 @@
+-"""Лёгкий HTTP-прототип с дефектами. Только localhost, STUB ONLY.
+-
+-Для итогового проекта перенесите исправленный контракт в FastAPI и подключите
+-загрузчик ДЗ 6+7. Прототип нужен для опытов без установки зависимостей и весов.
++"""Local FastAPI model service with an explicit loaded-version boundary.
++
++The default backend is visibly synthetic. Real weights are loaded only during
++the application lifespan and only with ``--backend transformers``.
+ """
++
+ import argparse
++import asyncio
++import copy
+ import json
++import math
+ import threading
+ import time
+ import uuid
+-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
++from contextlib import asynccontextmanager
+ from pathlib import Path
+ 
++from fastapi import FastAPI, HTTPException
++from fastapi.responses import JSONResponse
++from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr, field_validator, model_validator
++
++
++MAX_PROMPT_CHARS = 4096
++MAX_BODY_BYTES = 65536
++
++
++class GenerateRequest(BaseModel):
++    model_config = ConfigDict(extra="forbid", strict=True)
++
++    prompt: StrictStr = Field(min_length=1, max_length=MAX_PROMPT_CHARS)
++    max_new_tokens: StrictInt | None = None
++
++    @field_validator("prompt")
++    @classmethod
++    def nonblank_prompt(cls, value):
++        if not value.strip():
++            raise ValueError("prompt must contain non-whitespace characters")
++        return value
++
++    @model_validator(mode="before")
++    @classmethod
++    def explicit_limit_must_be_an_integer(cls, value):
++        if isinstance(value, dict) and "max_new_tokens" in value and value["max_new_tokens"] is None:
++            raise ValueError("max_new_tokens cannot be null")
++        return value
++
++
++class BodySizeLimit:
++    """Bound the actual streamed body, including requests without Content-Length."""
++
++    def __init__(self, app):
++        self.app = app
++
++    async def __call__(self, scope, receive, send):
++        if scope["type"] != "http" or scope["method"] != "POST":
++            await self.app(scope, receive, send)
++            return
++        body = bytearray()
++        while True:
++            message = await receive()
++            if message["type"] == "http.disconnect":
++                return
++            body.extend(message.get("body", b""))
++            if len(body) > MAX_BODY_BYTES:
++                response = JSONResponse({"error": "body too large"}, status_code=413)
++                await response(scope, receive, send)
++                return
++            if not message.get("more_body", False):
++                break
++        delivered = False
++
++        async def replay():
++            nonlocal delivered
++            if not delivered:
++                delivered = True
++                return {"type": "http.request", "body": bytes(body), "more_body": False}
++            return await receive()
++
++        await self.app(scope, replay, send)
++
+ 
+ class StubBackend:
+-    def __init__(self,manifest):
+-        self.loaded_id=manifest['model_id'];self.calls=0;self.runtime_sha256=manifest['runtime_sha256']
+-
+-    def generate(self,prompt,limit):
+-        self.calls+=1;time.sleep(.01)
+-        return {'answer':f'STUB ONLY: {self.loaded_id}', 'output_tokens':1}
++    """A backend for control-plane tests; never presented as a model answer."""
++
++    def __init__(self, manifest, workspace=None):
++        runtime = manifest["runtime"]
++        legacy_fixture = (manifest["model_id"].startswith("fixture-")
++                          and runtime.get("base_revision") == "fixture-only")
++        if manifest.get("synthetic") is not True and not legacy_fixture:
++            raise ValueError("A real manifest requires the transformers backend")
++        self.loaded_id = manifest["model_id"]
++        self.runtime_sha256 = manifest["runtime_sha256"]
++        self.max_new_tokens = runtime["generation"]["max_new_tokens"]
++        self.calls = 0
++        self.warmup_calls = 0
++
++    def warmup(self):
++        time.sleep(0.01)
++        self.warmup_calls += 1
++
++    def generate(self, prompt, limit):
++        if limit != self.max_new_tokens:
++            raise ValueError("Generation limit differs from the loaded runtime")
++        self.calls += 1
++        time.sleep(0.01)
++        return {"answer": f"STUB ONLY: {self.loaded_id}", "output_tokens": 1}
++
++
++def transformers_backend(manifest, workspace):
++    # Importing the app, or testing with StubBackend, never imports model code.
++    from hw8910.runtime import ModelBackend
++
++    return ModelBackend(manifest, workspace)
+ 
+ 
+ class ServiceState:
+-    def __init__(self,root,warmup_seconds):
+-        self.root=root;self.ready=True
+-        manifest=json.loads((root/'accepted.json').read_text())
+-        self.backend=StubBackend(manifest)
+-        self.warmup_finished=threading.Event()
+-        def warmup():
+-            time.sleep(warmup_seconds);self.warmup_finished.set()
+-        threading.Thread(target=warmup,daemon=True).start()
+-
+-    def generate(self,request):
+-        started=time.perf_counter()
+-        result=self.backend.generate(request.get('prompt',''),request.get('max_new_tokens',32))
+-        advertised=json.loads((self.root/'accepted.json').read_text())
+-        result.update(model_id=advertised['model_id'],runtime_sha256=advertised['runtime_sha256'],
+-                      request_id=str(uuid.uuid4()),generation_seconds=time.perf_counter()-started)
+-        return result
+-
+-
+-def handler_for(state):
+-    class Handler(BaseHTTPRequestHandler):
+-        def send_json(self,status,payload):
+-            data=json.dumps(payload,ensure_ascii=False).encode()
+-            self.send_response(status);self.send_header('Content-Type','application/json; charset=utf-8')
+-            self.send_header('Content-Length',str(len(data)));self.end_headers();self.wfile.write(data)
+-
+-        def do_GET(self):
+-            if self.path=='/health':self.send_json(200,{'alive':True,'backend':'STUB ONLY'})
+-            elif self.path=='/ready':self.send_json(200 if state.ready else 503,{'ready':state.ready})
+-            elif self.path=='/debug':
+-                self.send_json(200,{'loaded_id':state.backend.loaded_id,'calls':state.backend.calls,'warmup_finished':state.warmup_finished.is_set()})
+-            else:self.send_json(404,{'error':'not found'})
+-
+-        def do_POST(self):
+-            if self.path!='/generate':self.send_json(404,{'error':'not found'});return
+-            size=int(self.headers.get('Content-Length','0'))
+-            if size<0 or size>65536:self.send_json(413,{'error':'body too large'});return
++    def __init__(self, root, warmup_seconds=5, backend_factory=StubBackend):
++        if not math.isfinite(warmup_seconds) or warmup_seconds < 0:
++            raise ValueError("warmup_seconds must be finite and nonnegative")
++        self.root = Path(root).resolve()
++        self.warmup_seconds = warmup_seconds
++        self.backend_factory = backend_factory
++        self.backend = None
++        self.loaded_id = None
++        self.runtime_sha256 = None
++        self.max_new_tokens = None
++        self.load_error = None
++        self.warmup_finished = threading.Event()
++        self._ready = threading.Event()
++        self._stopping = threading.Event()
++        self._generation_lock = threading.Lock()
++
++    @property
++    def ready(self):
++        return self._ready.is_set()
++
++    def load(self):
++        try:
++            from release import verify_artifact
++
++            manifest = json.loads((self.root / "accepted.json").read_text(encoding="utf-8"))
++            verify_artifact(manifest, self.root)
++            backend = self.backend_factory(copy.deepcopy(manifest), self.root)
++            limit = manifest["runtime"]["generation"]["max_new_tokens"]
++            if (type(limit) is not int or limit <= 0
++                    or backend.loaded_id != manifest["model_id"]
++                    or backend.runtime_sha256 != manifest["runtime_sha256"]
++                    or backend.max_new_tokens != limit):
++                raise ValueError("Loaded backend differs from the accepted runtime")
++            self.backend = backend
++            self.loaded_id = backend.loaded_id
++            self.runtime_sha256 = backend.runtime_sha256
++            self.max_new_tokens = limit
++            if self._stopping.wait(self.warmup_seconds):
++                return
++            backend.warmup()
++            if not self._stopping.is_set():
++                self.warmup_finished.set()
++                self._ready.set()
++        except Exception as exc:
++            # Do not expose filesystem paths or backend exception contents.
++            self.load_error = type(exc).__name__
++            self._ready.clear()
++
++    def stop(self):
++        self._ready.clear()
++        self._stopping.set()
++
++    def close(self):
++        with self._generation_lock:
++            if self.backend is not None:
++                close = getattr(self.backend, "close", None)
++                if callable(close):
++                    close()
++
++    def generate(self, request):
++        if not isinstance(request, GenerateRequest):
++            request = GenerateRequest.model_validate(request)
++        if not self.ready:
++            raise HTTPException(status_code=503, detail="Model is not ready")
++        limit = self.max_new_tokens if request.max_new_tokens is None else request.max_new_tokens
++        if limit != self.max_new_tokens:
++            raise HTTPException(status_code=422, detail="Use the fixed evaluated max_new_tokens")
++        request_id = str(uuid.uuid4())
++        started = time.perf_counter()
++        with self._generation_lock:
++            acquired = time.perf_counter()
+             try:
+-                payload=json.loads(self.rfile.read(size))
+-                self.send_json(200,state.generate(payload))
+-            except (ValueError,TypeError,AttributeError,KeyError) as e:
+-                self.send_json(400,{'error':str(e)})
+-    return Handler
++                output = self.backend.generate(request.prompt, limit)
++            except ValueError as exc:
++                raise HTTPException(status_code=422, detail="Input is unsupported by the loaded runtime") from exc
++            except Exception as exc:
++                raise HTTPException(status_code=500, detail="Generation failed") from exc
++            finished = time.perf_counter()
++        if (not isinstance(output, dict) or not isinstance(output.get("answer"), str)
++                or type(output.get("output_tokens")) is not int
++                or not 0 <= output["output_tokens"] <= limit):
++            raise HTTPException(status_code=500, detail="Backend returned an invalid response")
++        return dict(answer=output["answer"], output_tokens=output["output_tokens"],
++                    request_id=request_id, model_id=self.loaded_id, runtime_sha256=self.runtime_sha256,
++                    queue_seconds=acquired - started, generation_seconds=finished - acquired,
++                    total_seconds=finished - started)
++
++
++def create_app(workspace=Path(".lab"), warmup_seconds=5, backend_factory=None, backend_kind="stub"):
++    if backend_kind not in ("stub", "transformers"):
++        raise ValueError("Unknown backend kind")
++    factory = backend_factory or (StubBackend if backend_kind == "stub" else transformers_backend)
++    state = ServiceState(workspace, warmup_seconds, factory)
++
++    @asynccontextmanager
++    async def lifespan(app):
++        loading = asyncio.create_task(asyncio.to_thread(state.load))
++        try:
++            yield
++        finally:
++            state.stop()
++            await loading
++            state.close()
++
++    app = FastAPI(lifespan=lifespan)
++    app.add_middleware(BodySizeLimit)
++    app.state.service = state
++
++    @app.get("/health")
++    def health():
++        return {"alive": True, "backend": "STUB ONLY" if backend_kind == "stub" else "transformers"}
++
++    @app.get("/ready")
++    def readiness():
++        payload = dict(ready=state.ready, model_id=state.loaded_id, runtime_sha256=state.runtime_sha256)
++        if state.load_error is not None:
++            payload["error"] = state.load_error
++        return JSONResponse(payload, status_code=200 if state.ready else 503)
++
++    @app.post("/generate")
++    def generate(request: GenerateRequest):
++        return state.generate(request)
++
++    if backend_kind == "stub":
++        @app.get("/debug")
++        def debug():
++            return dict(loaded_id=state.loaded_id, runtime_sha256=state.runtime_sha256,
++                        calls=getattr(state.backend, "calls", 0),
++                        warmup_calls=getattr(state.backend, "warmup_calls", 0),
++                        warmup_finished=state.warmup_finished.is_set())
++
++    return app
+ 
+ 
+ def main():
+-    p=argparse.ArgumentParser();p.add_argument('--workspace',type=Path,default=Path('.lab'))
+-    p.add_argument('--port',type=int,default=8091);p.add_argument('--warmup-seconds',type=float,default=5)
+-    args=p.parse_args();state=ServiceState(args.workspace,args.warmup_seconds)
+-    server=ThreadingHTTPServer(('127.0.0.1',args.port),handler_for(state))
+-    print(f'STUB ONLY: http://127.0.0.1:{server.server_port}',flush=True)
+-    try:server.serve_forever()
+-    except KeyboardInterrupt:pass
+-    finally:server.server_close()
+-
+-
+-if __name__=='__main__':main()
++    parser = argparse.ArgumentParser()
++    parser.add_argument("--workspace", type=Path, default=Path(".lab"))
++    parser.add_argument("--port", type=int, default=8091)
++    parser.add_argument("--warmup-seconds", type=float, default=5)
++    parser.add_argument("--backend", choices=("stub", "transformers"), default="stub")
++    args = parser.parse_args()
++    if not 0 <= args.port <= 65535 or not math.isfinite(args.warmup_seconds) or args.warmup_seconds < 0:
++        parser.error("Invalid port or warmup duration")
++    import uvicorn
++
++    app = create_app(args.workspace, args.warmup_seconds, backend_kind=args.backend)
++    label = "STUB ONLY" if args.backend == "stub" else "TRANSFORMERS"
++    print(f"{label}: http://127.0.0.1:{args.port}", flush=True)
++    uvicorn.run(app, host="127.0.0.1", port=args.port, access_log=False, log_level="warning")
++
++
++if __name__ == "__main__":
++    main()

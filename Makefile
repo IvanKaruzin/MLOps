@@ -153,3 +153,22 @@ predict-candidate:
 .PHONY: prepare-eval
 prepare-eval:
 	uv run python scripts/prepare_hw67_eval.py
+
+# ДЗ 8–10 использует существующий результат ДЗ 6–7, без обучения.
+.PHONY: install-hw8910 check-hw8910 prepare-hw8910 flow-hw8910 serve-hw8910
+install-hw8910:
+	uv sync --frozen
+	uv venv --python 3.12 .venv-prefect
+	uv pip sync --python .venv-prefect/bin/python --require-hashes requirements-hw8910.lock
+
+check-hw8910:
+	PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -B -m unittest discover -s tests_hw8910 -v
+
+prepare-hw8910:
+	.venv/bin/python -B -m hw8910.runtime prepare --workspace data/hw8910
+
+flow-hw8910:
+	.venv-prefect/bin/python -B flow.py --workspace data/hw8910 --manifest manifest-candidate.json --report release-report.json
+
+serve-hw8910:
+	HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python -B service.py --workspace data/hw8910 --backend transformers --port 8091 --warmup-seconds 1

@@ -1,0 +1,171 @@
+
+STDERR
+13:23:11.268 | INFO    | prefect - Starting temporary server on http://127.0.0.1:8815
+See https://docs.prefect.io/v3/concepts/server#how-to-guides for more information on running a dedicated Prefect server.
+13:23:16.128 | INFO    | Flow run 'uber-grebe' - Beginning flow run 'uber-grebe' for flow 'hw8910-model-release'
+13:23:16.187 | INFO    | Task run 'prepare-input-647' - PREPARED 71f5f849f147b58158b6fd82f37cdf3b3ee0b7ed679617d92c6f87c1a95f2101
+13:23:16.195 | INFO    | Task run 'prepare-input-647' - Finished in state Completed()
+13:23:16.208 | INFO    | Task run 'obtain-and-verify-artifact-614' - Finished in state Completed()
+13:23:30.000 | ERROR   | Task run 'check-full-admission-17b' - Task run failed with exception: ValueError('Candidate evaluation is incomplete or rejected')
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1027, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1696, in run_task_sync
+    engine.call_task_fn(txn)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1044, in call_task_fn
+    result = call_with_parameters(self.task.fn, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 43, in check_admission
+    lab.check_admission(root, manifest, report)
+  File "/Users/imkaruzin/MLOps/lab.py", line 179, in check_admission
+    release.validate_release(manifest, report)
+  File "/Users/imkaruzin/MLOps/release.py", line 65, in validate_release
+    raise ValueError('Candidate evaluation is incomplete or rejected')
+ValueError: Candidate evaluation is incomplete or rejected
+13:23:30.002 | ERROR   | Task run 'check-full-admission-17b' - Finished in state Failed('Task run encountered an exception ValueError: Candidate evaluation is incomplete or rejected')
+13:23:30.180 | ERROR   | Flow run 'uber-grebe' - Encountered exception during execution: ValueError('Candidate evaluation is incomplete or rejected')
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1330, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2111, in run_flow_sync
+    engine.call_flow_fn()
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1350, in call_flow_fn
+    result = call_with_parameters(self.flow.fn, self.parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 78, in release_flow
+    descriptor = admission_future.result()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/futures.py", line 277, in result
+    _result = self._final_state.result(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/compatibility/async_dispatch.py", line 94, in wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/client/schemas/objects.py", line 394, in result
+    return run_coro_as_sync(
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/asyncutils/__init__.py", line 207, in run_coro_as_sync
+    return call.result()
+           ^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 365, in result
+    return self.future.result(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 192, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 441, in _run_async
+    result = await coro
+             ^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/asyncutils/__init__.py", line 188, in coroutine_wrapper
+    return await task
+           ^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/states.py", line 89, in get_state_result
+    return await _get_state_result(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/states.py", line 161, in _get_state_result
+    raise await aget_state_exception(state)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1027, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1696, in run_task_sync
+    engine.call_task_fn(txn)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1044, in call_task_fn
+    result = call_with_parameters(self.task.fn, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 43, in check_admission
+    lab.check_admission(root, manifest, report)
+  File "/Users/imkaruzin/MLOps/lab.py", line 179, in check_admission
+    release.validate_release(manifest, report)
+  File "/Users/imkaruzin/MLOps/release.py", line 65, in validate_release
+    raise ValueError('Candidate evaluation is incomplete or rejected')
+ValueError: Candidate evaluation is incomplete or rejected
+13:23:30.200 | INFO    | Flow run 'uber-grebe' - Finished in state Failed('Flow run encountered an exception: ValueError: Candidate evaluation is incomplete or rejected')
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/flow.py", line 109, in <module>
+    main()
+  File "/Users/imkaruzin/MLOps/flow.py", line 104, in main
+    result = release_flow(str(args.workspace), args.report, args.manifest, args.fail_after_prepare)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flows.py", line 1887, in __call__
+    return run_flow(
+           ^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2268, in run_flow
+    ret_val = run_flow_sync(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2113, in run_flow_sync
+    return engine.state if return_type == "state" else engine.result()
+                                                       ^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 788, in result
+    raise self._raised
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1330, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2111, in run_flow_sync
+    engine.call_flow_fn()
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1350, in call_flow_fn
+    result = call_with_parameters(self.flow.fn, self.parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 78, in release_flow
+    descriptor = admission_future.result()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/futures.py", line 277, in result
+    _result = self._final_state.result(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/compatibility/async_dispatch.py", line 94, in wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/client/schemas/objects.py", line 394, in result
+    return run_coro_as_sync(
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/asyncutils/__init__.py", line 207, in run_coro_as_sync
+    return call.result()
+           ^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 365, in result
+    return self.future.result(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 192, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 441, in _run_async
+    result = await coro
+             ^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/asyncutils/__init__.py", line 188, in coroutine_wrapper
+    return await task
+           ^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/states.py", line 89, in get_state_result
+    return await _get_state_result(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/states.py", line 161, in _get_state_result
+    raise await aget_state_exception(state)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1027, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1696, in run_task_sync
+    engine.call_task_fn(txn)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1044, in call_task_fn
+    result = call_with_parameters(self.task.fn, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 43, in check_admission
+    lab.check_admission(root, manifest, report)
+  File "/Users/imkaruzin/MLOps/lab.py", line 179, in check_admission
+    release.validate_release(manifest, report)
+  File "/Users/imkaruzin/MLOps/release.py", line 65, in validate_release
+    raise ValueError('Candidate evaluation is incomplete or rejected')
+ValueError: Candidate evaluation is incomplete or rejected
+13:23:30.208 | INFO    | prefect - Stopping temporary server on http://127.0.0.1:8815

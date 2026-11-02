@@ -1,0 +1,101 @@
+PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -B -m unittest discover -s tests_hw8910 -v
+/Users/imkaruzin/MLOps/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file (test_integration.ReleaseIntegration.test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file)
+A real child process injects a replacement failure without damaging the disk. ... OBSERVATION {"event": "replace_error", "old_pointer_preserved": true, "replace_failure_propagated": true, "temporary_files": [], "test": "test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file"}
+ok
+test_cache_survives_fresh_process_and_invalidates_content_and_config (test_integration.ReleaseIntegration.test_cache_survives_fresh_process_and_invalidates_content_and_config)
+Failure/retry reuses preparation, but input and every config change do not. ... OBSERVATION {"event": "fresh_process_retry", "first_exit": 1, "retry_exit": 0, "retry_output": "CACHE_HIT 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4\nPUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+OBSERVATION {"event": "input_changed_same_path", "output": "PREPARED 5d739a7503460b86d67edc4e22f97237ec0fdfbe6d944a9abe902d95ce9d3488\nALREADY_PUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+OBSERVATION {"event": "config_changed", "field": "tokenizer_revision", "output": "PREPARED 5d739a7503460b86d67edc4e22f97237ec0fdfbe6d944a9abe902d95ce9d3488\nALREADY_PUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+OBSERVATION {"event": "config_changed", "field": "template_sha256", "output": "PREPARED 5d739a7503460b86d67edc4e22f97237ec0fdfbe6d944a9abe902d95ce9d3488\nALREADY_PUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+OBSERVATION {"event": "config_changed", "field": "max_length", "output": "PREPARED 5d739a7503460b86d67edc4e22f97237ec0fdfbe6d944a9abe902d95ce9d3488\nALREADY_PUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+OBSERVATION {"event": "config_changed", "field": "code_revision", "output": "PREPARED 5d739a7503460b86d67edc4e22f97237ec0fdfbe6d944a9abe902d95ce9d3488\nALREADY_PUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+ok
+test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend)
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"event": "valid_request", "http_status": 200, "response": {"answer": "STUB ONLY: fixture-A", "generation_seconds": 0.012158291999867288, "model_id": "fixture-A", "output_tokens": 1, "queue_seconds": 5.830002010043245e-07, "request_id": "7034f37a-1442-45d4-8d7e-6be71b3b269e", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547", "total_seconds": 0.012158875000068292}, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+ok
+test_http_loaded_version_changes_only_after_restart_and_supports_rollback (test_integration.ReleaseIntegration.test_http_loaded_version_changes_only_after_restart_and_supports_rollback)
+Publish B while A is loaded, restart onto B, then atomically restore A and reload. ... OBSERVATION {"event": "initial_loaded_A", "response": {"answer": "STUB ONLY: fixture-A", "generation_seconds": 0.012520499999936874, "model_id": "fixture-A", "output_tokens": 1, "queue_seconds": 4.58000158687355e-07, "request_id": "85c22de4-d04d-4d06-b78a-0be2d903591e", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547", "total_seconds": 0.012520958000095561}, "test": "test_http_loaded_version_changes_only_after_restart_and_supports_rollback"}
+OBSERVATION {"accepted_id": "fixture-B", "event": "accepted_B_while_A_loaded", "response": {"answer": "STUB ONLY: fixture-A", "generation_seconds": 0.012000166999996509, "model_id": "fixture-A", "output_tokens": 1, "queue_seconds": 3.7500012695090845e-07, "request_id": "aaba57f2-de49-4d42-8e55-70cbfb729b9b", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547", "total_seconds": 0.01200054200012346}, "test": "test_http_loaded_version_changes_only_after_restart_and_supports_rollback"}
+OBSERVATION {"event": "restarted_onto_B", "response": {"answer": "STUB ONLY: fixture-B", "generation_seconds": 0.010943499999939377, "model_id": "fixture-B", "output_tokens": 1, "queue_seconds": 4.999999418942025e-07, "request_id": "657dc5db-65dd-41f1-8d1f-6a3d962d1174", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547", "total_seconds": 0.010943999999881271}, "test": "test_http_loaded_version_changes_only_after_restart_and_supports_rollback"}
+OBSERVATION {"event": "rollback_and_restart_A", "response": {"answer": "STUB ONLY: fixture-A", "generation_seconds": 0.012532540999927733, "model_id": "fixture-A", "output_tokens": 1, "queue_seconds": 3.74999899577233e-07, "request_id": "162f1b0d-6bec-4c85-be18-13e4d0e9232a", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547", "total_seconds": 0.01253291599982731}, "test": "test_http_loaded_version_changes_only_after_restart_and_supports_rollback"}
+ok
+test_http_ready_and_generation_wait_for_actual_warmup (test_integration.ReleaseIntegration.test_http_ready_and_generation_wait_for_actual_warmup)
+Liveness is independent from readiness and does not permit early computation. ... OBSERVATION {"debug": {"calls": 0, "loaded_id": "fixture-A", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547", "warmup_calls": 0, "warmup_finished": false}, "event": "during_warmup", "ready_status": 503, "test": "test_http_ready_and_generation_wait_for_actual_warmup"}
+ok
+test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes (test_integration.ReleaseIntegration.test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes)
+Each rejection uses a new workspace and a separate actual release process. ... OBSERVATION {"accepted_after_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "accepted_before_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "event": "report_decision", "exit_code": 1, "report": "report-incomplete.json", "test": "test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes"}
+OBSERVATION {"accepted_after_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "accepted_before_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "event": "report_decision", "exit_code": 1, "report": "report-A.json", "test": "test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes"}
+OBSERVATION {"accepted_after_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "accepted_before_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "event": "report_decision", "exit_code": 1, "report": "report-reject.json", "test": "test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes"}
+ok
+test_release_is_idempotent_and_recovers_pointer_journal_failure (test_integration.ReleaseIntegration.test_release_is_idempotent_and_recovers_pointer_journal_failure)
+A repeated release and an interrupted pointer/journal write each emit one event. ... OBSERVATION {"attempts": 2, "event": "repeated_release", "publication_events": 1, "test": "test_release_is_idempotent_and_recovers_pointer_journal_failure"}
+OBSERVATION {"event": "new_evaluation_same_model", "publication_events": 2, "test": "test_release_is_idempotent_and_recovers_pointer_journal_failure"}
+OBSERVATION {"event": "new_runtime_same_model", "publication_events": 3, "test": "test_release_is_idempotent_and_recovers_pointer_journal_failure"}
+OBSERVATION {"crash_exit": 1, "event": "pointer_journal_recovery", "loaded_pointer": "fixture-B", "publication_events": 1, "test": "test_release_is_idempotent_and_recovers_pointer_journal_failure"}
+ok
+test_arbitrarily_large_integer_metrics_raise_value_error (test_process_unit.ProcessIntegrity.test_arbitrarily_large_integer_metrics_raise_value_error) ... ok
+test_artifact_bytes_and_aggregate_are_checked_before_publication (test_process_unit.ProcessIntegrity.test_artifact_bytes_and_aggregate_are_checked_before_publication) ... ok
+test_artifact_paths_cannot_escape_by_parent_absolute_or_symlink (test_process_unit.ProcessIntegrity.test_artifact_paths_cannot_escape_by_parent_absolute_or_symlink) ... ok
+test_fsync_error_preserves_previous_pointer_and_cleans_temporary (test_process_unit.ProcessIntegrity.test_fsync_error_preserves_previous_pointer_and_cleans_temporary) ... ok
+test_pending_journal_record_cannot_be_rebound_after_pointer_crash (test_process_unit.ProcessIntegrity.test_pending_journal_record_cannot_be_rebound_after_pointer_crash) ... ok
+test_persisted_preparation_is_verified_and_uses_content_not_path (test_process_unit.ProcessIntegrity.test_persisted_preparation_is_verified_and_uses_content_not_path) ... ok
+test_changed_bytes_at_same_path_invalidate_cache (test_release.ReleaseContractTests.test_changed_bytes_at_same_path_invalidate_cache) ... ok
+test_complete_bound_report_allowed (test_release.ReleaseContractTests.test_complete_bound_report_allowed) ... ok
+test_every_preparation_setting_invalidates_cache (test_release.ReleaseContractTests.test_every_preparation_setting_invalidates_cache) ... ok
+test_failed_atomic_replace_preserves_previous_bytes (test_release.ReleaseContractTests.test_failed_atomic_replace_preserves_previous_bytes) ... ok
+test_incomplete_false_and_truthy_string_rejected (test_release.ReleaseContractTests.test_incomplete_false_and_truthy_string_rejected) ... ok
+test_invalid_digest_and_schema_rejected (test_release.ReleaseContractTests.test_invalid_digest_and_schema_rejected) ... ok
+test_invalid_metric_rejected (test_release.ReleaseContractTests.test_invalid_metric_rejected) ... ok
+test_key_ignores_path_and_mapping_order (test_release.ReleaseContractTests.test_key_ignores_path_and_mapping_order) ... ok
+test_missing_fields_rejected (test_release.ReleaseContractTests.test_missing_fields_rejected) ... ok
+test_publish_and_repeat (test_release.ReleaseContractTests.test_publish_and_repeat) ... ok
+test_rejection_preserves_previous_bytes (test_release.ReleaseContractTests.test_rejection_preserves_previous_bytes) ... ok
+test_report_binding_mismatch_rejected (test_release.ReleaseContractTests.test_report_binding_mismatch_rejected) ... ok
+test_runtime_change_with_stale_hash_rejected (test_release.ReleaseContractTests.test_runtime_change_with_stale_hash_rejected) ... ok
+test_adapter_changes_fail_even_after_updating_every_declared_asset_hash (test_runtime.RuntimeEvidence.test_adapter_changes_fail_even_after_updating_every_declared_asset_hash) ... ok
+test_baseline_bootstrap_cannot_be_claimed_after_a_candidate_quality_pass (test_runtime.RuntimeEvidence.test_baseline_bootstrap_cannot_be_claimed_after_a_candidate_quality_pass) ... ok
+test_baseline_bootstrap_uses_pinned_assets_with_fake_loaders_only (test_runtime.RuntimeEvidence.test_baseline_bootstrap_uses_pinned_assets_with_fake_loaders_only) ... ok
+test_baseline_protocol_golden_schema_and_origin_bindings_precede_model_load (test_runtime.RuntimeEvidence.test_baseline_protocol_golden_schema_and_origin_bindings_precede_model_load) ... ok
+test_changes_to_saved_raw_are_detected_without_trusting_declared_hashes (test_runtime.RuntimeEvidence.test_changes_to_saved_raw_are_detected_without_trusting_declared_hashes) ... ok
+test_fake_pass_val_loss_or_synthetic_report_cannot_override_saved_rejection (test_runtime.RuntimeEvidence.test_fake_pass_val_loss_or_synthetic_report_cannot_override_saved_rejection) ... ok
+test_frozen_decision_calls_full_saved_report_validation_and_keeps_rejection (test_runtime.RuntimeEvidence.test_frozen_decision_calls_full_saved_report_validation_and_keeps_rejection) ... ok
+test_lightweight_environment_delegates_descriptors_to_pinned_python_and_keeps_failures (test_runtime.RuntimeEvidence.test_lightweight_environment_delegates_descriptors_to_pinned_python_and_keeps_failures) ... ok
+test_rehashed_baseline_runtime_changes_are_rejected_before_model_loading (test_runtime.RuntimeEvidence.test_rehashed_baseline_runtime_changes_are_rejected_before_model_loading) ... ok
+test_report_model_and_all_hash_bindings_are_checked_by_evidence_verifier (test_runtime.RuntimeEvidence.test_report_model_and_all_hash_bindings_are_checked_by_evidence_verifier) ... ok
+test_valid_rejected_evidence_is_verified_but_cannot_be_published (test_runtime.RuntimeEvidence.test_valid_rejected_evidence_is_verified_but_cannot_be_published) ... ok
+test_wrong_model_spec_run_or_runtime_is_rejected_even_with_rehashed_descriptor (test_runtime.RuntimeEvidence.test_wrong_model_spec_run_or_runtime_is_rejected_even_with_rehashed_descriptor) ... ok
+test_concurrent_requests_use_one_compute_slot_and_measure_queue (test_service_unit.ServiceContracts.test_concurrent_requests_use_one_compute_slot_and_measure_queue) ... ok
+test_fixed_runtime_limit_is_96_for_real_mode_and_debug_is_absent (test_service_unit.ServiceContracts.test_fixed_runtime_limit_is_96_for_real_mode_and_debug_is_absent) ... ok
+test_integrity_failure_prevents_backend_load_and_keeps_not_ready (test_service_unit.ServiceContracts.test_integrity_failure_prevents_backend_load_and_keeps_not_ready) ... ok
+test_invalid_requests_are_rejected_before_any_generation_call (test_service_unit.ServiceContracts.test_invalid_requests_are_rejected_before_any_generation_call) ... ok
+test_load_occurs_only_in_lifespan_and_readiness_waits_for_warmup (test_service_unit.ServiceContracts.test_load_occurs_only_in_lifespan_and_readiness_waits_for_warmup) ... ok
+test_loaded_identity_is_stable_after_pointer_change_and_removal (test_service_unit.ServiceContracts.test_loaded_identity_is_stable_after_pointer_change_and_removal) ... ok
+test_streamed_body_limit_is_checked_without_a_content_length (test_service_unit.ServiceContracts.test_streamed_body_limit_is_checked_without_a_content_length) ... ok
+test_warmup_failure_never_allows_generation (test_service_unit.ServiceContracts.test_warmup_failure_never_allows_generation) ... ok
+
+----------------------------------------------------------------------
+Ran 46 tests in 7.887s
+
+OK
+Создан синтетический стенд STUB ONLY: /var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/tmpmretq9sk/workspace
+Создан синтетический стенд STUB ONLY: /var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/tmp8yyqae_k/workspace
+PREPARED 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4
+Создан синтетический стенд STUB ONLY: /var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/tmppij27c65/workspace
+Создан синтетический стенд STUB ONLY: /var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/tmpc_qowvc2/workspace
+Создан синтетический стенд STUB ONLY: /var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/tmpjoqz3jn0/workspace
+PREPARED 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4
+CACHE_HIT 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4
+Создан синтетический стенд STUB ONLY: /var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/tmpw8x38fio/workspace
+PREPARED 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4
+CACHE_HIT 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4

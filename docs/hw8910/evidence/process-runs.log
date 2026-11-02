@@ -1,0 +1,538 @@
+
+### 01-init
+{"accepted_after_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "accepted_before_sha256": null, "cache_entries": 0, "command": ["/Users/imkaruzin/MLOps/.venv-prefect/bin/python", "-B", "/Users/imkaruzin/MLOps/lab.py", "--workspace", "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/lab", "init"], "cwd": "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/cwd/01-init", "elapsed_seconds": 0.03438191600002938, "exit_code": 0, "expected_success": true, "label": "01-init", "last_attempt": null, "publication_count": 0}
+STDOUT
+Создан синтетический стенд STUB ONLY: /var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/lab
+
+STDERR
+
+### 02-fail-after-prepare
+{"accepted_after_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "accepted_before_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "cache_entries": 1, "command": ["/Users/imkaruzin/MLOps/.venv-prefect/bin/python", "-B", "/Users/imkaruzin/MLOps/flow.py", "--workspace", "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/lab", "--fail-after-prepare"], "cwd": "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/cwd/02-fail-after-prepare", "elapsed_seconds": 2.3568624590000127, "exit_code": 1, "expected_success": false, "label": "02-fail-after-prepare", "last_attempt": {"accepted_after_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "accepted_before_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "attempt_id": "a3dd6f3d-40d2-4eff-9f45-e481db70f83a", "error": "RuntimeError: Инъекция сбоя после подготовки", "execution": "prefect", "flow_run_id": "dfc089ca-37d7-48ab-a38f-9b43151a5809", "state": "failed", "task_states": {"prepare": "Completed"}, "timestamp_utc": "2026-11-02T10:10:37.748856+00:00"}, "publication_count": 0}
+STDOUT
+
+STDERR
+13:10:37.710 | INFO    | Flow run 'mysterious-butterfly' - Beginning flow run 'mysterious-butterfly' for flow 'hw8910-model-release'
+13:10:37.718 | INFO    | Flow run 'mysterious-butterfly' - View at http://127.0.0.1:51637/runs/flow-run/dfc089ca-37d7-48ab-a38f-9b43151a5809
+13:10:37.730 | INFO    | Task run 'prepare-input-e05' - PREPARED 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4
+13:10:37.731 | INFO    | Task run 'prepare-input-e05' - Finished in state Completed()
+13:10:38.731 | ERROR   | Flow run 'mysterious-butterfly' - Encountered exception during execution: RuntimeError('Инъекция сбоя после подготовки')
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1330, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2111, in run_flow_sync
+    engine.call_flow_fn()
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1350, in call_flow_fn
+    result = call_with_parameters(self.flow.fn, self.parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 71, in release_flow
+    raise RuntimeError('Инъекция сбоя после подготовки')
+RuntimeError: Инъекция сбоя после подготовки
+13:10:38.757 | INFO    | Flow run 'mysterious-butterfly' - Finished in state Failed('Flow run encountered an exception: RuntimeError: Инъекция сбоя после подготовки')
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/flow.py", line 109, in <module>
+    main()
+  File "/Users/imkaruzin/MLOps/flow.py", line 104, in main
+    result = release_flow(str(args.workspace), args.report, args.manifest, args.fail_after_prepare)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flows.py", line 1887, in __call__
+    return run_flow(
+           ^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2268, in run_flow
+    ret_val = run_flow_sync(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2113, in run_flow_sync
+    return engine.state if return_type == "state" else engine.result()
+                                                       ^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 788, in result
+    raise self._raised
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1330, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2111, in run_flow_sync
+    engine.call_flow_fn()
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1350, in call_flow_fn
+    result = call_with_parameters(self.flow.fn, self.parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 71, in release_flow
+    raise RuntimeError('Инъекция сбоя после подготовки')
+RuntimeError: Инъекция сбоя после подготовки
+
+### 03-recover-cache
+{"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "cache_entries": 1, "command": ["/Users/imkaruzin/MLOps/.venv-prefect/bin/python", "-B", "/Users/imkaruzin/MLOps/flow.py", "--workspace", "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/lab"], "cwd": "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/cwd/03-recover-cache", "elapsed_seconds": 2.2800355419999505, "exit_code": 0, "expected_success": true, "label": "03-recover-cache", "last_attempt": {"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "attempt_id": "d2619d6a-1a62-4df3-bef8-59bfa639d973", "execution": "prefect", "flow_run_id": "a3a7977c-9ce1-40e7-8333-dd1aebe12507", "model_id": "fixture-B", "prepared_key": "39e9380bb00be1e31b477089036819572b21fc83820a39359a2d7ef65113d4da", "release_id": "864632ea9e5220e56b8a0f86fdc50f5bfc8c42ea5e027ee4a870cf9187978322", "state": "published", "status": "published", "task_states": {"admission": "Completed", "artifact": "Completed", "prepare": "Cached", "publication": "Completed"}, "timestamp_utc": "2026-11-02T10:10:40.060086+00:00"}, "publication_count": 1}
+STDOUT
+{"status": "published", "release_id": "864632ea9e5220e56b8a0f86fdc50f5bfc8c42ea5e027ee4a870cf9187978322", "model_id": "fixture-B", "flow_run_id": "a3a7977c-9ce1-40e7-8333-dd1aebe12507", "task_states": {"prepare": "Cached", "artifact": "Completed", "admission": "Completed", "publication": "Completed"}, "prepared_key": "39e9380bb00be1e31b477089036819572b21fc83820a39359a2d7ef65113d4da"}
+
+STDERR
+13:10:40.008 | INFO    | Flow run 'nice-bettong' - Beginning flow run 'nice-bettong' for flow 'hw8910-model-release'
+13:10:40.016 | INFO    | Flow run 'nice-bettong' - View at http://127.0.0.1:51637/runs/flow-run/a3a7977c-9ce1-40e7-8333-dd1aebe12507
+13:10:40.028 | INFO    | Task run 'prepare-input-ff1' - Finished in state Cached(type=COMPLETED)
+13:10:40.050 | INFO    | Task run 'obtain-and-verify-artifact-9a6' - Finished in state Completed()
+13:10:40.053 | INFO    | Task run 'check-full-admission-375' - Finished in state Completed()
+13:10:40.059 | INFO    | Task run 'publish-accepted-pointer-69e' - Finished in state Completed()
+13:10:41.027 | INFO    | Flow run 'nice-bettong' - Finished in state Completed()
+
+### 04-repeat-release
+{"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "cache_entries": 1, "command": ["/Users/imkaruzin/MLOps/.venv-prefect/bin/python", "-B", "/Users/imkaruzin/MLOps/flow.py", "--workspace", "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/lab"], "cwd": "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/cwd/04-repeat-release", "elapsed_seconds": 2.2080376249999745, "exit_code": 0, "expected_success": true, "label": "04-repeat-release", "last_attempt": {"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "attempt_id": "c0386265-79b3-43b8-97aa-5e409b8c8b42", "execution": "prefect", "flow_run_id": "3d018967-a984-44b8-9d1a-95d2eea9e7a3", "model_id": "fixture-B", "prepared_key": "39e9380bb00be1e31b477089036819572b21fc83820a39359a2d7ef65113d4da", "release_id": "864632ea9e5220e56b8a0f86fdc50f5bfc8c42ea5e027ee4a870cf9187978322", "state": "already_published", "status": "already_published", "task_states": {"admission": "Completed", "artifact": "Completed", "prepare": "Cached", "publication": "Completed"}, "timestamp_utc": "2026-11-02T10:10:42.268346+00:00"}, "publication_count": 1}
+STDOUT
+{"status": "already_published", "release_id": "864632ea9e5220e56b8a0f86fdc50f5bfc8c42ea5e027ee4a870cf9187978322", "model_id": "fixture-B", "flow_run_id": "3d018967-a984-44b8-9d1a-95d2eea9e7a3", "task_states": {"prepare": "Cached", "artifact": "Completed", "admission": "Completed", "publication": "Completed"}, "prepared_key": "39e9380bb00be1e31b477089036819572b21fc83820a39359a2d7ef65113d4da"}
+
+STDERR
+13:10:42.220 | INFO    | Flow run 'aloof-owl' - Beginning flow run 'aloof-owl' for flow 'hw8910-model-release'
+13:10:42.228 | INFO    | Flow run 'aloof-owl' - View at http://127.0.0.1:51637/runs/flow-run/3d018967-a984-44b8-9d1a-95d2eea9e7a3
+13:10:42.240 | INFO    | Task run 'prepare-input-13d' - Finished in state Cached(type=COMPLETED)
+13:10:42.261 | INFO    | Task run 'obtain-and-verify-artifact-a49' - Finished in state Completed()
+13:10:42.264 | INFO    | Task run 'check-full-admission-584' - Finished in state Completed()
+13:10:42.267 | INFO    | Task run 'publish-accepted-pointer-a82' - Finished in state Completed()
+13:10:43.238 | INFO    | Flow run 'aloof-owl' - Finished in state Completed()
+
+### 05-changed-input
+{"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "cache_entries": 2, "command": ["/Users/imkaruzin/MLOps/.venv-prefect/bin/python", "-B", "/Users/imkaruzin/MLOps/flow.py", "--workspace", "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/lab"], "cwd": "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/cwd/05-changed-input", "elapsed_seconds": 2.1788985829999774, "exit_code": 0, "expected_success": true, "label": "05-changed-input", "last_attempt": {"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "attempt_id": "5aa97b90-15bc-4d1a-a5f7-dcbcad2e3e0d", "execution": "prefect", "flow_run_id": "e352b76c-b19c-4216-bfdd-edd25147aabb", "model_id": "fixture-B", "prepared_key": "6fc38898602e1b4dad988e78a021274010749a6eb1bb2d7ea2715a2ea0a3a0e3", "release_id": "864632ea9e5220e56b8a0f86fdc50f5bfc8c42ea5e027ee4a870cf9187978322", "state": "already_published", "status": "already_published", "task_states": {"admission": "Completed", "artifact": "Completed", "prepare": "Completed", "publication": "Completed"}, "timestamp_utc": "2026-11-02T10:10:44.447744+00:00"}, "publication_count": 1}
+STDOUT
+{"status": "already_published", "release_id": "864632ea9e5220e56b8a0f86fdc50f5bfc8c42ea5e027ee4a870cf9187978322", "model_id": "fixture-B", "flow_run_id": "e352b76c-b19c-4216-bfdd-edd25147aabb", "task_states": {"prepare": "Completed", "artifact": "Completed", "admission": "Completed", "publication": "Completed"}, "prepared_key": "6fc38898602e1b4dad988e78a021274010749a6eb1bb2d7ea2715a2ea0a3a0e3"}
+
+STDERR
+13:10:44.401 | INFO    | Flow run 'splendid-newt' - Beginning flow run 'splendid-newt' for flow 'hw8910-model-release'
+13:10:44.409 | INFO    | Flow run 'splendid-newt' - View at http://127.0.0.1:51637/runs/flow-run/e352b76c-b19c-4216-bfdd-edd25147aabb
+13:10:44.421 | INFO    | Task run 'prepare-input-dcb' - PREPARED 08d4c7f87e3e0d7051198a955526001d4426321080fa265d29e83baedb72aa8e
+13:10:44.422 | INFO    | Task run 'prepare-input-dcb' - Finished in state Completed()
+13:10:44.441 | INFO    | Task run 'obtain-and-verify-artifact-8db' - Finished in state Completed()
+13:10:44.444 | INFO    | Task run 'check-full-admission-48e' - Finished in state Completed()
+13:10:44.447 | INFO    | Task run 'publish-accepted-pointer-4a2' - Finished in state Completed()
+13:10:45.417 | INFO    | Flow run 'splendid-newt' - Finished in state Completed()
+
+### 06-changed-config
+{"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "cache_entries": 3, "command": ["/Users/imkaruzin/MLOps/.venv-prefect/bin/python", "-B", "/Users/imkaruzin/MLOps/flow.py", "--workspace", "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/lab"], "cwd": "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/cwd/06-changed-config", "elapsed_seconds": 2.201574832999995, "exit_code": 0, "expected_success": true, "label": "06-changed-config", "last_attempt": {"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "attempt_id": "ea695a7f-46a8-4485-80fa-c62253a91cc5", "execution": "prefect", "flow_run_id": "6e13291e-fee9-445d-9d16-a8298a82badc", "model_id": "fixture-B", "prepared_key": "d7fd0c47bf135b2a291a0e389d784dbe3c32f76b8759e6d12a50ec02bcd88eda", "release_id": "864632ea9e5220e56b8a0f86fdc50f5bfc8c42ea5e027ee4a870cf9187978322", "state": "already_published", "status": "already_published", "task_states": {"admission": "Completed", "artifact": "Completed", "prepare": "Completed", "publication": "Completed"}, "timestamp_utc": "2026-11-02T10:10:46.649827+00:00"}, "publication_count": 1}
+STDOUT
+{"status": "already_published", "release_id": "864632ea9e5220e56b8a0f86fdc50f5bfc8c42ea5e027ee4a870cf9187978322", "model_id": "fixture-B", "flow_run_id": "6e13291e-fee9-445d-9d16-a8298a82badc", "task_states": {"prepare": "Completed", "artifact": "Completed", "admission": "Completed", "publication": "Completed"}, "prepared_key": "d7fd0c47bf135b2a291a0e389d784dbe3c32f76b8759e6d12a50ec02bcd88eda"}
+
+STDERR
+13:10:46.600 | INFO    | Flow run 'unstoppable-bonobo' - Beginning flow run 'unstoppable-bonobo' for flow 'hw8910-model-release'
+13:10:46.609 | INFO    | Flow run 'unstoppable-bonobo' - View at http://127.0.0.1:51637/runs/flow-run/6e13291e-fee9-445d-9d16-a8298a82badc
+13:10:46.621 | INFO    | Task run 'prepare-input-b2a' - PREPARED 08d4c7f87e3e0d7051198a955526001d4426321080fa265d29e83baedb72aa8e
+13:10:46.622 | INFO    | Task run 'prepare-input-b2a' - Finished in state Completed()
+13:10:46.643 | INFO    | Task run 'obtain-and-verify-artifact-519' - Finished in state Completed()
+13:10:46.646 | INFO    | Task run 'check-full-admission-96d' - Finished in state Completed()
+13:10:46.649 | INFO    | Task run 'publish-accepted-pointer-7ed' - Finished in state Completed()
+13:10:47.619 | INFO    | Flow run 'unstoppable-bonobo' - Finished in state Completed()
+
+### 07-new-admission
+{"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "cache_entries": 3, "command": ["/Users/imkaruzin/MLOps/.venv-prefect/bin/python", "-B", "/Users/imkaruzin/MLOps/flow.py", "--workspace", "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/lab"], "cwd": "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/cwd/07-new-admission", "elapsed_seconds": 2.195215624999946, "exit_code": 0, "expected_success": true, "label": "07-new-admission", "last_attempt": {"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "attempt_id": "fa0fce90-4763-40ad-a903-de8a9478ee25", "execution": "prefect", "flow_run_id": "2332d3f6-6ed8-4255-a64d-eabdde4781ae", "model_id": "fixture-B", "prepared_key": "d7fd0c47bf135b2a291a0e389d784dbe3c32f76b8759e6d12a50ec02bcd88eda", "release_id": "22826fe369b6b2568368927f1ad703d2de0a08044f48ba7eb52ba989e9abd05e", "state": "published", "status": "published", "task_states": {"admission": "Completed", "artifact": "Completed", "prepare": "Cached", "publication": "Completed"}, "timestamp_utc": "2026-11-02T10:10:48.849734+00:00"}, "publication_count": 2}
+STDOUT
+{"status": "published", "release_id": "22826fe369b6b2568368927f1ad703d2de0a08044f48ba7eb52ba989e9abd05e", "model_id": "fixture-B", "flow_run_id": "2332d3f6-6ed8-4255-a64d-eabdde4781ae", "task_states": {"prepare": "Cached", "artifact": "Completed", "admission": "Completed", "publication": "Completed"}, "prepared_key": "d7fd0c47bf135b2a291a0e389d784dbe3c32f76b8759e6d12a50ec02bcd88eda"}
+
+STDERR
+13:10:48.801 | INFO    | Flow run 'emotional-vulture' - Beginning flow run 'emotional-vulture' for flow 'hw8910-model-release'
+13:10:48.809 | INFO    | Flow run 'emotional-vulture' - View at http://127.0.0.1:51637/runs/flow-run/2332d3f6-6ed8-4255-a64d-eabdde4781ae
+13:10:48.821 | INFO    | Task run 'prepare-input-449' - Finished in state Cached(type=COMPLETED)
+13:10:48.841 | INFO    | Task run 'obtain-and-verify-artifact-7bc' - Finished in state Completed()
+13:10:48.844 | INFO    | Task run 'check-full-admission-0e1' - Finished in state Completed()
+13:10:48.848 | INFO    | Task run 'publish-accepted-pointer-c7b' - Finished in state Completed()
+13:10:49.821 | INFO    | Flow run 'emotional-vulture' - Finished in state Completed()
+
+### 08-rejected-report
+{"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "cache_entries": 3, "command": ["/Users/imkaruzin/MLOps/.venv-prefect/bin/python", "-B", "/Users/imkaruzin/MLOps/flow.py", "--workspace", "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/lab", "--report", "report-reject.json"], "cwd": "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/cwd/08-rejected-report", "elapsed_seconds": 2.246972958000015, "exit_code": 1, "expected_success": false, "label": "08-rejected-report", "last_attempt": {"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "attempt_id": "9801ab88-33ed-4e7c-b1b0-6e1492573185", "error": "ValueError: Candidate evaluation is incomplete or rejected", "execution": "prefect", "flow_run_id": "5d2b9e16-ca3b-4d03-bc3e-d875a395b1a4", "state": "rejected", "task_states": {"admission": "Failed", "artifact": "Completed", "prepare": "Cached"}, "timestamp_utc": "2026-11-02T10:10:51.069520+00:00"}, "publication_count": 2}
+STDOUT
+
+STDERR
+13:10:51.022 | INFO    | Flow run 'emerald-anteater' - Beginning flow run 'emerald-anteater' for flow 'hw8910-model-release'
+13:10:51.029 | INFO    | Flow run 'emerald-anteater' - View at http://127.0.0.1:51637/runs/flow-run/5d2b9e16-ca3b-4d03-bc3e-d875a395b1a4
+13:10:51.041 | INFO    | Task run 'prepare-input-230' - Finished in state Cached(type=COMPLETED)
+13:10:51.062 | INFO    | Task run 'obtain-and-verify-artifact-af4' - Finished in state Completed()
+13:10:51.065 | ERROR   | Task run 'check-full-admission-dfc' - Task run failed with exception: ValueError('Candidate evaluation is incomplete or rejected')
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1027, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1696, in run_task_sync
+    engine.call_task_fn(txn)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1044, in call_task_fn
+    result = call_with_parameters(self.task.fn, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 43, in check_admission
+    lab.check_admission(root, manifest, report)
+  File "/Users/imkaruzin/MLOps/lab.py", line 179, in check_admission
+    release.validate_release(manifest, report)
+  File "/Users/imkaruzin/MLOps/release.py", line 65, in validate_release
+    raise ValueError('Candidate evaluation is incomplete or rejected')
+ValueError: Candidate evaluation is incomplete or rejected
+13:10:51.068 | ERROR   | Task run 'check-full-admission-dfc' - Finished in state Failed('Task run encountered an exception ValueError: Candidate evaluation is incomplete or rejected')
+13:10:52.041 | ERROR   | Flow run 'emerald-anteater' - Encountered exception during execution: ValueError('Candidate evaluation is incomplete or rejected')
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1330, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2111, in run_flow_sync
+    engine.call_flow_fn()
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1350, in call_flow_fn
+    result = call_with_parameters(self.flow.fn, self.parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 78, in release_flow
+    descriptor = admission_future.result()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/futures.py", line 277, in result
+    _result = self._final_state.result(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/compatibility/async_dispatch.py", line 94, in wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/client/schemas/objects.py", line 394, in result
+    return run_coro_as_sync(
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/asyncutils/__init__.py", line 207, in run_coro_as_sync
+    return call.result()
+           ^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 365, in result
+    return self.future.result(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 192, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 441, in _run_async
+    result = await coro
+             ^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/asyncutils/__init__.py", line 188, in coroutine_wrapper
+    return await task
+           ^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/states.py", line 89, in get_state_result
+    return await _get_state_result(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/states.py", line 161, in _get_state_result
+    raise await aget_state_exception(state)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1027, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1696, in run_task_sync
+    engine.call_task_fn(txn)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1044, in call_task_fn
+    result = call_with_parameters(self.task.fn, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 43, in check_admission
+    lab.check_admission(root, manifest, report)
+  File "/Users/imkaruzin/MLOps/lab.py", line 179, in check_admission
+    release.validate_release(manifest, report)
+  File "/Users/imkaruzin/MLOps/release.py", line 65, in validate_release
+    raise ValueError('Candidate evaluation is incomplete or rejected')
+ValueError: Candidate evaluation is incomplete or rejected
+13:10:52.055 | INFO    | Flow run 'emerald-anteater' - Finished in state Failed('Flow run encountered an exception: ValueError: Candidate evaluation is incomplete or rejected')
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/flow.py", line 109, in <module>
+    main()
+  File "/Users/imkaruzin/MLOps/flow.py", line 104, in main
+    result = release_flow(str(args.workspace), args.report, args.manifest, args.fail_after_prepare)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flows.py", line 1887, in __call__
+    return run_flow(
+           ^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2268, in run_flow
+    ret_val = run_flow_sync(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2113, in run_flow_sync
+    return engine.state if return_type == "state" else engine.result()
+                                                       ^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 788, in result
+    raise self._raised
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1330, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2111, in run_flow_sync
+    engine.call_flow_fn()
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1350, in call_flow_fn
+    result = call_with_parameters(self.flow.fn, self.parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 78, in release_flow
+    descriptor = admission_future.result()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/futures.py", line 277, in result
+    _result = self._final_state.result(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/compatibility/async_dispatch.py", line 94, in wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/client/schemas/objects.py", line 394, in result
+    return run_coro_as_sync(
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/asyncutils/__init__.py", line 207, in run_coro_as_sync
+    return call.result()
+           ^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 365, in result
+    return self.future.result(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 192, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 441, in _run_async
+    result = await coro
+             ^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/asyncutils/__init__.py", line 188, in coroutine_wrapper
+    return await task
+           ^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/states.py", line 89, in get_state_result
+    return await _get_state_result(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/states.py", line 161, in _get_state_result
+    raise await aget_state_exception(state)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1027, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1696, in run_task_sync
+    engine.call_task_fn(txn)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1044, in call_task_fn
+    result = call_with_parameters(self.task.fn, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 43, in check_admission
+    lab.check_admission(root, manifest, report)
+  File "/Users/imkaruzin/MLOps/lab.py", line 179, in check_admission
+    release.validate_release(manifest, report)
+  File "/Users/imkaruzin/MLOps/release.py", line 65, in validate_release
+    raise ValueError('Candidate evaluation is incomplete or rejected')
+ValueError: Candidate evaluation is incomplete or rejected
+
+### 09-recovery-init
+{"accepted_after_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "accepted_before_sha256": null, "cache_entries": 0, "command": ["/Users/imkaruzin/MLOps/.venv-prefect/bin/python", "-B", "/Users/imkaruzin/MLOps/lab.py", "--workspace", "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/recovery", "init"], "cwd": "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/cwd/09-recovery-init", "elapsed_seconds": 0.028799666999930196, "exit_code": 0, "expected_success": true, "label": "09-recovery-init", "last_attempt": null, "publication_count": 0}
+STDOUT
+Создан синтетический стенд STUB ONLY: /var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/recovery
+
+STDERR
+
+### 10-pointer-journal-fault
+{"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "cache_entries": 0, "command": ["/Users/imkaruzin/MLOps/.venv-prefect/bin/python", "-B", "-c", "import sys\nsys.path.insert(0, '/Users/imkaruzin/MLOps')\nfrom unittest.mock import patch\nimport release, flow\noriginal = release.publish\ndef crash(*args, **kwargs):\n    original(*args, **kwargs)\n    raise RuntimeError('INJECTED_AFTER_POINTER')\nwith patch.object(release, 'publish', side_effect=crash):\n    flow.release_flow('/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/recovery')"], "cwd": "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/cwd/10-pointer-journal-fault", "elapsed_seconds": 2.307149332999984, "exit_code": 1, "expected_success": false, "label": "10-pointer-journal-fault", "last_attempt": {"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "attempt_id": "f6b53224-6ffc-41bf-bcfb-34034cedbb34", "error": "RuntimeError: INJECTED_AFTER_POINTER", "execution": "prefect", "flow_run_id": "f822785c-3b71-4883-84db-a2f9cf7f5afd", "state": "failed", "task_states": {"admission": "Completed", "artifact": "Completed", "prepare": "Cached", "publication": "Failed"}, "timestamp_utc": "2026-11-02T10:10:53.392873+00:00"}, "publication_count": 0}
+STDOUT
+
+STDERR
+13:10:53.343 | INFO    | Flow run 'impetuous-sambar' - Beginning flow run 'impetuous-sambar' for flow 'hw8910-model-release'
+13:10:53.351 | INFO    | Flow run 'impetuous-sambar' - View at http://127.0.0.1:51637/runs/flow-run/f822785c-3b71-4883-84db-a2f9cf7f5afd
+13:10:53.363 | INFO    | Task run 'prepare-input-961' - Finished in state Cached(type=COMPLETED)
+13:10:53.382 | INFO    | Task run 'obtain-and-verify-artifact-5fc' - Finished in state Completed()
+13:10:53.386 | INFO    | Task run 'check-full-admission-bef' - Finished in state Completed()
+13:10:53.389 | ERROR   | Task run 'publish-accepted-pointer-df0' - Task run failed with exception: RuntimeError('INJECTED_AFTER_POINTER')
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1027, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1696, in run_task_sync
+    engine.call_task_fn(txn)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1044, in call_task_fn
+    result = call_with_parameters(self.task.fn, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 54, in publish_accepted
+    return lab.publish_release(Path(workspace), lab.read(descriptor['manifest_path']),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/lab.py", line 234, in publish_release
+    release.publish(manifest, report, root / 'accepted.json')
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/unittest/mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/unittest/mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/unittest/mock.py", line 1204, in _execute_mock_call
+    result = effect(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 8, in crash
+RuntimeError: INJECTED_AFTER_POINTER
+13:10:53.392 | ERROR   | Task run 'publish-accepted-pointer-df0' - Finished in state Failed('Task run encountered an exception RuntimeError: INJECTED_AFTER_POINTER')
+13:10:54.363 | ERROR   | Flow run 'impetuous-sambar' - Encountered exception during execution: RuntimeError('INJECTED_AFTER_POINTER')
+Traceback (most recent call last):
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1330, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2111, in run_flow_sync
+    engine.call_flow_fn()
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1350, in call_flow_fn
+    result = call_with_parameters(self.flow.fn, self.parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 82, in release_flow
+    result = publication_future.result()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/futures.py", line 277, in result
+    _result = self._final_state.result(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/compatibility/async_dispatch.py", line 94, in wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/client/schemas/objects.py", line 394, in result
+    return run_coro_as_sync(
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/asyncutils/__init__.py", line 207, in run_coro_as_sync
+    return call.result()
+           ^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 365, in result
+    return self.future.result(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 192, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 441, in _run_async
+    result = await coro
+             ^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/asyncutils/__init__.py", line 188, in coroutine_wrapper
+    return await task
+           ^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/states.py", line 89, in get_state_result
+    return await _get_state_result(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/states.py", line 161, in _get_state_result
+    raise await aget_state_exception(state)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1027, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1696, in run_task_sync
+    engine.call_task_fn(txn)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1044, in call_task_fn
+    result = call_with_parameters(self.task.fn, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 54, in publish_accepted
+    return lab.publish_release(Path(workspace), lab.read(descriptor['manifest_path']),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/lab.py", line 234, in publish_release
+    release.publish(manifest, report, root / 'accepted.json')
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/unittest/mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/unittest/mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/unittest/mock.py", line 1204, in _execute_mock_call
+    result = effect(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 8, in crash
+RuntimeError: INJECTED_AFTER_POINTER
+13:10:54.386 | INFO    | Flow run 'impetuous-sambar' - Finished in state Failed('Flow run encountered an exception: RuntimeError: INJECTED_AFTER_POINTER')
+Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flows.py", line 1887, in __call__
+    return run_flow(
+           ^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2268, in run_flow
+    ret_val = run_flow_sync(**kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2113, in run_flow_sync
+    return engine.state if return_type == "state" else engine.result()
+                                                       ^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 788, in result
+    raise self._raised
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1330, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 2111, in run_flow_sync
+    engine.call_flow_fn()
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/flow_engine.py", line 1350, in call_flow_fn
+    result = call_with_parameters(self.flow.fn, self.parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 82, in release_flow
+    result = publication_future.result()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/futures.py", line 277, in result
+    _result = self._final_state.result(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/compatibility/async_dispatch.py", line 94, in wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/client/schemas/objects.py", line 394, in result
+    return run_coro_as_sync(
+           ^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/asyncutils/__init__.py", line 207, in run_coro_as_sync
+    return call.result()
+           ^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 365, in result
+    return self.future.result(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 192, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/_internal/concurrency/calls.py", line 441, in _run_async
+    result = await coro
+             ^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/asyncutils/__init__.py", line 188, in coroutine_wrapper
+    return await task
+           ^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/states.py", line 89, in get_state_result
+    return await _get_state_result(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/states.py", line 161, in _get_state_result
+    raise await aget_state_exception(state)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1027, in run_context
+    yield self
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1696, in run_task_sync
+    engine.call_task_fn(txn)
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/task_engine.py", line 1044, in call_task_fn
+    result = call_with_parameters(self.task.fn, parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/.venv-prefect/lib/python3.12/site-packages/prefect/utilities/callables/__init__.py", line 356, in call_with_parameters
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/flow.py", line 54, in publish_accepted
+    return lab.publish_release(Path(workspace), lab.read(descriptor['manifest_path']),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/MLOps/lab.py", line 234, in publish_release
+    release.publish(manifest, report, root / 'accepted.json')
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/unittest/mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/unittest/mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imkaruzin/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/unittest/mock.py", line 1204, in _execute_mock_call
+    result = effect(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 8, in crash
+RuntimeError: INJECTED_AFTER_POINTER
+
+### 11-pointer-journal-recovery
+{"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "cache_entries": 0, "command": ["/Users/imkaruzin/MLOps/.venv-prefect/bin/python", "-B", "/Users/imkaruzin/MLOps/flow.py", "--workspace", "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/recovery"], "cwd": "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/cwd/11-pointer-journal-recovery", "elapsed_seconds": 2.2268550000000005, "exit_code": 0, "expected_success": true, "label": "11-pointer-journal-recovery", "last_attempt": {"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "attempt_id": "e4bdedcd-5c39-4dfd-9cdd-1cb988c5dbcc", "execution": "prefect", "flow_run_id": "7e055947-1c5c-4159-8e35-0f33e034a673", "model_id": "fixture-B", "prepared_key": "39e9380bb00be1e31b477089036819572b21fc83820a39359a2d7ef65113d4da", "release_id": "864632ea9e5220e56b8a0f86fdc50f5bfc8c42ea5e027ee4a870cf9187978322", "state": "already_published", "status": "already_published", "task_states": {"admission": "Completed", "artifact": "Completed", "prepare": "Cached", "publication": "Completed"}, "timestamp_utc": "2026-11-02T10:10:55.654483+00:00"}, "publication_count": 1}
+STDOUT
+{"status": "already_published", "release_id": "864632ea9e5220e56b8a0f86fdc50f5bfc8c42ea5e027ee4a870cf9187978322", "model_id": "fixture-B", "flow_run_id": "7e055947-1c5c-4159-8e35-0f33e034a673", "task_states": {"prepare": "Cached", "artifact": "Completed", "admission": "Completed", "publication": "Completed"}, "prepared_key": "39e9380bb00be1e31b477089036819572b21fc83820a39359a2d7ef65113d4da"}
+
+STDERR
+13:10:55.598 | INFO    | Flow run 'astute-scallop' - Beginning flow run 'astute-scallop' for flow 'hw8910-model-release'
+13:10:55.607 | INFO    | Flow run 'astute-scallop' - View at http://127.0.0.1:51637/runs/flow-run/7e055947-1c5c-4159-8e35-0f33e034a673
+13:10:55.621 | INFO    | Task run 'prepare-input-ec6' - Finished in state Cached(type=COMPLETED)
+13:10:55.644 | INFO    | Task run 'obtain-and-verify-artifact-ccc' - Finished in state Completed()
+13:10:55.648 | INFO    | Task run 'check-full-admission-883' - Finished in state Completed()
+13:10:55.652 | INFO    | Task run 'publish-accepted-pointer-7bb' - Finished in state Completed()
+13:10:56.621 | INFO    | Flow run 'astute-scallop' - Finished in state Completed()
+
+### 12-recovered-repeat
+{"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "cache_entries": 0, "command": ["/Users/imkaruzin/MLOps/.venv-prefect/bin/python", "-B", "/Users/imkaruzin/MLOps/flow.py", "--workspace", "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/recovery"], "cwd": "/var/folders/lm/_5wh62455n77dx8zn4nps0yr0000gn/T/hw8910-process-proof-mg47asqk/cwd/12-recovered-repeat", "elapsed_seconds": 2.2663736250000284, "exit_code": 0, "expected_success": true, "label": "12-recovered-repeat", "last_attempt": {"accepted_after_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "accepted_before_sha256": "5c9115f078d4dc4109ac33a37c3717b6112ebdd4019035096e825ab94749ecf0", "attempt_id": "22de64a2-4433-4385-b0f2-5b018510586c", "execution": "prefect", "flow_run_id": "e537e894-fa82-41fe-83db-bc0265cbabb9", "model_id": "fixture-B", "prepared_key": "39e9380bb00be1e31b477089036819572b21fc83820a39359a2d7ef65113d4da", "release_id": "864632ea9e5220e56b8a0f86fdc50f5bfc8c42ea5e027ee4a870cf9187978322", "state": "already_published", "status": "already_published", "task_states": {"admission": "Completed", "artifact": "Completed", "prepare": "Cached", "publication": "Completed"}, "timestamp_utc": "2026-11-02T10:10:57.904960+00:00"}, "publication_count": 1}
+STDOUT
+{"status": "already_published", "release_id": "864632ea9e5220e56b8a0f86fdc50f5bfc8c42ea5e027ee4a870cf9187978322", "model_id": "fixture-B", "flow_run_id": "e537e894-fa82-41fe-83db-bc0265cbabb9", "task_states": {"prepare": "Cached", "artifact": "Completed", "admission": "Completed", "publication": "Completed"}, "prepared_key": "39e9380bb00be1e31b477089036819572b21fc83820a39359a2d7ef65113d4da"}
+
+STDERR
+13:10:57.854 | INFO    | Flow run 'excellent-dogfish' - Beginning flow run 'excellent-dogfish' for flow 'hw8910-model-release'
+13:10:57.862 | INFO    | Flow run 'excellent-dogfish' - View at http://127.0.0.1:51637/runs/flow-run/e537e894-fa82-41fe-83db-bc0265cbabb9
+13:10:57.876 | INFO    | Task run 'prepare-input-575' - Finished in state Cached(type=COMPLETED)
+13:10:57.897 | INFO    | Task run 'obtain-and-verify-artifact-303' - Finished in state Completed()
+13:10:57.901 | INFO    | Task run 'check-full-admission-ab9' - Finished in state Completed()
+13:10:57.904 | INFO    | Task run 'publish-accepted-pointer-57f' - Finished in state Completed()
+13:10:58.873 | INFO    | Flow run 'excellent-dogfish' - Finished in state Completed()

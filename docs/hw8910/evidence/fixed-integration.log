@@ -1,0 +1,48 @@
+test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file (test_integration.ReleaseIntegration.test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file)
+A real child process injects a replacement failure without damaging the disk. ... OBSERVATION {"event": "replace_error", "old_pointer_preserved": true, "replace_failure_propagated": true, "temporary_files": [], "test": "test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file"}
+ok
+test_cache_survives_fresh_process_and_invalidates_content_and_config (test_integration.ReleaseIntegration.test_cache_survives_fresh_process_and_invalidates_content_and_config)
+Failure/retry reuses preparation, but input and every config change do not. ... OBSERVATION {"event": "fresh_process_retry", "first_exit": 1, "retry_exit": 0, "retry_output": "CACHE_HIT 88bbd559a04a7a432693a1c611ef2704bb711ac17dd5e22203ee9e5020f59fd4\nPUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+OBSERVATION {"event": "input_changed_same_path", "output": "PREPARED 5d739a7503460b86d67edc4e22f97237ec0fdfbe6d944a9abe902d95ce9d3488\nALREADY_PUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+OBSERVATION {"event": "config_changed", "field": "tokenizer_revision", "output": "PREPARED 5d739a7503460b86d67edc4e22f97237ec0fdfbe6d944a9abe902d95ce9d3488\nALREADY_PUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+OBSERVATION {"event": "config_changed", "field": "template_sha256", "output": "PREPARED 5d739a7503460b86d67edc4e22f97237ec0fdfbe6d944a9abe902d95ce9d3488\nALREADY_PUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+OBSERVATION {"event": "config_changed", "field": "max_length", "output": "PREPARED 5d739a7503460b86d67edc4e22f97237ec0fdfbe6d944a9abe902d95ce9d3488\nALREADY_PUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+OBSERVATION {"event": "config_changed", "field": "code_revision", "output": "PREPARED 5d739a7503460b86d67edc4e22f97237ec0fdfbe6d944a9abe902d95ce9d3488\nALREADY_PUBLISHED fixture-B", "test": "test_cache_survives_fresh_process_and_invalidates_content_and_config"}
+ok
+test_http_invalid_requests_do_not_invoke_backend (test_integration.ReleaseIntegration.test_http_invalid_requests_do_not_invoke_backend)
+Invalid shape, prompt, types, bounds and generation options fail before computation. ... OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"calls_after": 0, "calls_before": 0, "event": "invalid_request", "http_status": 422, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+OBSERVATION {"event": "valid_request", "http_status": 200, "response": {"answer": "STUB ONLY: fixture-A", "generation_seconds": 0.012520332999997663, "model_id": "fixture-A", "output_tokens": 1, "queue_seconds": 5.839999630552484e-07, "request_id": "9e17f692-9398-4eeb-b020-aec7a68df2f7", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547", "total_seconds": 0.012520916999960718}, "test": "test_http_invalid_requests_do_not_invoke_backend"}
+ok
+test_http_loaded_version_changes_only_after_restart_and_supports_rollback (test_integration.ReleaseIntegration.test_http_loaded_version_changes_only_after_restart_and_supports_rollback)
+Publish B while A is loaded, restart onto B, then atomically restore A and reload. ... OBSERVATION {"event": "initial_loaded_A", "response": {"answer": "STUB ONLY: fixture-A", "generation_seconds": 0.012515459000042028, "model_id": "fixture-A", "output_tokens": 1, "queue_seconds": 5.409999630501261e-07, "request_id": "524c80e9-4f30-4a42-b9de-c774c7a25297", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547", "total_seconds": 0.012516000000005079}, "test": "test_http_loaded_version_changes_only_after_restart_and_supports_rollback"}
+OBSERVATION {"accepted_id": "fixture-B", "event": "accepted_B_while_A_loaded", "response": {"answer": "STUB ONLY: fixture-A", "generation_seconds": 0.012525041999992936, "model_id": "fixture-A", "output_tokens": 1, "queue_seconds": 4.1600003441999434e-07, "request_id": "7f5a914f-3759-45d3-bf8f-87491fa7ec02", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547", "total_seconds": 0.012525458000027356}, "test": "test_http_loaded_version_changes_only_after_restart_and_supports_rollback"}
+OBSERVATION {"event": "restarted_onto_B", "response": {"answer": "STUB ONLY: fixture-B", "generation_seconds": 0.012524750000011409, "model_id": "fixture-B", "output_tokens": 1, "queue_seconds": 5.000000555810402e-07, "request_id": "b67e32cc-94b2-45ab-b1e8-9eb9b8a52bf8", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547", "total_seconds": 0.01252525000006699}, "test": "test_http_loaded_version_changes_only_after_restart_and_supports_rollback"}
+OBSERVATION {"event": "rollback_and_restart_A", "response": {"answer": "STUB ONLY: fixture-A", "generation_seconds": 0.012512416999925335, "model_id": "fixture-A", "output_tokens": 1, "queue_seconds": 5.420000661615632e-07, "request_id": "9b8b71fa-b6b7-40d6-9391-baa712ea193c", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547", "total_seconds": 0.012512958999991497}, "test": "test_http_loaded_version_changes_only_after_restart_and_supports_rollback"}
+ok
+test_http_ready_and_generation_wait_for_actual_warmup (test_integration.ReleaseIntegration.test_http_ready_and_generation_wait_for_actual_warmup)
+Liveness is independent from readiness and does not permit early computation. ... OBSERVATION {"debug": {"calls": 0, "loaded_id": "fixture-A", "runtime_sha256": "bc7bd5a4806e2e0e3b8569666b251d6c59a8d8e01e37fc37bf95b534023ca547", "warmup_calls": 0, "warmup_finished": false}, "event": "during_warmup", "ready_status": 503, "test": "test_http_ready_and_generation_wait_for_actual_warmup"}
+ok
+test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes (test_integration.ReleaseIntegration.test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes)
+Each rejection uses a new workspace and a separate actual release process. ... OBSERVATION {"accepted_after_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "accepted_before_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "event": "report_decision", "exit_code": 1, "report": "report-incomplete.json", "test": "test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes"}
+OBSERVATION {"accepted_after_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "accepted_before_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "event": "report_decision", "exit_code": 1, "report": "report-A.json", "test": "test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes"}
+OBSERVATION {"accepted_after_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "accepted_before_sha256": "cfe9e0cff2ac7e67311ccfccd0260750ef5badcd6c3952b88939873c9a60a99a", "event": "report_decision", "exit_code": 1, "report": "report-reject.json", "test": "test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes"}
+ok
+test_release_is_idempotent_and_recovers_pointer_journal_failure (test_integration.ReleaseIntegration.test_release_is_idempotent_and_recovers_pointer_journal_failure)
+A repeated release and an interrupted pointer/journal write each emit one event. ... OBSERVATION {"attempts": 2, "event": "repeated_release", "publication_events": 1, "test": "test_release_is_idempotent_and_recovers_pointer_journal_failure"}
+OBSERVATION {"event": "new_evaluation_same_model", "publication_events": 2, "test": "test_release_is_idempotent_and_recovers_pointer_journal_failure"}
+OBSERVATION {"event": "new_runtime_same_model", "publication_events": 3, "test": "test_release_is_idempotent_and_recovers_pointer_journal_failure"}
+OBSERVATION {"crash_exit": 1, "event": "pointer_journal_recovery", "loaded_pointer": "fixture-B", "publication_events": 1, "test": "test_release_is_idempotent_and_recovers_pointer_journal_failure"}
+ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 5.270s
+
+OK

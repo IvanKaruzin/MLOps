@@ -1,0 +1,30 @@
+{
+  "scope": "Temporary copy of current release.py and byte-identical original 13 tests; production sources never changed; the copy was restored and removed.",
+  "command": ".venv/bin/python -B -m unittest test_release -v",
+  "cwd": "temporary isolated copy",
+  "injected_diff": "--- a/release.py\n+++ b/release.py\n@@ -33,7 +33,7 @@\n \n \n def cache_key(data_path: Path, config: dict) -> str:\n-    return cache_key_for_bytes(Path(data_path).read_bytes(), config)\n+    return cache_key_for_bytes(b'', config)\n \n \n def is_digest(value):\n",
+  "repository_sha256_before": {
+    "release.py": "39a84437d7b6ba16eedb5b6898b6892e7d12a57a9a9c5a8131b8a16ea9e48593",
+    "tests_hw8910/test_release.py": "03632e58fa10f8742a205ae04ecba956f7a7cd0a0cfb90fc7fa9d32d6f2c1d7e"
+  },
+  "repository_sha256_after": {
+    "release.py": "39a84437d7b6ba16eedb5b6898b6892e7d12a57a9a9c5a8131b8a16ea9e48593",
+    "tests_hw8910/test_release.py": "03632e58fa10f8742a205ae04ecba956f7a7cd0a0cfb90fc7fa9d32d6f2c1d7e"
+  },
+  "repository_unchanged": true,
+  "runs": {
+    "intentional-red": {
+      "exit_code": 1,
+      "log_sha256": "3287c75635cf897b5596642dea86f8fa13a0ce146ee17bee7f2297a771b215ae",
+      "release_sha256": "270fd17387a64e626d53e0f5ac0c6aa056f4da20c2603ca2304a1042a2475a59",
+      "tests_sha256": "03632e58fa10f8742a205ae04ecba956f7a7cd0a0cfb90fc7fa9d32d6f2c1d7e"
+    },
+    "restored-green": {
+      "exit_code": 0,
+      "log_sha256": "caa2509a209b50af6c5f789b56d36126ba18cc45daa0d48613d62f51f865e1f9",
+      "release_sha256": "39a84437d7b6ba16eedb5b6898b6892e7d12a57a9a9c5a8131b8a16ea9e48593",
+      "tests_sha256": "03632e58fa10f8742a205ae04ecba956f7a7cd0a0cfb90fc7fa9d32d6f2c1d7e"
+    }
+  },
+  "temporary_copy_removed": true
+}

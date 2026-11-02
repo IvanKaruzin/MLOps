@@ -1,0 +1,6 @@
+# Lightweight Prefect environment only. Model/API environment uses root uv.lock.
+# Prefect3.8.8 uses Body(min_items); keep its server off the model's FastAPI0.162.
+prefect==3.8.8
+fastapi==0.139.0
+uvicorn==0.54.0
+pydantic==2.13.5

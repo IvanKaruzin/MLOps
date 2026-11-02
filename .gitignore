@@ -1,6 +1,7 @@
 __pycache__/
 *.py[cod]
 .venv/
+.venv-prefect/
 .pytest_cache/
 .mypy_cache/
 docs/bench.json

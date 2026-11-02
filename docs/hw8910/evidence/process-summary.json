@@ -1,0 +1,35 @@
+{
+  "admission_identity_verified": true,
+  "flow_run_ids": [
+    "dfc089ca-37d7-48ab-a38f-9b43151a5809",
+    "a3a7977c-9ce1-40e7-8333-dd1aebe12507",
+    "3d018967-a984-44b8-9d1a-95d2eea9e7a3",
+    "e352b76c-b19c-4216-bfdd-edd25147aabb",
+    "6e13291e-fee9-445d-9d16-a8298a82badc",
+    "2332d3f6-6ed8-4255-a64d-eabdde4781ae",
+    "5d2b9e16-ca3b-4d03-bc3e-d875a395b1a4",
+    "f822785c-3b71-4883-84db-a2f9cf7f5afd",
+    "7e055947-1c5c-4159-8e35-0f33e034a673",
+    "e537e894-fa82-41fe-83db-bc0265cbabb9"
+  ],
+  "framework": "Prefect",
+  "input_and_config_invalidation_verified": true,
+  "model_execution": false,
+  "passed": true,
+  "pointer_journal_recovery_verified": true,
+  "prefect_version": "3.8.8",
+  "preparation_cache_verified": true,
+  "publication_idempotency_verified": true,
+  "rejection_preserves_pointer": true,
+  "server_stopped": true,
+  "source_commit": "5b8efbc",
+  "source_sha256": {
+    "flow.py": "299c9807dd885f99487b7598d6a8682d06797dbba58cf59005d60e3fd3594ad4",
+    "lab.py": "c45b5a6949aed2c10141af4747e31250d31984ecb96d7d7e3af304f618b40bd1",
+    "release.py": "39a84437d7b6ba16eedb5b6898b6892e7d12a57a9a9c5a8131b8a16ea9e48593"
+  },
+  "subprocess_runs": 12,
+  "synthetic": true,
+  "timestamp_utc": "2026-11-02T10:10:59.231442+00:00",
+  "workspace_removed": true
+}

@@ -1,0 +1,31 @@
+{
+  "model_id": "724f89d55d204ee1a24b6373fb6539dd",
+  "model_sha256": "4851e68acdc0edf549b58d22e043981898949de476daffd9c98621ce5c08fb2d",
+  "protocol_sha256": "59cf5865bd47bf3a9faa885832e0c22ba95b555354044d05a5371c5d3bb11ab0",
+  "golden_sha256": "1a726c9218aa0400e054293d481bb008071d3eb1acb00f46aa6b358fad07ada2",
+  "runtime_sha256": "1b23d07654b3cc6b742c72e0568b88fab94482ad01e1ad447600fb7cf4ac750c",
+  "status": "complete",
+  "passed": false,
+  "reason": "Не все обязательные behavioral-кейсы пройдены",
+  "evaluation_run_id": "ef925fe3d3cc4a5f881beea453e3a463",
+  "synthetic": false,
+  "metrics": {
+    "accuracy": 0.03333333333333333,
+    "format_rate": 0.8333333333333334
+  },
+  "quality_gate": {
+    "passed": false,
+    "reason": "Не все обязательные behavioral-кейсы пройдены"
+  },
+  "evidence_files": {
+    "metrics/baseline-eval.json": "0a34eea66bb66e89c7ef1cee22ae4cb8ec15f258793cfcf02b2d7bcf2016a657",
+    "metrics/candidate-eval.json": "cb596e92f3c1a44f358e90962066c2828e6869a36bd88a8f6a1eb8723ffe8aa4",
+    "metrics/baseline-outputs.json": "62c481b4b0bf7ee041004b392a5113361370d492c776d89795acc80fa3a323d2",
+    "metrics/candidate-outputs.json": "e8ffd0a70d43043bb5b4523995d316c69d22acc4a8ff7d485fa077e08be7108d",
+    "metrics/evaluation-models.json": "7f41a5b121e7edcd44c3d523faae4c98ca4e8cedcc377eb300bce92e64f16d94",
+    "metrics/eval-diff.json": "268b9b081271f19e54e224780d6182bd760def3e6f28d2551140af213d4b78af",
+    "evaluation/params.json": "b1bb16cc7a8e3f595cd176d5a85b2271eae493e9fa0c56d70a73ca18f79f3357",
+    "evaluation/baseline.json": "da0ace0ea269b2d9e5c0cad79ab54823d7bae8b4a65ece6446fa6adbbfed787e"
+  },
+  "training_run_id": "724f89d55d204ee1a24b6373fb6539dd"
+}

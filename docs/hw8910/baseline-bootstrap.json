@@ -1,0 +1,8 @@
+{
+  "basis": "initial_pinned_baseline_when_candidate_rejected",
+  "candidate_passed": false,
+  "accepted_model_id": "Qwen/Qwen3-0.6B@c1899de289a04d12100db370d81485cdf75e47ca",
+  "evaluation_run_id": "ef925fe3d3cc4a5f881beea453e3a463",
+  "accepted_sha256": "75fc86f5a08b26d9834890d83b5af4561610a9176d3447b19b545915f2851211",
+  "note": "Initial baseline, not a fabricated candidate PASS or champion"
+}

@@ -1,0 +1,95 @@
+{
+  "source_commit": "5b8efbc35db98f707204ff0d15c7f8f0d0fab3ac",
+  "source_path": "hw8910-broken",
+  "fixed_root": "/Users/imkaruzin/MLOps",
+  "starter_tests_sha256": "03632e58fa10f8742a205ae04ecba956f7a7cd0a0cfb90fc7fa9d32d6f2c1d7e",
+  "test_files_sha256": {
+    "tests_hw8910/test_release.py": "03632e58fa10f8742a205ae04ecba956f7a7cd0a0cfb90fc7fa9d32d6f2c1d7e",
+    "tests_hw8910/test_integration.py": "c30ae0989cd1b33bc4c411c685be63f510df89a6725f4908e6ea72db12e11c05",
+    "tests_hw8910/helpers.py": "4a0356c61cd816f2b90a29b41034f302dd21f0f9d7ef86375316649f69c44e68"
+  },
+  "tested_code_sha256": {
+    "seed": {
+      "release.py": "baab5c50ee29e6004a3623169ce3d851b7db61e45a7b4e35ccb049ebd0b2c7a5",
+      "lab.py": "63997fa68793e7731689c3410e391343324c83e4033193d553e62d367813dea9",
+      "service.py": "81f5a08c9e90d96a8150dc153b313eab251393e02d3cde2d2fb763143fccaac1"
+    },
+    "fixed": {
+      "release.py": "39a84437d7b6ba16eedb5b6898b6892e7d12a57a9a9c5a8131b8a16ea9e48593",
+      "lab.py": "c45b5a6949aed2c10141af4747e31250d31984ecb96d7d7e3af304f618b40bd1",
+      "service.py": "d83f0f8be587bdb007379497e82c6764dd8b916b4b8a407d7ff9e6ccee501ca3"
+    }
+  },
+  "same_test_files_for_both_versions": true,
+  "fixes_diff_sha256": "cbe1de92ee937fdbdb5038bf1968923a05ef36053787636451faede1ac199e4b",
+  "expected_regression_test_methods": [
+    "test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file",
+    "test_cache_survives_fresh_process_and_invalidates_content_and_config",
+    "test_http_invalid_requests_do_not_invoke_backend",
+    "test_http_loaded_version_changes_only_after_restart_and_supports_rollback",
+    "test_http_ready_and_generation_wait_for_actual_warmup",
+    "test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes",
+    "test_release_is_idempotent_and_recovers_pointer_journal_failure"
+  ],
+  "seed_regressions_proven": true,
+  "fixed_regressions_proven": true,
+  "suites": {
+    "seed-starter": {
+      "returncode": 1,
+      "tests": 13,
+      "failed_test_methods": [
+        "test_changed_bytes_at_same_path_invalidate_cache",
+        "test_every_preparation_setting_invalidates_cache",
+        "test_failed_atomic_replace_preserves_previous_bytes",
+        "test_incomplete_false_and_truthy_string_rejected",
+        "test_invalid_digest_and_schema_rejected",
+        "test_invalid_metric_rejected",
+        "test_key_ignores_path_and_mapping_order",
+        "test_missing_fields_rejected",
+        "test_report_binding_mismatch_rejected",
+        "test_runtime_change_with_stale_hash_rejected"
+      ],
+      "error_test_methods": [],
+      "assertion_failures": 54,
+      "infrastructure_failure": false,
+      "log_sha256": "0294b624df48eb38e4a51ea75c29c674c2b0d582018e9ae0ed5624ec911c097a"
+    },
+    "seed-integration": {
+      "returncode": 1,
+      "tests": 7,
+      "failed_test_methods": [
+        "test_atomic_replace_error_preserves_pointer_and_cleans_temporary_file",
+        "test_cache_survives_fresh_process_and_invalidates_content_and_config",
+        "test_http_invalid_requests_do_not_invoke_backend",
+        "test_http_loaded_version_changes_only_after_restart_and_supports_rollback",
+        "test_http_ready_and_generation_wait_for_actual_warmup",
+        "test_incomplete_foreign_and_rejected_reports_preserve_pointer_bytes",
+        "test_release_is_idempotent_and_recovers_pointer_journal_failure"
+      ],
+      "error_test_methods": [],
+      "assertion_failures": 17,
+      "infrastructure_failure": false,
+      "log_sha256": "956a855ffcc3fb7988bc8110d70b940b4b03ea592c6068dcc128fa7a764bc0c9"
+    },
+    "fixed-starter": {
+      "returncode": 0,
+      "tests": 13,
+      "failed_test_methods": [],
+      "error_test_methods": [],
+      "assertion_failures": 0,
+      "infrastructure_failure": false,
+      "log_sha256": "8dff1d45966c84ce53147db9fe25bbbdaf17c2ad22cfd7edf87e57cbbc8266ce"
+    },
+    "fixed-integration": {
+      "returncode": 0,
+      "tests": 7,
+      "failed_test_methods": [],
+      "error_test_methods": [],
+      "assertion_failures": 0,
+      "infrastructure_failure": false,
+      "log_sha256": "57fc94f82dc28d8e54b4b0f56cdba2e1736a8d603a621b2fb29a4051e1824c2d"
+    }
+  },
+  "backend_kind": "stub",
+  "real_model_loaded": false
+}

@@ -1,0 +1,93 @@
+{
+  "backend": "transformers",
+  "real_model_loaded": true,
+  "model_id": "Qwen/Qwen3-0.6B@c1899de289a04d12100db370d81485cdf75e47ca",
+  "runtime_sha256": "1b23d07654b3cc6b742c72e0568b88fab94482ad01e1ad447600fb7cf4ac750c",
+  "max_new_tokens": 96,
+  "warmup_completed_before_benchmark": true,
+  "batches": [
+    {
+      "concurrency": 1,
+      "n": 8,
+      "successes": 8,
+      "errors": 0,
+      "batch_wall_seconds": 3.3741004590001467,
+      "successful_requests_per_second": 2.3710023151980053,
+      "successful_mean_latency_seconds": 0.42169587500006855,
+      "successful_max_latency_seconds": 0.6454976249997344,
+      "error_mean_latency_seconds": null,
+      "error_max_latency_seconds": null,
+      "mean_queue_seconds": 1.1509999922054703e-06,
+      "mean_generation_seconds": 0.420586010375132,
+      "output_tokens": 167
+    },
+    {
+      "concurrency": 2,
+      "n": 8,
+      "successes": 8,
+      "errors": 0,
+      "batch_wall_seconds": 3.2410223750002842,
+      "successful_requests_per_second": 2.4683569177763847,
+      "successful_mean_latency_seconds": 0.7771769426249193,
+      "successful_max_latency_seconds": 1.115191083999889,
+      "error_mean_latency_seconds": null,
+      "error_max_latency_seconds": null,
+      "mean_queue_seconds": 0.3706252761248834,
+      "mean_generation_seconds": 0.4049271821251068,
+      "output_tokens": 167
+    }
+  ],
+  "same_input_ids": [
+    "movie-free-001",
+    "movie-free-002",
+    "movie-free-003",
+    "movie-free-004",
+    "movie-free-005",
+    "movie-free-006",
+    "movie-free-007",
+    "movie-free-008"
+  ],
+  "raw_requests": "docs/hw8910/requests.jsonl",
+  "invalid_request": {
+    "status": 422,
+    "body": {
+      "detail": "Use the fixed evaluated max_new_tokens"
+    },
+    "latency_seconds": 0.0008513339998899028
+  },
+  "saved_baseline_raw_parity": [
+    {
+      "id": "movie-free-001",
+      "matches_saved_baseline_raw": true
+    },
+    {
+      "id": "movie-free-002",
+      "matches_saved_baseline_raw": true
+    },
+    {
+      "id": "movie-free-003",
+      "matches_saved_baseline_raw": true
+    },
+    {
+      "id": "movie-free-004",
+      "matches_saved_baseline_raw": true
+    },
+    {
+      "id": "movie-free-005",
+      "matches_saved_baseline_raw": true
+    },
+    {
+      "id": "movie-free-006",
+      "matches_saved_baseline_raw": true
+    },
+    {
+      "id": "movie-free-007",
+      "matches_saved_baseline_raw": true
+    },
+    {
+      "id": "movie-free-008",
+      "matches_saved_baseline_raw": true
+    }
+  ],
+  "limitations": "Eight requests per mode; one generation lock; full-response latency, no p95/TTFT/ITL claim."
+}

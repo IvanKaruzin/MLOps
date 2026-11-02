@@ -1,0 +1,152 @@
+{
+  "passed": true,
+  "backend": "transformers",
+  "real_model_loaded": true,
+  "acceptance_basis": "initial_pinned_baseline_when_candidate_rejected",
+  "accepted_before_sha256": "75fc86f5a08b26d9834890d83b5af4561610a9176d3447b19b545915f2851211",
+  "accepted_after_sha256": "75fc86f5a08b26d9834890d83b5af4561610a9176d3447b19b545915f2851211",
+  "runtime_sha256": "1b23d07654b3cc6b742c72e0568b88fab94482ad01e1ad447600fb7cf4ac750c",
+  "model_id": "Qwen/Qwen3-0.6B@c1899de289a04d12100db370d81485cdf75e47ca",
+  "source_sha256": {
+    "service.py": "d83f0f8be587bdb007379497e82c6764dd8b916b4b8a407d7ff9e6ccee501ca3",
+    "hw8910/runtime.py": "62ae3acecef2baeecbff9be66447e0d09c7e4aa72914ebf0f875d2280a27c373"
+  },
+  "restart_verified": true,
+  "both_owned_services_stopped": true,
+  "runs": [
+    {
+      "iteration": 1,
+      "command": [
+        "/Users/imkaruzin/MLOps/.venv/bin/python",
+        "-B",
+        "/Users/imkaruzin/MLOps/service.py",
+        "--workspace",
+        "/Users/imkaruzin/MLOps/data/hw8910",
+        "--port",
+        "54345",
+        "--warmup-seconds",
+        "1",
+        "--backend",
+        "transformers"
+      ],
+      "process_id": 8498,
+      "ready_observations": [
+        {
+          "status": 503,
+          "body": {
+            "ready": false,
+            "model_id": null,
+            "runtime_sha256": null
+          }
+        },
+        {
+          "status": 200,
+          "body": {
+            "ready": true,
+            "model_id": "Qwen/Qwen3-0.6B@c1899de289a04d12100db370d81485cdf75e47ca",
+            "runtime_sha256": "1b23d07654b3cc6b742c72e0568b88fab94482ad01e1ad447600fb7cf4ac750c"
+          }
+        }
+      ],
+      "startup_seconds": 13.241444374999901,
+      "health": {
+        "status": 200,
+        "body": {
+          "alive": true,
+          "backend": "transformers"
+        }
+      },
+      "input_id": "movie-free-001",
+      "generation": {
+        "status": 200,
+        "client_latency_seconds": 0.34375024999985726,
+        "body": {
+          "answer": "{\"answer\": \"драма, история, фэнтези\"}",
+          "output_tokens": 17,
+          "request_id": "275961ea-f21d-4234-8914-6c8bd101fb2f",
+          "model_id": "Qwen/Qwen3-0.6B@c1899de289a04d12100db370d81485cdf75e47ca",
+          "runtime_sha256": "1b23d07654b3cc6b742c72e0568b88fab94482ad01e1ad447600fb7cf4ac750c",
+          "queue_seconds": 5.409999630501261e-07,
+          "generation_seconds": 0.3427982090001933,
+          "total_seconds": 0.34279875000015636
+        }
+      },
+      "invalid_request": {
+        "status": 422,
+        "body": {
+          "detail": "Use the fixed evaluated max_new_tokens"
+        }
+      },
+      "debug_status": 404,
+      "matches_saved_baseline_raw": true,
+      "server_exit_code": 0
+    },
+    {
+      "iteration": 2,
+      "command": [
+        "/Users/imkaruzin/MLOps/.venv/bin/python",
+        "-B",
+        "/Users/imkaruzin/MLOps/service.py",
+        "--workspace",
+        "/Users/imkaruzin/MLOps/data/hw8910",
+        "--port",
+        "54512",
+        "--warmup-seconds",
+        "1",
+        "--backend",
+        "transformers"
+      ],
+      "process_id": 8518,
+      "ready_observations": [
+        {
+          "status": 503,
+          "body": {
+            "ready": false,
+            "model_id": null,
+            "runtime_sha256": null
+          }
+        },
+        {
+          "status": 200,
+          "body": {
+            "ready": true,
+            "model_id": "Qwen/Qwen3-0.6B@c1899de289a04d12100db370d81485cdf75e47ca",
+            "runtime_sha256": "1b23d07654b3cc6b742c72e0568b88fab94482ad01e1ad447600fb7cf4ac750c"
+          }
+        }
+      ],
+      "startup_seconds": 13.781316666000066,
+      "health": {
+        "status": 200,
+        "body": {
+          "alive": true,
+          "backend": "transformers"
+        }
+      },
+      "input_id": "movie-free-001",
+      "generation": {
+        "status": 200,
+        "client_latency_seconds": 0.3544312499998341,
+        "body": {
+          "answer": "{\"answer\": \"драма, история, фэнтези\"}",
+          "output_tokens": 17,
+          "request_id": "df74d0b9-0e1c-49f8-bf64-bf7741740015",
+          "model_id": "Qwen/Qwen3-0.6B@c1899de289a04d12100db370d81485cdf75e47ca",
+          "runtime_sha256": "1b23d07654b3cc6b742c72e0568b88fab94482ad01e1ad447600fb7cf4ac750c",
+          "queue_seconds": 6.660000053670956e-07,
+          "generation_seconds": 0.3533662499999082,
+          "total_seconds": 0.35336691599991354
+        }
+      },
+      "invalid_request": {
+        "status": 422,
+        "body": {
+          "detail": "Use the fixed evaluated max_new_tokens"
+        }
+      },
+      "debug_status": 404,
+      "matches_saved_baseline_raw": true,
+      "server_exit_code": 0
+    }
+  ]
+}
