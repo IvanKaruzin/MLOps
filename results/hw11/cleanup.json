@@ -1,0 +1,22 @@
+{
+  "timestamp_utc": "2026-11-15T19:54:48.774126+00:00",
+  "command": [
+    ".venv-hw11/bin/python",
+    "-B",
+    "scripts/hw11.py",
+    "down",
+    "--delete-vm"
+  ],
+  "returncode": 0,
+  "stdout": "colima-mlops-hw11\ntime=\"2026-11-15T22:54:48+03:00\" level=info msg=\"Sending SIGKILL to the vz driver process 6608\"\ntime=\"2026-11-15T22:54:48+03:00\" level=info msg=\"Sending SIGKILL to the host agent process 6608\"\ntime=\"2026-11-15T22:54:48+03:00\" level=info msg=\"Removing *.pid *.sock *.tmp under `/Users/imkaruzin/.colima/_lima/colima-mlops-hw11`\"\ntime=\"2026-11-15T22:54:48+03:00\" level=info msg=\"Removing `/Users/imkaruzin/.colima/_lima/colima-mlops-hw11/ha.pid`\"\ntime=\"2026-11-15T22:54:48+03:00\" level=info msg=\"Removing `/Users/imkaruzin/.colima/_lima/colima-mlops-hw11/ha.sock`\"\ntime=\"2026-11-15T22:54:48+03:00\" level=info msg=\"Removing `/Users/imkaruzin/.colima/_lima/colima-mlops-hw11/ssh.sock`\"\ntime=\"2026-11-15T22:54:48+03:00\" level=info msg=\"Removing `/Users/imkaruzin/.colima/_lima/colima-mlops-hw11/vz.pid`\"\ntime=\"2026-11-15T22:54:48+03:00\" level=info msg=\"Deleted `colima-mlops-hw11` (`/Users/imkaruzin/.colima/_lima/colima-mlops-hw11`)\"\nRemoved HW11 cluster; other profiles and their volumes were not modified\n",
+  "stderr": "Deleting cluster \"mlops-hw11\" ...\nDeleted nodes: [\"mlops-hw11-control-plane\"]\ntime=\"2026-11-15T22:54:47+03:00\" level=info msg=\"deleting colima [profile=mlops-hw11]\"\ntime=\"2026-11-15T22:54:47+03:00\" level=info msg=\"deleting ...\" context=docker\ntime=\"2026-11-15T22:54:48+03:00\" level=info msg=done\n",
+  "profiles_after": "PROFILE       STATUS     ARCH       CPUS    MEMORY    DISK      RUNTIME    ADDRESS\nmlops-67      Stopped    aarch64    2       2GiB      100GiB    docker     \nmlops-hw67    Stopped    aarch64    2       2GiB      12GiB     docker     \n",
+  "docker_context_after": "colima-mlops-67",
+  "scope": "Only kind mlops-hw11 and Colima profile mlops-hw11; no global prune",
+  "passed": true,
+  "initial_verification_passed": false,
+  "docker_context_after_delete": "default",
+  "docker_context_restored": true,
+  "verified_at_utc": "2026-11-15T19:57:18.901722+00:00",
+  "note": "Colima deletion selected default; original context explicitly restored. Manager now preserves context in finally."
+}

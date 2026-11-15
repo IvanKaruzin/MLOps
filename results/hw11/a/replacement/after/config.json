@@ -1,0 +1,19 @@
+{
+  "run_id": "results/hw11/a/replacement/after",
+  "service": "10.244.0.44",
+  "epoch_utc": 1794768920.38587,
+  "duration_seconds": 1,
+  "schedule_sha256": "422e96b4c43996497d6faaa20a68754a4b62048ad45f97668eba97aac4844703",
+  "clients": {
+    "hw11-client-0": "10.244.0.31",
+    "hw11-client-1": "10.244.0.32",
+    "hw11-client-2": "10.244.0.33",
+    "hw11-client-3": "10.244.0.34"
+  },
+  "keep_alive": false,
+  "max_outstanding": 128,
+  "timeout_seconds": 45,
+  "measurement_started_utc": 1794768920.38587,
+  "measurement_ended_utc": 1794768921.391756,
+  "actual_phase_seconds": 1.0058860778808594
+}

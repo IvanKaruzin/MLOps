@@ -1,0 +1,31 @@
+replicas: 2
+image:
+  repository: mlops-hw11
+  tag: v1
+  pullPolicy: IfNotPresent
+modelVersion: A
+warmupSeconds: 20
+neverReady: false
+brokenProbes: false
+maxRunning: 1
+maxWaiting: 32
+queueTimeoutSeconds: 30
+cacheCapacity: 16
+hitIterations: 75000
+missIterations: 700000
+chunkIterations: 25000
+resources:
+  requests: {cpu: 250m, memory: 128Mi}
+  limits: {cpu: "1", memory: 256Mi}
+hpa:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 3
+  targetCPU: 70
+  scaleDownStabilizationSeconds: 30
+monitoring:
+  enabled: true
+  prometheusImage: prom/prometheus:v3.5.0
+  grafanaImage: grafana/grafana:12.1.1
+  kubeStateMetricsImage: registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.17.0
+  metricsServerImage: registry.k8s.io/metrics-server/metrics-server:v0.8.0

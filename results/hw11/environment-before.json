@@ -1,0 +1,252 @@
+{
+  "timestamp_utc": "2026-11-15T18:26:43.254927+00:00",
+  "stage": "before workload and monitoring images",
+  "host_disk": {
+    "total": 994662584320,
+    "used": 329492598784,
+    "free": 665169985536
+  },
+  "requested_vm": {
+    "cpus": 4,
+    "memory_gib": 6,
+    "disk_gib": 12
+  },
+  "note": "Colima has minimum 20GiB root disk; measured disk output is authoritative",
+  "tools": {
+    "kubectl": "v1.34.1",
+    "kind": "v0.30.0",
+    "helm": "v3.19.0",
+    "checksums_verified": true
+  },
+  "node": {
+    "apiVersion": "v1",
+    "items": [
+      {
+        "apiVersion": "v1",
+        "kind": "Node",
+        "metadata": {
+          "annotations": {
+            "node.alpha.kubernetes.io/ttl": "0",
+            "volumes.kubernetes.io/controller-managed-attach-detach": "true"
+          },
+          "creationTimestamp": "2026-11-15T18:23:45Z",
+          "labels": {
+            "beta.kubernetes.io/arch": "arm64",
+            "beta.kubernetes.io/os": "linux",
+            "kubernetes.io/arch": "arm64",
+            "kubernetes.io/hostname": "mlops-hw11-control-plane",
+            "kubernetes.io/os": "linux",
+            "node-role.kubernetes.io/control-plane": ""
+          },
+          "name": "mlops-hw11-control-plane",
+          "resourceVersion": "655",
+          "uid": "26a5b9ba-ca0c-442d-bbc8-5177ea1a5156"
+        },
+        "spec": {
+          "podCIDR": "10.244.0.0/24",
+          "podCIDRs": [
+            "10.244.0.0/24"
+          ],
+          "providerID": "kind://docker/mlops-hw11/mlops-hw11-control-plane"
+        },
+        "status": {
+          "addresses": [
+            {
+              "address": "172.18.0.2",
+              "type": "InternalIP"
+            },
+            {
+              "address": "mlops-hw11-control-plane",
+              "type": "Hostname"
+            }
+          ],
+          "allocatable": {
+            "cpu": "4",
+            "ephemeral-storage": "12276872Ki",
+            "hugepages-1Gi": "0",
+            "hugepages-2Mi": "0",
+            "hugepages-32Mi": "0",
+            "hugepages-64Ki": "0",
+            "memory": "6052128Ki",
+            "pods": "110"
+          },
+          "capacity": {
+            "cpu": "4",
+            "ephemeral-storage": "12276872Ki",
+            "hugepages-1Gi": "0",
+            "hugepages-2Mi": "0",
+            "hugepages-32Mi": "0",
+            "hugepages-64Ki": "0",
+            "memory": "6052128Ki",
+            "pods": "110"
+          },
+          "conditions": [
+            {
+              "lastHeartbeatTime": "2026-11-15T18:26:39Z",
+              "lastTransitionTime": "2026-11-15T18:23:44Z",
+              "message": "kubelet has sufficient memory available",
+              "reason": "KubeletHasSufficientMemory",
+              "status": "False",
+              "type": "MemoryPressure"
+            },
+            {
+              "lastHeartbeatTime": "2026-11-15T18:26:39Z",
+              "lastTransitionTime": "2026-11-15T18:23:44Z",
+              "message": "kubelet has no disk pressure",
+              "reason": "KubeletHasNoDiskPressure",
+              "status": "False",
+              "type": "DiskPressure"
+            },
+            {
+              "lastHeartbeatTime": "2026-11-15T18:26:39Z",
+              "lastTransitionTime": "2026-11-15T18:23:44Z",
+              "message": "kubelet has sufficient PID available",
+              "reason": "KubeletHasSufficientPID",
+              "status": "False",
+              "type": "PIDPressure"
+            },
+            {
+              "lastHeartbeatTime": "2026-11-15T18:26:39Z",
+              "lastTransitionTime": "2026-11-15T18:24:05Z",
+              "message": "kubelet is posting ready status",
+              "reason": "KubeletReady",
+              "status": "True",
+              "type": "Ready"
+            }
+          ],
+          "daemonEndpoints": {
+            "kubeletEndpoint": {
+              "Port": 10250
+            }
+          },
+          "features": {
+            "supplementalGroupsPolicy": true
+          },
+          "images": [
+            {
+              "names": [
+                "registry.k8s.io/etcd:3.6.4-0"
+              ],
+              "sizeBytes": 98207481
+            },
+            {
+              "names": [
+                "registry.k8s.io/kube-apiserver-arm64:v1.34.0",
+                "registry.k8s.io/kube-apiserver:v1.34.0"
+              ],
+              "sizeBytes": 84813564
+            },
+            {
+              "names": [
+                "registry.k8s.io/kube-proxy-arm64:v1.34.0",
+                "registry.k8s.io/kube-proxy:v1.34.0"
+              ],
+              "sizeBytes": 75936457
+            },
+            {
+              "names": [
+                "registry.k8s.io/kube-controller-manager-arm64:v1.34.0",
+                "registry.k8s.io/kube-controller-manager:v1.34.0"
+              ],
+              "sizeBytes": 72623714
+            },
+            {
+              "names": [
+                "registry.k8s.io/kube-scheduler-arm64:v1.34.0",
+                "registry.k8s.io/kube-scheduler:v1.34.0"
+              ],
+              "sizeBytes": 51586658
+            },
+            {
+              "names": [
+                "docker.io/kindest/kindnetd:v20250512-df8de77b"
+              ],
+              "sizeBytes": 40636774
+            },
+            {
+              "names": [
+                "registry.k8s.io/coredns/coredns:v1.12.1"
+              ],
+              "sizeBytes": 20392204
+            },
+            {
+              "names": [
+                "docker.io/kindest/local-path-provisioner:v20250214-acbabc1a"
+              ],
+              "sizeBytes": 20222523
+            },
+            {
+              "names": [
+                "docker.io/kindest/local-path-helper:v20241212-8ac705d0"
+              ],
+              "sizeBytes": 2954522
+            },
+            {
+              "names": [
+                "registry.k8s.io/pause:3.10"
+              ],
+              "sizeBytes": 267933
+            }
+          ],
+          "nodeInfo": {
+            "architecture": "arm64",
+            "bootID": "8505a1b3-5b19-4780-915f-cd7daa49d1bc",
+            "containerRuntimeVersion": "containerd://2.1.3",
+            "kernelVersion": "6.8.0-117-generic",
+            "kubeProxyVersion": "",
+            "kubeletVersion": "v1.34.0",
+            "machineID": "f479e2df67594df493eac56b25eac125",
+            "operatingSystem": "linux",
+            "osImage": "Debian GNU/Linux 12 (bookworm)",
+            "systemUUID": "18fa1012-5e42-4e7a-85a3-a958d0d045bf"
+          },
+          "runtimeHandlers": [
+            {
+              "features": {
+                "recursiveReadOnlyMounts": true,
+                "userNamespaces": true
+              },
+              "name": ""
+            },
+            {
+              "features": {
+                "recursiveReadOnlyMounts": true,
+                "userNamespaces": true
+              },
+              "name": "test-handler"
+            },
+            {
+              "features": {
+                "recursiveReadOnlyMounts": true,
+                "userNamespaces": true
+              },
+              "name": "runc"
+            }
+          ]
+        }
+      }
+    ],
+    "kind": "List",
+    "metadata": {
+      "resourceVersion": ""
+    }
+  },
+  "docker": {
+    "ServerVersion": "29.5.2",
+    "NCPU": 4,
+    "MemTotal": 6197379072,
+    "Driver": "overlayfs",
+    "Architecture": "aarch64",
+    "OperatingSystem": "Ubuntu 24.04.4 LTS"
+  },
+  "disk": {
+    "returncode": 0,
+    "stdout": "TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE\nImages          1         1         1.482GB   0B (0%)\nContainers      1         1         3.609MB   0B (0%)\nLocal Volumes   1         1         1.325GB   0B (0%)\nBuild Cache     0         0         0B        0B\n",
+    "stderr": ""
+  },
+  "vm": {
+    "returncode": 0,
+    "stdout": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/root        19G  864M   18G   5% /\n/dev/vdb1        12G  2.7G  8.5G  24% /var/lib/docker\n",
+    "stderr": ""
+  }
+}

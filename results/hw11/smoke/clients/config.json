@@ -1,0 +1,19 @@
+{
+  "run_id": "results/hw11/smoke/clients",
+  "service": "hw11-api",
+  "epoch_utc": 1794768024.568553,
+  "duration_seconds": 4,
+  "schedule_sha256": "ea9a2ffb0681d1234b5032a0aca0010b696b617d778fb4e0c158aa9bc4109dd7",
+  "clients": {
+    "hw11-client-0": "10.244.0.15",
+    "hw11-client-1": "10.244.0.16",
+    "hw11-client-2": "10.244.0.17",
+    "hw11-client-3": "10.244.0.18"
+  },
+  "keep_alive": false,
+  "max_outstanding": 128,
+  "timeout_seconds": 45,
+  "measurement_started_utc": 1794768024.568553,
+  "measurement_ended_utc": 1794768028.574465,
+  "actual_phase_seconds": 4.0059120655059814
+}

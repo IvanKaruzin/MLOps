@@ -1,0 +1,19 @@
+{
+  "run_id": "results/hw11/a/drain-proof/background",
+  "service": "hw11-api",
+  "epoch_utc": 1794772225.047423,
+  "duration_seconds": 60,
+  "schedule_sha256": "791d41ff71f5fe247dc3e6913073cd62b15a037dbcfd2513de2c67a5bebf0f10",
+  "clients": {
+    "hw11-client-0": "10.244.0.31",
+    "hw11-client-1": "10.244.0.32",
+    "hw11-client-2": "10.244.0.33",
+    "hw11-client-3": "10.244.0.34"
+  },
+  "keep_alive": false,
+  "max_outstanding": 128,
+  "timeout_seconds": 45,
+  "measurement_started_utc": 1794772225.047423,
+  "measurement_ended_utc": 1794772285.053291,
+  "actual_phase_seconds": 60.00586819648743
+}

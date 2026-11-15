@@ -1,0 +1,147 @@
+{{- $artifact := printf "files/model-%s.json" (lower .Values.modelVersion) -}}
+{{- $sha := .Files.Get $artifact | sha256sum -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hw11-artifacts
+immutable: true
+data:
+  model-a.json: |
+{{ .Files.Get "files/model-a.json" | indent 4 }}
+  model-b.json: |
+{{ .Files.Get "files/model-b.json" | indent 4 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hw11-runtime
+data:
+  MODEL_VERSION: {{ .Values.modelVersion | quote }}
+  ARTIFACT_PATH: {{ printf "/artifacts/model-%s.json" (lower .Values.modelVersion) | quote }}
+  ARTIFACT_SHA256: {{ $sha | quote }}
+  WARMUP_SECONDS: {{ .Values.warmupSeconds | quote }}
+  NEVER_READY: {{ .Values.neverReady | quote }}
+  BROKEN_PROBES: {{ .Values.brokenProbes | quote }}
+  MAX_RUNNING: {{ .Values.maxRunning | quote }}
+  MAX_WAITING: {{ .Values.maxWaiting | quote }}
+  QUEUE_TIMEOUT_SECONDS: {{ .Values.queueTimeoutSeconds | quote }}
+  CACHE_CAPACITY: {{ .Values.cacheCapacity | quote }}
+  HIT_ITERATIONS: {{ .Values.hitIterations | quote }}
+  MISS_ITERATIONS: {{ .Values.missIterations | quote }}
+  CHUNK_ITERATIONS: {{ .Values.chunkIterations | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hw11-api
+  labels: {app: hw11-api}
+spec:
+{{- if not .Values.hpa.enabled }}
+  replicas: {{ .Values.replicas }}
+{{- end }}
+  minReadySeconds: 2
+  progressDeadlineSeconds: 180
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels: {app: hw11-api}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxSurge: 1, maxUnavailable: 0}
+  template:
+    metadata:
+      labels: {app: hw11-api}
+      annotations:
+        checksum/config: {{ list .Values.modelVersion .Values.warmupSeconds .Values.neverReady .Values.brokenProbes .Values.maxRunning .Values.maxWaiting .Values.queueTimeoutSeconds .Values.cacheCapacity .Values.hitIterations .Values.missIterations .Values.chunkIterations $sha | toJson | sha256sum }}
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+    spec:
+      terminationGracePeriodSeconds: 60
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: api
+          image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports: [{name: http, containerPort: 8000}]
+          envFrom: [{configMapRef: {name: hw11-runtime}}]
+          env:
+            - name: POD_NAME
+              valueFrom: {fieldRef: {fieldPath: metadata.name}}
+          resources:
+{{ .Values.resources | toYaml | indent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          startupProbe:
+            httpGet: {path: /startup, port: http}
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 90
+          readinessProbe:
+            httpGet: {path: /ready, port: http}
+            periodSeconds: 1
+            timeoutSeconds: 1
+            failureThreshold: 1
+          livenessProbe:
+            httpGet: {path: /health, port: http}
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+          lifecycle:
+            preStop:
+              exec:
+                command: [python, -c, "import time,urllib.request; urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:8000/drain',data=b'',method='POST'),timeout=2).read(); time.sleep(5)"]
+          volumeMounts:
+            - {name: artifacts, mountPath: /artifacts, readOnly: true}
+            - {name: tmp, mountPath: /tmp}
+      volumes:
+        - name: artifacts
+          configMap: {name: hw11-artifacts}
+        - name: tmp
+          emptyDir: {sizeLimit: 16Mi}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: hw11-api}
+spec:
+  selector: {app: hw11-api}
+  ports: [{name: http, port: 8000, targetPort: http}]
+  sessionAffinity: None
+---
+apiVersion: v1
+kind: Service
+metadata: {name: hw11-affinity}
+spec:
+  selector: {app: hw11-api}
+  ports: [{name: http, port: 8000, targetPort: http}]
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP: {timeoutSeconds: 10800}
+{{- if .Values.hpa.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: {name: hw11-api}
+spec:
+  scaleTargetRef: {apiVersion: apps/v1, kind: Deployment, name: hw11-api}
+  minReplicas: {{ .Values.hpa.minReplicas }}
+  maxReplicas: {{ .Values.hpa.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target: {type: Utilization, averageUtilization: {{ .Values.hpa.targetCPU }}}
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies: [{type: Pods, value: 1, periodSeconds: 15}]
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.hpa.scaleDownStabilizationSeconds }}
+      policies: [{type: Pods, value: 1, periodSeconds: 15}]
+{{- end }}

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: mlops-hw11
+description: Observable CPU inference simulator for Kubernetes experiments
+version: 1.0.0
+appVersion: "1.0.0"
+type: application

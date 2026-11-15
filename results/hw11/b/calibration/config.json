@@ -1,0 +1,19 @@
+{
+  "run_id": "results/hw11/b/calibration",
+  "service": "hw11-affinity",
+  "epoch_utc": 1794769056.3833,
+  "duration_seconds": 15,
+  "schedule_sha256": "44fc1a7f478c8d64dca9db7dc1b341cde156451c521740df68ef212b77f3befe",
+  "clients": {
+    "hw11-client-0": "10.244.0.31",
+    "hw11-client-1": "10.244.0.32",
+    "hw11-client-2": "10.244.0.33",
+    "hw11-client-3": "10.244.0.34"
+  },
+  "keep_alive": false,
+  "max_outstanding": 128,
+  "timeout_seconds": 45,
+  "measurement_started_utc": 1794769056.3833,
+  "measurement_ended_utc": 1794769079.033535,
+  "actual_phase_seconds": 22.650234937667847
+}

@@ -1,0 +1,31 @@
+{
+  "utc": 1794770139.856906,
+  "reset": {
+    "hw11-api-b967f4df8-fw5rn": {
+      "ready": true,
+      "warmup_finished": true,
+      "draining": false,
+      "running": 0,
+      "waiting": 0,
+      "cache_size": 0,
+      "model_version": "A",
+      "artifact_sha256": "0cddfaca828bf0d8e66df2f716bf81c3abec759ea9806c5a83dc1579ca8cd9fa",
+      "error": null,
+      "backend_mode": "simulated",
+      "pod": "hw11-api-b967f4df8-fw5rn"
+    },
+    "hw11-api-b967f4df8-x2zsr": {
+      "ready": true,
+      "warmup_finished": true,
+      "draining": false,
+      "running": 0,
+      "waiting": 0,
+      "cache_size": 0,
+      "model_version": "A",
+      "artifact_sha256": "0cddfaca828bf0d8e66df2f716bf81c3abec759ea9806c5a83dc1579ca8cd9fa",
+      "error": null,
+      "backend_mode": "simulated",
+      "pod": "hw11-api-b967f4df8-x2zsr"
+    }
+  }
+}

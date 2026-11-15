@@ -1,0 +1,16 @@
+groups:
+  - name: hw11-service
+    interval: 5s
+    rules:
+      - alert: HW11HighLatency
+        expr: histogram_quantile(0.95, sum by (le) (rate(hw11_ttfc_seconds_bucket[30s]))) > 0.8 and sum(increase(hw11_ttfc_seconds_count[30s])) >= 10
+        for: 10s
+        labels: {severity: warning}
+        annotations:
+          summary: "Simulated backend p95 TTFC exceeds 0.8s with at least 10 successful observations in 30s"
+      - alert: HW11RejectionRatio
+        expr: sum(rate(hw11_requests_total{outcome="rejected"}[30s])) / sum(rate(hw11_requests_total[30s])) > 0.05 and sum(increase(hw11_requests_total[30s])) >= 20
+        for: 10s
+        labels: {severity: warning}
+        annotations:
+          summary: "More than 5% of terminal requests rejected with at least 20 terminal observations in 30s"

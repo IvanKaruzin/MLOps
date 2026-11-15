@@ -1,0 +1,109 @@
+{
+  "request": {
+    "id": "forced-stream",
+    "attempt_id": "a-forced-stream",
+    "offset_seconds": 0,
+    "payload": {
+      "request_id": "a-forced-stream",
+      "session_id": "forced",
+      "prompt": "forced stream",
+      "max_chunks": 24,
+      "chunk_delay_seconds": 1
+    },
+    "planned_utc": 1794768346.714701,
+    "sent_utc": 1794768346.714807,
+    "sent_monotonic": 2821.104295708,
+    "send_lag_seconds": 0.00010609626770019531,
+    "status": 200,
+    "chunks": 1,
+    "final_marker": false,
+    "first_chunk_monotonic": 2822.233395,
+    "first_chunk_utc": 1794768347.8439429,
+    "error": null,
+    "inter_chunk_seconds": [],
+    "pod": "hw11-api-7d8cf8c48b-kdgm6",
+    "model_version": "A",
+    "artifact_sha256": "0cddfaca828bf0d8e66df2f716bf81c3abec759ea9806c5a83dc1579ca8cd9fa",
+    "backend_mode": "simulated",
+    "queue_seconds": null,
+    "cache_hit": null,
+    "text": "SIMULATED A: forced stream",
+    "end_monotonic": 2824.145567583,
+    "end_utc": 1794768349.75617,
+    "full_seconds": 3.041271874999893,
+    "ttfc_seconds": 1.129099292000319,
+    "inter_chunk_latency_seconds": null,
+    "outcome": "interrupted"
+  },
+  "kill_utc": 1794768348.717982,
+  "kill_exit": 0,
+  "kill_command": [
+    "docker",
+    "--context",
+    "colima-mlops-hw11",
+    "exec",
+    "mlops-hw11-control-plane",
+    "ctr",
+    "--namespace",
+    "k8s.io",
+    "tasks",
+    "kill",
+    "--signal",
+    "SIGKILL",
+    "570460d70ba61414e06ce2ca8fb6c5055c2cbde5dce7c9725a9c6bf561421edf"
+  ],
+  "kill_stderr": "",
+  "container_id": "570460d70ba61414e06ce2ca8fb6c5055c2cbde5dce7c9725a9c6bf561421edf",
+  "old_container_status": [
+    {
+      "allocatedResources": {
+        "cpu": "250m",
+        "memory": "128Mi"
+      },
+      "containerID": "containerd://570460d70ba61414e06ce2ca8fb6c5055c2cbde5dce7c9725a9c6bf561421edf",
+      "image": "docker.io/library/mlops-hw11:v1",
+      "imageID": "sha256:da29a03ea76e02bad1495359744b35d96e09b09999db0da7ce7ba2e8eca31d15",
+      "lastState": {},
+      "name": "api",
+      "ready": true,
+      "resources": {
+        "limits": {
+          "cpu": "1",
+          "memory": "256Mi"
+        },
+        "requests": {
+          "cpu": "250m",
+          "memory": "128Mi"
+        }
+      },
+      "restartCount": 0,
+      "started": true,
+      "state": {
+        "running": {
+          "startedAt": "2026-11-15T18:44:25Z"
+        }
+      },
+      "user": {
+        "linux": {
+          "gid": 10001,
+          "supplementalGroups": [
+            10001
+          ],
+          "uid": 10001
+        }
+      },
+      "volumeMounts": [
+        {
+          "mountPath": "/artifacts",
+          "name": "artifacts",
+          "readOnly": true,
+          "recursiveReadOnly": "Disabled"
+        },
+        {
+          "mountPath": "/tmp",
+          "name": "tmp"
+        }
+      ]
+    }
+  ]
+}

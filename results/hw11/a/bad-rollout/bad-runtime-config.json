@@ -1,0 +1,33 @@
+{
+  "apiVersion": "v1",
+  "data": {
+    "ARTIFACT_PATH": "/artifacts/model-b.json",
+    "ARTIFACT_SHA256": "5a6d02077bb41ec1462987193260730e4a948d9feb7391c406ef78b98e33a7b6",
+    "BROKEN_PROBES": "false",
+    "CACHE_CAPACITY": "16",
+    "CHUNK_ITERATIONS": "25000",
+    "HIT_ITERATIONS": "75000",
+    "MAX_RUNNING": "1",
+    "MAX_WAITING": "32",
+    "MISS_ITERATIONS": "700000",
+    "MODEL_VERSION": "B",
+    "NEVER_READY": "true",
+    "QUEUE_TIMEOUT_SECONDS": "30",
+    "WARMUP_SECONDS": "20"
+  },
+  "kind": "ConfigMap",
+  "metadata": {
+    "annotations": {
+      "meta.helm.sh/release-name": "hw11",
+      "meta.helm.sh/release-namespace": "hw11"
+    },
+    "creationTimestamp": "2026-11-15T18:34:51Z",
+    "labels": {
+      "app.kubernetes.io/managed-by": "Helm"
+    },
+    "name": "hw11-runtime",
+    "namespace": "hw11",
+    "resourceVersion": "4869",
+    "uid": "23594c25-4ca1-463a-b758-d580d4cd4b50"
+  }
+}

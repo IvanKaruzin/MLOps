@@ -1,0 +1,19 @@
+{
+  "run_id": "results/hw11/b/clientip/uniform/run-3",
+  "service": "hw11-affinity",
+  "epoch_utc": 1794770149.2908092,
+  "duration_seconds": 120.0,
+  "schedule_sha256": "3552e1d87e7d7cb99529cf55467ec6ce126d9fba6f91b69e100f4d6d627b56c8",
+  "clients": {
+    "hw11-client-0": "10.244.0.31",
+    "hw11-client-1": "10.244.0.32",
+    "hw11-client-2": "10.244.0.33",
+    "hw11-client-3": "10.244.0.34"
+  },
+  "keep_alive": false,
+  "max_outstanding": 128,
+  "timeout_seconds": 45,
+  "measurement_started_utc": 1794770149.2908092,
+  "measurement_ended_utc": 1794770269.296156,
+  "actual_phase_seconds": 120.00534677505493
+}

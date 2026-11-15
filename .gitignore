@@ -27,3 +27,5 @@ mlartifacts/
 *.db
 *.db-shm
 *.db-wal
+
+.venv-hw11/

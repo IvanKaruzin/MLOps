@@ -1,0 +1,570 @@
+{
+  "timestamp_utc": "2026-11-15T18:39:58.844778+00:00",
+  "helm": "deployed revision1",
+  "helm_lint": "PASS",
+  "helm_server_dry_run_with_hpa": "PASS",
+  "new_venv_tests": "25 PASS",
+  "source_sha256": {
+    "service.py": "c07958d648e5eeb41f417d54df5f4b765ba5ec9425403dc2b7abf87f42e8d5b7",
+    "hw11/__init__.py": "18dea951d6d59dcee6262159871e0864671b77c71a6c88e1763abe414de390c5",
+    "hw11/app.py": "63049f13dc979e73eb37c1c95ae0f24511541cee44331e45a465ad29e3a81bb1",
+    "hw11/backend.py": "d31aaa51378a870ed651816f88cc7e977071855bae38e380cf75a8b851c0f52a",
+    "hw11/client.py": "6738af54f53bc9c14da633fbca10ee042e0c1a0740f5549bb6f511d4504a9512",
+    "hw11/metrics.py": "5ba37fb1c8d0ca73a821457f4c3a99969f627b5fa80edafa4a7d467c50f1b35e",
+    "requirements-hw11.lock": "b907340c50c4a7792cc776852cc3a3e256590446b7fb688dc51db2484a1f53c1"
+  },
+  "image": {
+    "id": "sha256:c461dd226f2b1deefac4657f7f3468e167a3b63384d939aa0dbe3449f32728e0",
+    "size": 51702058,
+    "digests": [
+      "mlops-hw11@sha256:c461dd226f2b1deefac4657f7f3468e167a3b63384d939aa0dbe3449f32728e0"
+    ]
+  },
+  "pods": [
+    {
+      "name": "hw11-api-7d8cf8c48b-bpc4h",
+      "deleting": null,
+      "images": [
+        {
+          "name": "api",
+          "image": "docker.io/library/mlops-hw11:v1",
+          "imageID": "sha256:da29a03ea76e02bad1495359744b35d96e09b09999db0da7ce7ba2e8eca31d15",
+          "ready": true,
+          "restartCount": 0
+        }
+      ]
+    },
+    {
+      "name": "hw11-api-7d8cf8c48b-dncvn",
+      "deleting": null,
+      "images": [
+        {
+          "name": "api",
+          "image": "docker.io/library/mlops-hw11:v1",
+          "imageID": "sha256:da29a03ea76e02bad1495359744b35d96e09b09999db0da7ce7ba2e8eca31d15",
+          "ready": true,
+          "restartCount": 0
+        }
+      ]
+    },
+    {
+      "name": "hw11-grafana-77985fdddc-pmbqs",
+      "deleting": null,
+      "images": [
+        {
+          "name": "grafana",
+          "image": "docker.io/grafana/grafana:12.1.1",
+          "imageID": "docker.io/grafana/grafana@sha256:a1701c2180249361737a99a01bc770db39381640e4d631825d38ff4535efa47d",
+          "ready": true,
+          "restartCount": 0
+        }
+      ]
+    },
+    {
+      "name": "hw11-kube-state-metrics-65b494694-nlmj4",
+      "deleting": null,
+      "images": [
+        {
+          "name": "kube-state-metrics",
+          "image": "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.17.0",
+          "imageID": "registry.k8s.io/kube-state-metrics/kube-state-metrics@sha256:2bbc915567334b13632bf62c0a97084aff72a36e13c4dabd5f2f11c898c5bacd",
+          "ready": true,
+          "restartCount": 0
+        }
+      ]
+    },
+    {
+      "name": "hw11-metrics-server-7cb976c7b9-2gxrw",
+      "deleting": null,
+      "images": [
+        {
+          "name": "metrics-server",
+          "image": "registry.k8s.io/metrics-server/metrics-server:v0.8.0",
+          "imageID": "registry.k8s.io/metrics-server/metrics-server@sha256:89258156d0e9af60403eafd44da9676fd66f600c7934d468ccc17e42b199aee2",
+          "ready": true,
+          "restartCount": 0
+        }
+      ]
+    },
+    {
+      "name": "hw11-prometheus-f445fb876-82kj4",
+      "deleting": null,
+      "images": [
+        {
+          "name": "prometheus",
+          "image": "docker.io/prom/prometheus:v3.5.0",
+          "imageID": "docker.io/prom/prometheus@sha256:63805ebb8d2b3920190daf1cb14a60871b16fd38bed42b857a3182bc621f4996",
+          "ready": true,
+          "restartCount": 0
+        }
+      ]
+    }
+  ],
+  "resource_metrics_api": {
+    "kind": "PodMetricsList",
+    "apiVersion": "metrics.k8s.io/v1beta1",
+    "metadata": {},
+    "items": [
+      {
+        "metadata": {
+          "name": "hw11-api-86c95ddff8-7mrvh",
+          "namespace": "hw11",
+          "creationTimestamp": "2026-11-15T18:38:05Z",
+          "labels": {
+            "app": "hw11-api",
+            "pod-template-hash": "86c95ddff8"
+          }
+        },
+        "timestamp": "2026-11-15T18:37:43Z",
+        "window": "13.827s",
+        "containers": [
+          {
+            "name": "api",
+            "usage": {
+              "cpu": "5482968n",
+              "memory": "38420Ki"
+            }
+          }
+        ]
+      },
+      {
+        "metadata": {
+          "name": "hw11-api-86c95ddff8-qq7bv",
+          "namespace": "hw11",
+          "creationTimestamp": "2026-11-15T18:38:05Z",
+          "labels": {
+            "app": "hw11-api",
+            "pod-template-hash": "86c95ddff8"
+          }
+        },
+        "timestamp": "2026-11-15T18:37:40Z",
+        "window": "14.246s",
+        "containers": [
+          {
+            "name": "api",
+            "usage": {
+              "cpu": "5842201n",
+              "memory": "38396Ki"
+            }
+          }
+        ]
+      },
+      {
+        "metadata": {
+          "name": "hw11-grafana-77985fdddc-pmbqs",
+          "namespace": "hw11",
+          "creationTimestamp": "2026-11-15T18:38:05Z",
+          "labels": {
+            "app": "hw11-grafana",
+            "pod-template-hash": "77985fdddc"
+          }
+        },
+        "timestamp": "2026-11-15T18:37:39Z",
+        "window": "11.793s",
+        "containers": [
+          {
+            "name": "grafana",
+            "usage": {
+              "cpu": "3927584n",
+              "memory": "99468Ki"
+            }
+          }
+        ]
+      },
+      {
+        "metadata": {
+          "name": "hw11-kube-state-metrics-65b494694-nlmj4",
+          "namespace": "hw11",
+          "creationTimestamp": "2026-11-15T18:38:05Z",
+          "labels": {
+            "app": "hw11-kube-state-metrics",
+            "pod-template-hash": "65b494694"
+          }
+        },
+        "timestamp": "2026-11-15T18:37:45Z",
+        "window": "12.234s",
+        "containers": [
+          {
+            "name": "kube-state-metrics",
+            "usage": {
+              "cpu": "739578n",
+              "memory": "12308Ki"
+            }
+          }
+        ]
+      },
+      {
+        "metadata": {
+          "name": "hw11-metrics-server-7cb976c7b9-2gxrw",
+          "namespace": "hw11",
+          "creationTimestamp": "2026-11-15T18:38:05Z",
+          "labels": {
+            "app": "hw11-metrics-server",
+            "pod-template-hash": "7cb976c7b9"
+          }
+        },
+        "timestamp": "2026-11-15T18:37:40Z",
+        "window": "10.156s",
+        "containers": [
+          {
+            "name": "metrics-server",
+            "usage": {
+              "cpu": "2981094n",
+              "memory": "18360Ki"
+            }
+          }
+        ]
+      },
+      {
+        "metadata": {
+          "name": "hw11-prometheus-f445fb876-82kj4",
+          "namespace": "hw11",
+          "creationTimestamp": "2026-11-15T18:38:05Z",
+          "labels": {
+            "app": "hw11-prometheus",
+            "pod-template-hash": "f445fb876"
+          }
+        },
+        "timestamp": "2026-11-15T18:37:38Z",
+        "window": "27.364s",
+        "containers": [
+          {
+            "name": "prometheus",
+            "usage": {
+              "cpu": "4444014n",
+              "memory": "35876Ki"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "observability": {
+    "targets": {
+      "status": "success",
+      "data": {
+        "activeTargets": [
+          {
+            "discoveredLabels": {
+              "__address__": "10.244.0.11:8000",
+              "__meta_kubernetes_namespace": "hw11",
+              "__meta_kubernetes_pod_annotation_checksum_config": "e30f77d742f3b91d2fdcfbd1330f808c65a6ba5948c837eab705c46c400beba7",
+              "__meta_kubernetes_pod_annotation_kubectl_kubernetes_io_restartedAt": "2026-11-15T21:36:28+03:00",
+              "__meta_kubernetes_pod_annotation_prometheus_io_port": "8000",
+              "__meta_kubernetes_pod_annotation_prometheus_io_scrape": "true",
+              "__meta_kubernetes_pod_annotationpresent_checksum_config": "true",
+              "__meta_kubernetes_pod_annotationpresent_kubectl_kubernetes_io_restartedAt": "true",
+              "__meta_kubernetes_pod_annotationpresent_prometheus_io_port": "true",
+              "__meta_kubernetes_pod_annotationpresent_prometheus_io_scrape": "true",
+              "__meta_kubernetes_pod_container_id": "containerd://59c407b48933b77f1f48f9196686a04866383bf2983f20d7210307d1438e62a9",
+              "__meta_kubernetes_pod_container_image": "mlops-hw11:v1",
+              "__meta_kubernetes_pod_container_init": "false",
+              "__meta_kubernetes_pod_container_name": "api",
+              "__meta_kubernetes_pod_container_port_name": "http",
+              "__meta_kubernetes_pod_container_port_number": "8000",
+              "__meta_kubernetes_pod_container_port_protocol": "TCP",
+              "__meta_kubernetes_pod_controller_kind": "ReplicaSet",
+              "__meta_kubernetes_pod_controller_name": "hw11-api-86c95ddff8",
+              "__meta_kubernetes_pod_host_ip": "172.18.0.2",
+              "__meta_kubernetes_pod_ip": "10.244.0.11",
+              "__meta_kubernetes_pod_label_app": "hw11-api",
+              "__meta_kubernetes_pod_label_pod_template_hash": "86c95ddff8",
+              "__meta_kubernetes_pod_labelpresent_app": "true",
+              "__meta_kubernetes_pod_labelpresent_pod_template_hash": "true",
+              "__meta_kubernetes_pod_name": "hw11-api-86c95ddff8-7mrvh",
+              "__meta_kubernetes_pod_node_name": "mlops-hw11-control-plane",
+              "__meta_kubernetes_pod_phase": "Running",
+              "__meta_kubernetes_pod_ready": "true",
+              "__meta_kubernetes_pod_uid": "23b82ee4-8dbb-41b2-83c3-552ff0934828",
+              "__metrics_path__": "/metrics",
+              "__scheme__": "http",
+              "__scrape_interval__": "2s",
+              "__scrape_timeout__": "2s",
+              "job": "hw11-api"
+            },
+            "labels": {
+              "instance": "10.244.0.11:8000",
+              "job": "hw11-api",
+              "namespace": "hw11",
+              "pod": "hw11-api-86c95ddff8-7mrvh"
+            },
+            "scrapePool": "hw11-api",
+            "scrapeUrl": "http://10.244.0.11:8000/metrics",
+            "globalUrl": "http://10.244.0.11:8000/metrics",
+            "lastError": "",
+            "lastScrape": "2026-11-15T18:38:05.796466686Z",
+            "lastScrapeDuration": 0.000665254,
+            "health": "up",
+            "scrapeInterval": "2s",
+            "scrapeTimeout": "2s"
+          },
+          {
+            "discoveredLabels": {
+              "__address__": "10.244.0.12:8000",
+              "__meta_kubernetes_namespace": "hw11",
+              "__meta_kubernetes_pod_annotation_checksum_config": "e30f77d742f3b91d2fdcfbd1330f808c65a6ba5948c837eab705c46c400beba7",
+              "__meta_kubernetes_pod_annotation_kubectl_kubernetes_io_restartedAt": "2026-11-15T21:36:28+03:00",
+              "__meta_kubernetes_pod_annotation_prometheus_io_port": "8000",
+              "__meta_kubernetes_pod_annotation_prometheus_io_scrape": "true",
+              "__meta_kubernetes_pod_annotationpresent_checksum_config": "true",
+              "__meta_kubernetes_pod_annotationpresent_kubectl_kubernetes_io_restartedAt": "true",
+              "__meta_kubernetes_pod_annotationpresent_prometheus_io_port": "true",
+              "__meta_kubernetes_pod_annotationpresent_prometheus_io_scrape": "true",
+              "__meta_kubernetes_pod_container_id": "containerd://77f914d637a11d987e9707b48ed10de9ee848230201eff1ceba5360fa503ccac",
+              "__meta_kubernetes_pod_container_image": "mlops-hw11:v1",
+              "__meta_kubernetes_pod_container_init": "false",
+              "__meta_kubernetes_pod_container_name": "api",
+              "__meta_kubernetes_pod_container_port_name": "http",
+              "__meta_kubernetes_pod_container_port_number": "8000",
+              "__meta_kubernetes_pod_container_port_protocol": "TCP",
+              "__meta_kubernetes_pod_controller_kind": "ReplicaSet",
+              "__meta_kubernetes_pod_controller_name": "hw11-api-86c95ddff8",
+              "__meta_kubernetes_pod_host_ip": "172.18.0.2",
+              "__meta_kubernetes_pod_ip": "10.244.0.12",
+              "__meta_kubernetes_pod_label_app": "hw11-api",
+              "__meta_kubernetes_pod_label_pod_template_hash": "86c95ddff8",
+              "__meta_kubernetes_pod_labelpresent_app": "true",
+              "__meta_kubernetes_pod_labelpresent_pod_template_hash": "true",
+              "__meta_kubernetes_pod_name": "hw11-api-86c95ddff8-qq7bv",
+              "__meta_kubernetes_pod_node_name": "mlops-hw11-control-plane",
+              "__meta_kubernetes_pod_phase": "Running",
+              "__meta_kubernetes_pod_ready": "true",
+              "__meta_kubernetes_pod_uid": "296e419d-0745-4ea6-8f11-0e101aa0fc10",
+              "__metrics_path__": "/metrics",
+              "__scheme__": "http",
+              "__scrape_interval__": "2s",
+              "__scrape_timeout__": "2s",
+              "job": "hw11-api"
+            },
+            "labels": {
+              "instance": "10.244.0.12:8000",
+              "job": "hw11-api",
+              "namespace": "hw11",
+              "pod": "hw11-api-86c95ddff8-qq7bv"
+            },
+            "scrapePool": "hw11-api",
+            "scrapeUrl": "http://10.244.0.12:8000/metrics",
+            "globalUrl": "http://10.244.0.12:8000/metrics",
+            "lastError": "",
+            "lastScrape": "2026-11-15T18:38:04.806725892Z",
+            "lastScrapeDuration": 0.003272368,
+            "health": "up",
+            "scrapeInterval": "2s",
+            "scrapeTimeout": "2s"
+          },
+          {
+            "discoveredLabels": {
+              "__address__": "hw11-kube-state-metrics:8080",
+              "__metrics_path__": "/metrics",
+              "__scheme__": "http",
+              "__scrape_interval__": "2s",
+              "__scrape_timeout__": "2s",
+              "job": "kube-state-metrics"
+            },
+            "labels": {
+              "instance": "hw11-kube-state-metrics:8080",
+              "job": "kube-state-metrics"
+            },
+            "scrapePool": "kube-state-metrics",
+            "scrapeUrl": "http://hw11-kube-state-metrics:8080/metrics",
+            "globalUrl": "http://hw11-kube-state-metrics:8080/metrics",
+            "lastError": "",
+            "lastScrape": "2026-11-15T18:38:05.71300288Z",
+            "lastScrapeDuration": 0.000740792,
+            "health": "up",
+            "scrapeInterval": "2s",
+            "scrapeTimeout": "2s"
+          },
+          {
+            "discoveredLabels": {
+              "__address__": "172.18.0.2:10250",
+              "__meta_kubernetes_node_address_Hostname": "mlops-hw11-control-plane",
+              "__meta_kubernetes_node_address_InternalIP": "172.18.0.2",
+              "__meta_kubernetes_node_annotation_node_alpha_kubernetes_io_ttl": "0",
+              "__meta_kubernetes_node_annotation_volumes_kubernetes_io_controller_managed_attach_detach": "true",
+              "__meta_kubernetes_node_annotationpresent_node_alpha_kubernetes_io_ttl": "true",
+              "__meta_kubernetes_node_annotationpresent_volumes_kubernetes_io_controller_managed_attach_detach": "true",
+              "__meta_kubernetes_node_label_beta_kubernetes_io_arch": "arm64",
+              "__meta_kubernetes_node_label_beta_kubernetes_io_os": "linux",
+              "__meta_kubernetes_node_label_kubernetes_io_arch": "arm64",
+              "__meta_kubernetes_node_label_kubernetes_io_hostname": "mlops-hw11-control-plane",
+              "__meta_kubernetes_node_label_kubernetes_io_os": "linux",
+              "__meta_kubernetes_node_labelpresent_beta_kubernetes_io_arch": "true",
+              "__meta_kubernetes_node_labelpresent_beta_kubernetes_io_os": "true",
+              "__meta_kubernetes_node_labelpresent_kubernetes_io_arch": "true",
+              "__meta_kubernetes_node_labelpresent_kubernetes_io_hostname": "true",
+              "__meta_kubernetes_node_labelpresent_kubernetes_io_os": "true",
+              "__meta_kubernetes_node_labelpresent_node_role_kubernetes_io_control_plane": "true",
+              "__meta_kubernetes_node_name": "mlops-hw11-control-plane",
+              "__meta_kubernetes_node_provider_id": "kind://docker/mlops-hw11/mlops-hw11-control-plane",
+              "__metrics_path__": "/metrics",
+              "__scheme__": "https",
+              "__scrape_interval__": "5s",
+              "__scrape_timeout__": "2s",
+              "instance": "mlops-hw11-control-plane",
+              "job": "kubelet-cadvisor"
+            },
+            "labels": {
+              "instance": "mlops-hw11-control-plane",
+              "job": "kubelet-cadvisor"
+            },
+            "scrapePool": "kubelet-cadvisor",
+            "scrapeUrl": "https://kubernetes.default.svc:443/api/v1/nodes/mlops-hw11-control-plane/proxy/metrics/cadvisor",
+            "globalUrl": "https://kubernetes.default.svc:443/api/v1/nodes/mlops-hw11-control-plane/proxy/metrics/cadvisor",
+            "lastError": "",
+            "lastScrape": "2026-11-15T18:38:04.224660593Z",
+            "lastScrapeDuration": 0.029496923,
+            "health": "up",
+            "scrapeInterval": "5s",
+            "scrapeTimeout": "2s"
+          }
+        ],
+        "droppedTargets": [
+          {
+            "discoveredLabels": {
+              "__address__": "10.244.0.5:9090",
+              "__meta_kubernetes_namespace": "hw11",
+              "__meta_kubernetes_pod_annotation_checksum_config": "a10330892d2181f41de9c8cf56c2ad7a7776c341d37480a2137f2121cd8a7055",
+              "__meta_kubernetes_pod_annotationpresent_checksum_config": "true",
+              "__meta_kubernetes_pod_container_id": "containerd://9b94dc7f0a8a11946952713eb2e1120bf233e7aaf17f6aeefb3c03d4afa2cfc9",
+              "__meta_kubernetes_pod_container_image": "prom/prometheus:v3.5.0",
+              "__meta_kubernetes_pod_container_init": "false",
+              "__meta_kubernetes_pod_container_name": "prometheus",
+              "__meta_kubernetes_pod_container_port_name": "http",
+              "__meta_kubernetes_pod_container_port_number": "9090",
+              "__meta_kubernetes_pod_container_port_protocol": "TCP",
+              "__meta_kubernetes_pod_controller_kind": "ReplicaSet",
+              "__meta_kubernetes_pod_controller_name": "hw11-prometheus-f445fb876",
+              "__meta_kubernetes_pod_host_ip": "172.18.0.2",
+              "__meta_kubernetes_pod_ip": "10.244.0.5",
+              "__meta_kubernetes_pod_label_app": "hw11-prometheus",
+              "__meta_kubernetes_pod_label_pod_template_hash": "f445fb876",
+              "__meta_kubernetes_pod_labelpresent_app": "true",
+              "__meta_kubernetes_pod_labelpresent_pod_template_hash": "true",
+              "__meta_kubernetes_pod_name": "hw11-prometheus-f445fb876-82kj4",
+              "__meta_kubernetes_pod_node_name": "mlops-hw11-control-plane",
+              "__meta_kubernetes_pod_phase": "Running",
+              "__meta_kubernetes_pod_ready": "true",
+              "__meta_kubernetes_pod_uid": "7e8ea849-33f2-4c0a-b18c-9c9a3f4a27f7",
+              "__metrics_path__": "/metrics",
+              "__scheme__": "http",
+              "__scrape_interval__": "2s",
+              "__scrape_timeout__": "2s",
+              "job": "hw11-api"
+            },
+            "scrapePool": "hw11-api"
+          },
+          {
+            "discoveredLabels": {
+              "__address__": "10.244.0.7:10250",
+              "__meta_kubernetes_namespace": "hw11",
+              "__meta_kubernetes_pod_container_id": "containerd://f64375dc93b69b14a56dc251d1262cb3c13d5b56d40720188537ed8c2f18b78a",
+              "__meta_kubernetes_pod_container_image": "registry.k8s.io/metrics-server/metrics-server:v0.8.0",
+              "__meta_kubernetes_pod_container_init": "false",
+              "__meta_kubernetes_pod_container_name": "metrics-server",
+              "__meta_kubernetes_pod_container_port_name": "https",
+              "__meta_kubernetes_pod_container_port_number": "10250",
+              "__meta_kubernetes_pod_container_port_protocol": "TCP",
+              "__meta_kubernetes_pod_controller_kind": "ReplicaSet",
+              "__meta_kubernetes_pod_controller_name": "hw11-metrics-server-7cb976c7b9",
+              "__meta_kubernetes_pod_host_ip": "172.18.0.2",
+              "__meta_kubernetes_pod_ip": "10.244.0.7",
+              "__meta_kubernetes_pod_label_app": "hw11-metrics-server",
+              "__meta_kubernetes_pod_label_pod_template_hash": "7cb976c7b9",
+              "__meta_kubernetes_pod_labelpresent_app": "true",
+              "__meta_kubernetes_pod_labelpresent_pod_template_hash": "true",
+              "__meta_kubernetes_pod_name": "hw11-metrics-server-7cb976c7b9-2gxrw",
+              "__meta_kubernetes_pod_node_name": "mlops-hw11-control-plane",
+              "__meta_kubernetes_pod_phase": "Running",
+              "__meta_kubernetes_pod_ready": "true",
+              "__meta_kubernetes_pod_uid": "de6f17de-042d-4ee0-8db2-d1cc8718aa55",
+              "__metrics_path__": "/metrics",
+              "__scheme__": "http",
+              "__scrape_interval__": "2s",
+              "__scrape_timeout__": "2s",
+              "job": "hw11-api"
+            },
+            "scrapePool": "hw11-api"
+          },
+          {
+            "discoveredLabels": {
+              "__address__": "10.244.0.8:3000",
+              "__meta_kubernetes_namespace": "hw11",
+              "__meta_kubernetes_pod_annotation_checksum_dashboard": "8512ed7956d5d20682950a63c500bc6eb1f5c10f7e4220fb40424b74738772d6",
+              "__meta_kubernetes_pod_annotationpresent_checksum_dashboard": "true",
+              "__meta_kubernetes_pod_container_id": "containerd://445c37d3baec12a251e4ee47df80dadc456ff09d5492ef66b4cfe6ddb4526015",
+              "__meta_kubernetes_pod_container_image": "grafana/grafana:12.1.1",
+              "__meta_kubernetes_pod_container_init": "false",
+              "__meta_kubernetes_pod_container_name": "grafana",
+              "__meta_kubernetes_pod_container_port_name": "http",
+              "__meta_kubernetes_pod_container_port_number": "3000",
+              "__meta_kubernetes_pod_container_port_protocol": "TCP",
+              "__meta_kubernetes_pod_controller_kind": "ReplicaSet",
+              "__meta_kubernetes_pod_controller_name": "hw11-grafana-77985fdddc",
+              "__meta_kubernetes_pod_host_ip": "172.18.0.2",
+              "__meta_kubernetes_pod_ip": "10.244.0.8",
+              "__meta_kubernetes_pod_label_app": "hw11-grafana",
+              "__meta_kubernetes_pod_label_pod_template_hash": "77985fdddc",
+              "__meta_kubernetes_pod_labelpresent_app": "true",
+              "__meta_kubernetes_pod_labelpresent_pod_template_hash": "true",
+              "__meta_kubernetes_pod_name": "hw11-grafana-77985fdddc-pmbqs",
+              "__meta_kubernetes_pod_node_name": "mlops-hw11-control-plane",
+              "__meta_kubernetes_pod_phase": "Running",
+              "__meta_kubernetes_pod_ready": "true",
+              "__meta_kubernetes_pod_uid": "ecb6a151-cc42-4bab-8a67-e753809a2b49",
+              "__metrics_path__": "/metrics",
+              "__scheme__": "http",
+              "__scrape_interval__": "2s",
+              "__scrape_timeout__": "2s",
+              "job": "hw11-api"
+            },
+            "scrapePool": "hw11-api"
+          },
+          {
+            "discoveredLabels": {
+              "__address__": "10.244.0.6:8080",
+              "__meta_kubernetes_namespace": "hw11",
+              "__meta_kubernetes_pod_container_id": "containerd://466e7ce1ced6f3464fb935a2b3193a46fc3ea786f32bca2aadb1153aa84eacc9",
+              "__meta_kubernetes_pod_container_image": "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.17.0",
+              "__meta_kubernetes_pod_container_init": "false",
+              "__meta_kubernetes_pod_container_name": "kube-state-metrics",
+              "__meta_kubernetes_pod_container_port_name": "http",
+              "__meta_kubernetes_pod_container_port_number": "8080",
+              "__meta_kubernetes_pod_container_port_protocol": "TCP",
+              "__meta_kubernetes_pod_controller_kind": "ReplicaSet",
+              "__meta_kubernetes_pod_controller_name": "hw11-kube-state-metrics-65b494694",
+              "__meta_kubernetes_pod_host_ip": "172.18.0.2",
+              "__meta_kubernetes_pod_ip": "10.244.0.6",
+              "__meta_kubernetes_pod_label_app": "hw11-kube-state-metrics",
+              "__meta_kubernetes_pod_label_pod_template_hash": "65b494694",
+              "__meta_kubernetes_pod_labelpresent_app": "true",
+              "__meta_kubernetes_pod_labelpresent_pod_template_hash": "true",
+              "__meta_kubernetes_pod_name": "hw11-kube-state-metrics-65b494694-nlmj4",
+              "__meta_kubernetes_pod_node_name": "mlops-hw11-control-plane",
+              "__meta_kubernetes_pod_phase": "Running",
+              "__meta_kubernetes_pod_ready": "true",
+              "__meta_kubernetes_pod_uid": "981c3717-61b5-4028-b4a6-1e9b7f1f2fc2",
+              "__metrics_path__": "/metrics",
+              "__scheme__": "http",
+              "__scrape_interval__": "2s",
+              "__scrape_timeout__": "2s",
+              "job": "hw11-api"
+            },
+            "scrapePool": "hw11-api"
+          }
+        ],
+        "droppedTargetCounts": {
+          "hw11-api": 4,
+          "kube-state-metrics": 0,
+          "kubelet-cadvisor": 0
+        }
+      }
+    },
+    "grafana": {
+      "database": "ok",
+      "version": "12.1.1",
+      "commit": "df5de8219b41d1e639e003bf5f3a85913761d167"
+    }
+  },
+  "frozen_image_index_sha256": "c461dd226f2b1deefac4657f7f3468e167a3b63384d939aa0dbe3449f32728e0"
+}

@@ -203,6 +203,9 @@ class ServiceState:
 
 
 def create_app(workspace=Path(".lab"), warmup_seconds=5, backend_factory=None, backend_kind="stub"):
+    if backend_kind == "simulated":
+        from hw11.app import create_app as create_simulated_app
+        return create_simulated_app()
     if backend_kind not in ("stub", "transformers"):
         raise ValueError("Unknown backend kind")
     factory = backend_factory or (StubBackend if backend_kind == "stub" else transformers_backend)
@@ -253,16 +256,18 @@ def main():
     parser.add_argument("--workspace", type=Path, default=Path(".lab"))
     parser.add_argument("--port", type=int, default=8091)
     parser.add_argument("--warmup-seconds", type=float, default=5)
-    parser.add_argument("--backend", choices=("stub", "transformers"), default="stub")
+    parser.add_argument("--backend", choices=("stub", "transformers", "simulated"), default="stub")
+    parser.add_argument("--host", default="127.0.0.1")
     args = parser.parse_args()
     if not 0 <= args.port <= 65535 or not math.isfinite(args.warmup_seconds) or args.warmup_seconds < 0:
         parser.error("Invalid port or warmup duration")
     import uvicorn
 
     app = create_app(args.workspace, args.warmup_seconds, backend_kind=args.backend)
-    label = "STUB ONLY" if args.backend == "stub" else "TRANSFORMERS"
+    label = {"stub": "STUB ONLY", "transformers": "TRANSFORMERS", "simulated": "SIMULATED"}[args.backend]
     print(f"{label}: http://127.0.0.1:{args.port}", flush=True)
-    uvicorn.run(app, host="127.0.0.1", port=args.port, access_log=False, log_level="warning")
+    uvicorn.run(app, host=args.host, port=args.port, access_log=False, log_level="warning",
+                timeout_graceful_shutdown=50)
 
 
 if __name__ == "__main__":

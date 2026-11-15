@@ -1,0 +1,19 @@
+{
+  "run_id": "results/hw11/c/alerts/load",
+  "service": "hw11-api",
+  "epoch_utc": 1794771176.824569,
+  "duration_seconds": 100,
+  "schedule_sha256": "aa23864df9409ee0546f8b8c7e3821eada7b5eba583e9cd377f0a2f87d25955a",
+  "clients": {
+    "hw11-client-0": "10.244.0.31",
+    "hw11-client-1": "10.244.0.32",
+    "hw11-client-2": "10.244.0.33",
+    "hw11-client-3": "10.244.0.34"
+  },
+  "keep_alive": false,
+  "max_outstanding": 128,
+  "timeout_seconds": 45,
+  "measurement_started_utc": 1794771176.824569,
+  "measurement_ended_utc": 1794771307.855477,
+  "actual_phase_seconds": 131.03090810775757
+}

@@ -1,0 +1,512 @@
+[
+  {
+    "id": "planned-000000",
+    "offset_seconds": 0.0,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000001",
+    "offset_seconds": 0.5,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000002",
+    "offset_seconds": 1.0,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000003",
+    "offset_seconds": 1.5,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000004",
+    "offset_seconds": 2.0,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000005",
+    "offset_seconds": 2.5,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000006",
+    "offset_seconds": 3.0,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000007",
+    "offset_seconds": 3.5,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000008",
+    "offset_seconds": 4.0,
+    "client": 1,
+    "payload": {
+      "prompt": "prefix-client-1: movie plot",
+      "session_id": "dialog-1",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_1"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000009",
+    "offset_seconds": 4.5,
+    "client": 2,
+    "payload": {
+      "prompt": "prefix-client-2: movie plot",
+      "session_id": "dialog-2",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_2"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000010",
+    "offset_seconds": 5.0,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000011",
+    "offset_seconds": 5.5,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000012",
+    "offset_seconds": 6.0,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000013",
+    "offset_seconds": 6.5,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000014",
+    "offset_seconds": 7.0,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000015",
+    "offset_seconds": 7.5,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000016",
+    "offset_seconds": 8.0,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000017",
+    "offset_seconds": 8.5,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000018",
+    "offset_seconds": 9.0,
+    "client": 2,
+    "payload": {
+      "prompt": "prefix-client-2: movie plot",
+      "session_id": "dialog-2",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_2"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000019",
+    "offset_seconds": 9.5,
+    "client": 3,
+    "payload": {
+      "prompt": "prefix-client-3: movie plot",
+      "session_id": "dialog-3",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_3"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000020",
+    "offset_seconds": 10.0,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000021",
+    "offset_seconds": 10.5,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000022",
+    "offset_seconds": 11.0,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000023",
+    "offset_seconds": 11.5,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000024",
+    "offset_seconds": 12.0,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000025",
+    "offset_seconds": 12.5,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000026",
+    "offset_seconds": 13.0,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000027",
+    "offset_seconds": 13.5,
+    "client": 0,
+    "payload": {
+      "prompt": "prefix-client-0: movie plot",
+      "session_id": "dialog-0",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_0"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000028",
+    "offset_seconds": 14.0,
+    "client": 3,
+    "payload": {
+      "prompt": "prefix-client-3: movie plot",
+      "session_id": "dialog-3",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_3"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  },
+  {
+    "id": "planned-000029",
+    "offset_seconds": 14.5,
+    "client": 1,
+    "payload": {
+      "prompt": "prefix-client-1: movie plot",
+      "session_id": "dialog-1",
+      "messages": [
+        {
+          "role": "user",
+          "content": "CONTROL_DIALOG_1"
+        }
+      ],
+      "max_chunks": 4,
+      "chunk_delay_seconds": 0.2
+    }
+  }
+]

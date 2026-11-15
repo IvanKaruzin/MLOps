@@ -1,0 +1,27 @@
+Отчёты всех ролей и сырые ответы сохранены. Далее: make eval; только после PASS - make promote
+  train: 1 примеров, токенов 30 (в лосс идёт 3), p50/p90/max = 280/480/531
+Отчёты всех ролей и сырые ответы сохранены. Далее: make eval; только после PASS - make promote
+PASS: испорченные ответы отклонены, alias не менялся
+Отчёты всех ролей и сырые ответы сохранены. Далее: make eval; только после PASS - make promote
+champion -> models:/fixture-model/2
+Baseline обновлён явно; старый сохранён. Следующая оценка сравнит с принятой версией
+Отчёты всех ролей и сырые ответы сохранены. Далее: make eval; только после PASS - make promote
+Отчёты всех ролей и сырые ответы сохранены. Далее: make eval; только после PASS - make promote
+............................................................................................/Users/imkaruzin/MLOps/.venv/lib/python3.12/site-packages/mlflow/types/chat.py:162: PydanticDeprecatedSince20: `min_items` is deprecated and will be removed, use `min_length` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+  stop: Optional[list[str]] = Field(None, min_items=1)
+/Users/imkaruzin/MLOps/.venv/lib/python3.12/site-packages/mlflow/types/chat.py:216: PydanticDeprecatedSince20: `min_items` is deprecated and will be removed, use `min_length` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+  messages: list[ChatMessage] = Field(..., min_items=1)
+/Users/imkaruzin/MLOps/.venv/lib/python3.12/site-packages/mlflow/types/chat.py:217: PydanticDeprecatedSince20: `min_items` is deprecated and will be removed, use `min_length` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+  tools: Optional[list[ChatTool]] = Field(None, min_items=1)
+/Users/imkaruzin/MLOps/.venv/lib/python3.12/site-packages/mlflow/utils/pydantic_utils.py:33: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.13/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+  return pydantic_model_validator(mode=mode)(func)
+/Users/imkaruzin/MLOps/.venv/lib/python3.12/site-packages/mlflow/pyfunc/utils/data_validation.py:186: UserWarning: [33mAdd type hints to the `predict` method to enable data validation and automatic signature inference during model logging. Check https://mlflow.org/docs/latest/model/python_model.html#type-hint-usage-in-pythonmodel for more details.[0m
+  color_warning(
+/Users/imkaruzin/MLOps/.venv/lib/python3.12/site-packages/peft/utils/save_and_load.py:438: UserWarning: Could not find a config file in  - will assume that the vocabulary was not modified.
+  warnings.warn(
+.....2026/11/15 21:48:36 INFO mlflow.tracking.fluent: Experiment with name 'isolated-hw67-regression' does not exist. Creating a new experiment.
+.........................
+----------------------------------------------------------------------
+Ran 122 tests in 14.004s
+
+OK

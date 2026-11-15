@@ -1,0 +1,9 @@
+{
+  "brokenProbes": false,
+  "hpa": {
+    "enabled": false
+  },
+  "modelVersion": "B",
+  "neverReady": true,
+  "warmupSeconds": 20
+}

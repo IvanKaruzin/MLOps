@@ -1,0 +1,837 @@
+<!doctype html><html lang='ru'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>ДЗ 11 — Kubernetes под нагрузкой</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f5fa;color:#202c40;font:17px/1.65 system-ui,sans-serif}main{max-width:1230px;margin:auto;padding:44px 32px 90px}h1{font-size:40px;line-height:1.15;max-width:850px}h2{font-size:27px;margin-top:46px}h3{font-size:21px;margin-top:30px}a{color:#364f9c}code,pre{font-family:ui-monospace,monospace;font-size:.85em}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#e7edf6;padding:18px;border-radius:8px}.lead{font-size:21px}.notice{padding:18px 22px;border-left:5px solid #bf7c20;background:#fff1d9}.ok{border-color:#35856b;background:#e5f3ed}.table{overflow-x:auto;background:white;border-radius:8px;margin:18px 0}table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:10px 12px;border-bottom:1px solid #dce3ed;text-align:left;vertical-align:top}th{background:#e8eef8}figure{margin:28px 0;background:white;padding:12px;border-radius:10px}figure img{width:100%;height:auto}figcaption{color:#516174;font-size:14px}.muted{color:#526174}.tag{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#526174}li{margin:7px 0}@media print{body{background:white}main{padding:0}h2{break-after:avoid}figure,table{break-inside:avoid}a{color:inherit}}</style></head><body><main><p class='tag'>MLOPS-26 · ДЗ 11 · CPU-стенд</p>
+<h1>Прогрев, горячая реплика и масштабирование</h1>
+<p class='lead'>Данные из локального Kubernetes. Backend: <code>simulated</code>. Сохранено файлов завершённых нагрузочных прогонов B: 12 из 12.</p>
+<div class='notice '><strong>Технические проверки пройдены; остаётся подтвердить кейс из лекции.</strong></div>
+<p>Отчёт построен повторно из сохранённых JSON/JSONL; отсутствие файла отображается как пробел, а не заменяется вымышленным результатом. Отсутствие champion принято по условиям работы; веса модели и переобучение для этого CPU-стенда не требуются.</p>
+<p>Исходные условия: <a href="../../course_tasks/hw11/homework11.html">../../course_tasks/hw11/homework11.html</a>. Репозиторий: <a href='https://github.com/IvanKaruzin/MLOps'>IvanKaruzin/MLOps</a>; точный итоговый коммит сообщает результат push. Единый журнал попыток: <a href="requests.jsonl">requests.jsonl</a>; машиночитаемые итоги: <a href="summary.json">summary.json</a>; собственные проверки: <a href="checks.json">checks.json</a>.</p>
+<h2>1. Стенд и воспроизводимость</h2>
+<p>Продолжен FastAPI-сервис ДЗ 8–10 через отдельный режим <code>--backend simulated</code>. Старые stub/transformers API сохранены. Deployment, ConfigMap, два Service, три разных probes, CPU/RAM limits и HPA заданы Helm-чартом. Отдельный kind работает в профиле Colima <code>mlops-hw11</code>; ресурсы других профилей не используются.</p>
+<p>Источник имитируемого артефакта — read-only ConfigMap с файлами A/B. До объявления готовности процесс проверяет SHA-256, schema и версию; ответ сообщает фактически загруженные <code>model_version</code> и <code>artifact_sha256</code>. Request ID, session ID, Pod и видимый сервером source IP сохраняются в JSON-логах; метрики не содержат request/session ID. Авторитетная история передаётся целиком в <code>messages</code>, поэтому локальный prefix cache не является хранилищем диалога.</p>
+<p>Параметры CPU-имитатора: OpenSSL <code>pbkdf2_hmac('sha256', ...)</code> в ограниченном пуле потоков; hit = 75 000, miss = 700 000, chunk = 25 000 итераций. Очередь ограничена 32 ожидающими, running = 1 на Pod, queue timeout = 30 с; LRU prefix cache = 16 записей. Ключ — SHA-256 первого сообщения, иначе первых 128 символов prompt. Поток сохраняет compute slot до завершения; отменённая CPU-задача удерживает слот до физического окончания thread job. В основных B: четыре части ответа, задержка 0,2 с между выдачей частей, 2 запроса/с, 120 с arrivals (240 запланированных запросов). Фактические values/config каждого прогона являются источником настроек; они приоритетнее этого описания.</p>
+<p>Одна API-реплика: CPU request 250m / limit 1 core, RAM 128 / 256 MiB. Prometheus: retention 2 ч / 256 MB, том ≤512 MiB; Grafana ≤128 MiB; API tmp ≤16 MiB. Основной прогрев 20 с; отдельный drain-proof использует явно сохранённые 10 с. PreStop снимает readiness, затем 5 с обслуживает остаточный трафик распространения EndpointSlice; SIGTERM прекращает новый admission, uvicorn даёт активным ответам до 50 с внутри grace period 60 с.</p>
+<pre>{
+  &quot;kubernetes&quot;: &quot;v1.34.0&quot;,
+  &quot;architecture&quot;: &quot;arm64&quot;,
+  &quot;container_runtime&quot;: &quot;containerd://2.1.3&quot;,
+  &quot;docker&quot;: &quot;29.5.2&quot;,
+  &quot;cpus&quot;: 4,
+  &quot;memory_bytes&quot;: 6197379072,
+  &quot;host_free_bytes&quot;: 665169985536,
+  &quot;tools&quot;: {
+    &quot;kubectl&quot;: &quot;v1.34.1&quot;,
+    &quot;kind&quot;: &quot;v0.30.0&quot;,
+    &quot;helm&quot;: &quot;v3.19.0&quot;,
+    &quot;checksums_verified&quot;: true
+  },
+  &quot;actual_vm_disks&quot;: &quot;Filesystem      Size  Used Avail Use% Mounted on\n/dev/root        19G  864M   18G   5% /\n/dev/vdb1        12G  2.7G  8.5G  24% /var/lib/docker\n&quot;,
+  &quot;final_disk&quot;: &quot;Filesystem      Size  Used Avail Use% Mounted on\n/dev/root        19G  864M   18G   5% /\n/dev/vdb1        12G  4.3G  6.9G  39% /var/lib/docker&quot;,
+  &quot;final_docker_disk&quot;: {
+    &quot;returncode&quot;: 0,
+    &quot;stdout&quot;: &quot;TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE\nImages          3         1         1.749GB   32.27MB (1%)\nContainers      1         1         3.609MB   0B (0%)\nLocal Volumes   1         1         2.772GB   0B (0%)\nBuild Cache     14        0         75.06MB   29.95MB&quot;
+  },
+  &quot;image&quot;: {
+    &quot;image_index_sha256&quot;: &quot;072e40c1b4949bf1ca82472f10bad7c5505754b179c3e94c18438268bbdb2832&quot;,
+    &quot;image_config_sha256&quot;: &quot;3be73d7a6ca821e9f24b7a997d01daae7ce2e77c31c4c38dcc58384753fe0c28&quot;
+  },
+  &quot;final_pod_image_ids&quot;: [
+    {
+      &quot;pod&quot;: &quot;hw11-api-69544b59f-5ptw4&quot;,
+      &quot;image_ids&quot;: [
+        &quot;sha256:3be73d7a6ca821e9f24b7a997d01daae7ce2e77c31c4c38dcc58384753fe0c28&quot;
+      ]
+    },
+    {
+      &quot;pod&quot;: &quot;hw11-api-69544b59f-kdbsn&quot;,
+      &quot;image_ids&quot;: [
+        &quot;sha256:3be73d7a6ca821e9f24b7a997d01daae7ce2e77c31c4c38dcc58384753fe0c28&quot;
+      ]
+    }
+  ]
+}</pre>
+<p>Подтверждение ресурсов до запуска: <a href="environment-before.json">environment-before.json</a>; после: <a href="environment-after.json">environment-after.json</a>; сборка и discovery: <a href="setup.json">setup.json</a>; финальная сборка: <a href="image-build.json">image-build.json</a>.</p>
+<p>Итоговая проверка реальных targets и загруженного дашборда: <a href="monitoring-validation.json">monitoring-validation.json</a>; экспорт Grafana API: <a href="grafana-export.json">grafana-export.json</a>.</p>
+<p>Удаление собственного стенда проверено: <a href="cleanup.json">cleanup.json</a>. Исходный Docker context восстановлен; остальные профили Colima сохранены.</p>
+<p>Запуск и удаление: <a href="../../README.md">инструкция README</a>; <a href="../../deploy/hw11/chart">Helm-чарт</a>; <a href="../../deploy/hw11/Dockerfile">../../deploy/hw11/Dockerfile</a>; <a href="../../requirements-hw11.lock">../../requirements-hw11.lock</a>.</p>
+<pre>make install-hw11
+make up-hw11
+make check-hw11
+make experiments-hw11
+make report-hw11
+make down-hw11
+# Полное удаление только профиля ДЗ-11:
+.venv-hw11/bin/python scripts/hw11.py down --delete-vm</pre>
+<h2>2. Метод измерения и полнота</h2>
+<p>Клиент измеряет интервалы монотонными часами: TTFC = first_chunk − send, full = end − send; inter-chunk latency — среднее N−1 интервалов между N частями. Для одной части значение отсутствует. UTC применяется только для общей линии времени; часы разных процессов не вычитаются. Генератор open-loop следует абсолютному расписанию, создаёт новое HTTP-соединение на запрос и явно сохраняет planned/actual send, lag и unsent при переполнении клиентского backlog. Четыре клиентских Pod имеют разные IP. Каждая попытка имеет свой attempt ID; повторы не объединяются с исходной попыткой.</p>
+<p>Успех требует HTTP 200, корректного final marker, ожидаемого количества частей и чистого окончания потока. Отказ до заголовков, обрыв, timeout, connection error и неотправленный запрос учитываются раздельно. p50/p95 приведены только для completed. Доли error/timeout/rejected делятся на sent; unsent — на planned. Клиентская полная длительность включает чтение конца ответа. Backend-гистограмма фиксирует успешное серверное завершение; небольшая сетевая разница ожидаема.</p>
+<div class='table'><table><thead><tr><th>Прогон</th><th>Planned</th><th>Sent</th><th>N успехов</th><th>TTFC p50, с</th><th>TTFC p95, с</th><th>Full p50, с</th><th>Full p95, с</th><th>Отказы</th><th>Обрывы</th><th>Timeout</th><th>Ошибки</th><th>Unsent</th></tr></thead><tbody><tr><td>a/bad-rollout</td><td>35</td><td>35</td><td>35</td><td>0.08947</td><td>0.2131</td><td>0.148</td><td>0.2689</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>a/drain-proof/background</td><td>60</td><td>60</td><td>60</td><td>0.08826</td><td>13.77</td><td>0.1448</td><td>13.83</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>a/drain-proof</td><td>2</td><td>2</td><td>2</td><td>1.138</td><td>1.139</td><td>28.4</td><td>28.4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>a/faulty</td><td>70</td><td>70</td><td>39</td><td>0.08933</td><td>0.207</td><td>0.1472</td><td>0.2629</td><td>31</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>a/fixed</td><td>70</td><td>70</td><td>70</td><td>0.07357</td><td>0.1427</td><td>0.1301</td><td>0.201</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>a/forced-kill/recovery</td><td>10</td><td>10</td><td>10</td><td>0.08966</td><td>0.2037</td><td>0.1477</td><td>0.2601</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>a/replacement/after</td><td>2</td><td>2</td><td>2</td><td>0.1552</td><td>0.1622</td><td>0.181</td><td>0.1877</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>a/replacement/before</td><td>2</td><td>2</td><td>2</td><td>0.1595</td><td>0.1685</td><td>0.1869</td><td>0.1968</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>a/rollback</td><td>10</td><td>10</td><td>10</td><td>0.08947</td><td>0.09312</td><td>0.1461</td><td>0.1533</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>a/rollout/background</td><td>60</td><td>60</td><td>60</td><td>0.08691</td><td>9.078</td><td>0.145</td><td>9.133</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/calibration</td><td>30</td><td>30</td><td>30</td><td>3.784</td><td>8.05</td><td>4.42</td><td>8.685</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/clientip/skewed/run-1</td><td>240</td><td>240</td><td>201</td><td>20.78</td><td>27.86</td><td>21.41</td><td>28.49</td><td>39</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/clientip/skewed/run-2</td><td>240</td><td>240</td><td>201</td><td>20.65</td><td>27.85</td><td>21.28</td><td>28.48</td><td>39</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/clientip/skewed/run-3</td><td>240</td><td>240</td><td>201</td><td>20.72</td><td>27.81</td><td>21.35</td><td>28.44</td><td>39</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/clientip/uniform/run-1</td><td>240</td><td>240</td><td>240</td><td>0.2303</td><td>0.2415</td><td>0.8625</td><td>0.8735</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/clientip/uniform/run-2</td><td>240</td><td>240</td><td>240</td><td>0.2328</td><td>0.2419</td><td>0.8639</td><td>0.8751</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/clientip/uniform/run-3</td><td>240</td><td>240</td><td>240</td><td>0.2298</td><td>0.2411</td><td>0.8615</td><td>0.8734</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/no-skew</td><td>10</td><td>10</td><td>10</td><td>0.2393</td><td>0.3532</td><td>0.8717</td><td>0.9784</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/normal/skewed/run-1</td><td>240</td><td>240</td><td>240</td><td>0.9605</td><td>3.154</td><td>1.593</td><td>3.779</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/normal/skewed/run-2</td><td>240</td><td>240</td><td>240</td><td>1.179</td><td>3.175</td><td>1.811</td><td>3.806</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/normal/skewed/run-3</td><td>240</td><td>240</td><td>240</td><td>0.9287</td><td>3.047</td><td>1.561</td><td>3.667</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/normal/uniform/run-1</td><td>240</td><td>240</td><td>240</td><td>0.5975</td><td>1.767</td><td>1.229</td><td>2.403</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/normal/uniform/run-2</td><td>240</td><td>240</td><td>240</td><td>1.55</td><td>6.941</td><td>2.175</td><td>7.56</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>b/normal/uniform/run-3</td><td>240</td><td>240</td><td>240</td><td>0.9357</td><td>2.721</td><td>1.565</td><td>3.342</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>c/alerts/load</td><td>2400</td><td>2400</td><td>201</td><td>29.96</td><td>30.13</td><td>31.09</td><td>31.25</td><td>2199</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>c/hot-replica</td><td>2250</td><td>2250</td><td>1567</td><td>1.73</td><td>1.785</td><td>1.76</td><td>1.816</td><td>683</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>c/hpa/load</td><td>3600</td><td>3600</td><td>3600</td><td>0.03132</td><td>0.1134</td><td>0.06138</td><td>0.1435</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>a/rollout/long-stream.json</td><td>1</td><td>1</td><td>1</td><td>1.135</td><td>1.135</td><td>28.33</td><td>28.33</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>a/forced-kill/forced-stream.json</td><td>1</td><td>1</td><td>0</td><td>—</td><td>—</td><td>—</td><td>—</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td></tr></tbody></table></div>
+<p>Единый журнал содержит 11493 попыток из 29 исходных файлов; уникальные attempt ID и терминальные исходы проверены, несовпадения входят в data_errors. Архивы A-initial и smoke не смешиваются с основными данными. В каждой строке сохранены source_file и experiment: <a href="requests.jsonl">requests.jsonl</a>.</p>
+<p>Полные знаменатели, доли, lag и распределение по Pod находятся в <a href="summary.json">summary.json</a>. Сырые попытки доступны по каталогам <a href="a">A</a>, <a href="b">B</a>, <a href="c">C</a>.</p>
+<h2>3. Опыт A — прогрев, выпуск и восстановление</h2>
+<p><strong>Проверка: PASS.</strong> Гипотеза: HTTP-процесс может отвечать probes раньше, чем готов backend; правильный readiness/startup исключает такой Pod из рабочего Service. Исходный дефект воспроизведён отдельным <code>brokenProbes=true</code>; исправление связывает probes с проверенным артефактом и окончанием прогрева. Liveness отдельно отвечает за живость HTTP.</p>
+<p>Доказательства до/после: <a href="a/faulty/warmup-assertion.json">a/faulty/warmup-assertion.json</a>, <a href="a/fixed/warmup-assertion.json">a/fixed/warmup-assertion.json</a>; Ready/EndpointSlice и полный журнал запросов сохранены в обоих каталогах. В исправленном режиме отсутствие ранних backend-запросов проверяется отдельно от отсутствия ошибок на уже прогретых репликах.</p>
+<p>В исходном A→B заранее открыт длительный поток к конкретной старой реплике, а основной поток запросов идёт через Service. Границы длительного ответа и начало upgrade записаны в <a href="a/rollout/long-stream.json">a/rollout/long-stream.json</a>. Этот поток пересёк начало обновления и завершился без обрыва, но его Pod был удалён уже после окончания ответа: этот прогон доказывает пересечение rollout, а не удержание активного потока при завершении процесса. Отдельный drain-proof ниже закрывает это ограничение без изменения backend и измерений B/C. Намеренно неготовая B проверяется отдельно: <a href="a/bad-rollout">a/bad-rollout</a>; после управляемого rollback фактическая A/хеш проверены в <a href="a/rollback/requests.jsonl">a/rollback/requests.jsonl</a>.</p>
+<p><strong>Дополнительная проверка graceful termination:</strong> до upgrade открываются 28-секундные потоки на обеих A-репликах. При том же backend прогрев новых Pod задан 10 с, чтобы удаление старой реплики пересекло активный ответ. Сохраняются два длительных ответа, 60 фоновых Service-попыток, Ready/EndpointSlice и время удаления Pod. Требование — все попытки completed без 5xx, а хотя бы один старый поток заканчивается позже deletion + preStop 5 с + запас 1 с и раньше окончания grace period 60 с. Начало завершения вычисляется как Kubernetes deletionTimestamp минус deletionGracePeriodSeconds и сверяется с первым наблюдением terminating Pod. Сам raw deletionTimestamp — дедлайн удаления, а не начало завершения. Время начала + preStop — оценка ожидаемого SIGTERM по конфигурации, а не отдельное измерение доставки сигнала. Доказательства: <a href="a/drain-proof/proof.json">a/drain-proof/proof.json</a>, <a href="a/drain-proof/requests.jsonl">a/drain-proof/requests.jsonl</a>, <a href="a/drain-proof/background/requests.jsonl">a/drain-proof/background/requests.jsonl</a>.</p>
+<pre>{
+  &quot;passed&quot;: true,
+  &quot;warmup_seconds&quot;: 10,
+  &quot;upgrade_utc&quot;: 1794772216.079817,
+  &quot;termination_grace_seconds&quot;: 60,
+  &quot;prestop_seconds&quot;: 5,
+  &quot;uvicorn_grace_seconds&quot;: 50,
+  &quot;streams&quot;: [
+    {
+      &quot;request_id&quot;: &quot;drain-proof-long-0&quot;,
+      &quot;pod&quot;: &quot;hw11-api-9d8b574dc-mt9q5&quot;,
+      &quot;outcome&quot;: &quot;completed&quot;,
+      &quot;first_chunk_utc&quot;: 1794772215.2140841,
+      &quot;end_utc&quot;: 1794772242.478137,
+      &quot;deletion_utc&quot;: 1794772229.0,
+      &quot;expected_sigterm_utc&quot;: 1794772234.0,
+      &quot;deletion_to_finish_seconds&quot;: 13.478137016296387,
+      &quot;finished_after_prestop&quot;: true,
+      &quot;termination_started_utc&quot;: 1794772229.0,
+      &quot;deletion_deadline_utc&quot;: 1794772289.0,
+      &quot;deletion_grace_seconds&quot;: 60,
+      &quot;first_observed_terminating_utc&quot;: 1794772229.980989
+    },
+    {
+      &quot;request_id&quot;: &quot;drain-proof-long-1&quot;,
+      &quot;pod&quot;: &quot;hw11-api-9d8b574dc-sx2hw&quot;,
+      &quot;outcome&quot;: &quot;completed&quot;,
+      &quot;first_chunk_utc&quot;: 1794772215.2117388,
+      &quot;end_utc&quot;: 1794772242.478464,
+      &quot;deletion_utc&quot;: 1794772242.0,
+      &quot;expected_sigterm_utc&quot;: 1794772247.0,
+      &quot;deletion_to_finish_seconds&quot;: 0.47846388816833496,
+      &quot;finished_after_prestop&quot;: false,
+      &quot;termination_started_utc&quot;: 1794772242.0,
+      &quot;deletion_deadline_utc&quot;: 1794772302.0,
+      &quot;deletion_grace_seconds&quot;: 60,
+      &quot;first_observed_terminating_utc&quot;: 1794772242.0173912
+    }
+  ],
+  &quot;background&quot;: {
+    &quot;planned&quot;: 60,
+    &quot;sent&quot;: 60,
+    &quot;successful&quot;: 60,
+    &quot;counts&quot;: {
+      &quot;completed&quot;: 60,
+      &quot;rejected&quot;: 0,
+      &quot;interrupted&quot;: 0,
+      &quot;timeout&quot;: 0,
+      &quot;connection_error&quot;: 0,
+      &quot;error&quot;: 0,
+      &quot;unsent&quot;: 0
+    },
+    &quot;ttfc_p50_seconds&quot;: 0.08826422900028774,
+    &quot;ttfc_p95_seconds&quot;: 13.773616497399864,
+    &quot;full_p50_seconds&quot;: 0.1447519859998465,
+    &quot;full_p95_seconds&quot;: 13.829759478450017,
+    &quot;pods&quot;: {
+      &quot;hw11-api-69544b59f-5ptw4&quot;: 33,
+      &quot;hw11-api-69544b59f-kdbsn&quot;: 19,
+      &quot;hw11-api-9d8b574dc-mt9q5&quot;: 3,
+      &quot;hw11-api-9d8b574dc-sx2hw&quot;: 5
+    }
+  }
+}</pre>
+<p>Принудительный SIGKILL выполняется через containerd на kind node, а не игнорируемым сигналом namespace PID1 изнутри контейнера. Сохранены оборванная попытка, идентичность контейнера до/после и восстановление: <a href="a/forced-kill">a/forced-kill</a>. Отдельная замена Pod и продолжение двух различимых диалогов: <a href="a/replacement">a/replacement</a>. Ограничение: штатный rollout без ошибок подтверждён только для зафиксированных нагрузки, продолжительности ответа и тайм-аутов.</p>
+<figure><img src='figures/01-warmup-rollout.png' alt='Готовность Pod и EndpointSlice во время прогрева и обновления'><figcaption>1. Верхние панели: faulty/fixed probes с прогревом 20 с. При наличии успешного drain-proof нижняя панель показывает два активных потока и удаление Pod в отдельном прогоне с прогревом 10 с; иначе показан исходный rollout. Пунктир начало + preStop обозначает ожидаемую границу SIGTERM; raw deletionTimestamp является дедлайном, а не этой границей. Время выровнено по UTC; длительности клиентов рассчитаны монотонно.</figcaption></figure>
+<h2>4. Опыт B — привязка, очередь и локальный кеш</h2>
+<p><strong>Проверка: PASS; найдено 12/12 основных прогонов.</strong> Гипотеза: ClientIP сохраняет локальность prefix cache, но при 80% запросов от одного клиента перегружает закреплённый Pod, когда другая реплика имеет свободную ёмкость. Сравниваются Service с ClientIP и без affinity над той же парой Pod; HPA выключен, keep-alive выключен, кеш перед каждым run пуст. При равномерном профиле четыре клиента делят отправки поровну; при skewed один даёт 80%. Workload hashes, запросы, длины контекста, лимиты ответа и расписания совпадают между политиками.</p>
+<p>Сеть, IP и Service settings: <a href="b/network.json">b/network.json</a>. source_ip в серверных request logs позволяет сверить фактический адрес, видимый репликой, с Pod IP генератора. Причину маршрутизации проверяем по traces, а не предполагаем round-robin на каждом HTTP-запросе.</p>
+<p>Прямое доказательство адреса, видимого самому механизму ClientIP на node: <a href="b/affinity-source-ip.json">b/affinity-source-ip.json</a>; сохранённая NAT-таблица: <a href="b/iptables-nat.txt">b/iptables-nat.txt</a>. Записи <code>/proc/net/xt_recent/KUBE-SEP-*</code> сопоставляются с client Pod IP из network/config, а правила DNAT — с IP действительных API Pod. Это дополняет source_ip в HTTP-логах и позволяет отделить адрес affinity-механизма от предположений о NAT.</p>
+<p>Зафиксированные настройки kube-proxy: <code>clusterCIDR: 10.244.0.0/16; masqueradeAll: false; mode: iptables; masqueradeAll: false</code>. При новых соединениях обычный Service распределяет выбор backend через сетевую политику, а ClientIP использует видимый источнику трафика адрес. Это сравнение относится к данному iptables/Pod-network стенду.</p>
+<h3>От клиентского IP к Pod: проверка трассой</h3><p>Для каждой комбинации ниже показан последний сохранённый repeat (в завершённой работе — третий). Количество запросов берётся из клиентского журнала; наблюдённый source_ip — только из серверных request_received/request_finished с тем же request_id. Отсутствующие финальные log samples не восстанавливаются догадками. Mismatch означает, что наблюдённый набор source IP отличается от клиентского Pod IP.</p>
+<div class='table'><table><thead><tr><th>Политика</th><th>Профиль</th><th>Repeat</th><th>Клиент</th><th>Pod IP клиента</th><th>Backend Pod</th><th>Запросов</th><th>source_ip сервера</th><th>Сопоставлено ID</th><th>Mismatch ID</th></tr></thead><tbody><tr><td>normal</td><td>uniform</td><td>3</td><td>hw11-client-0</td><td>10.244.0.31</td><td>hw11-api-b967f4df8-x2zsr</td><td>31</td><td>10.244.0.31</td><td>31</td><td>0</td></tr><tr><td>normal</td><td>uniform</td><td>3</td><td>hw11-client-1</td><td>10.244.0.32</td><td>hw11-api-b967f4df8-fw5rn</td><td>33</td><td>10.244.0.32</td><td>33</td><td>0</td></tr><tr><td>normal</td><td>uniform</td><td>3</td><td>hw11-client-2</td><td>10.244.0.33</td><td>hw11-api-b967f4df8-fw5rn</td><td>33</td><td>10.244.0.33</td><td>33</td><td>0</td></tr><tr><td>normal</td><td>uniform</td><td>3</td><td>hw11-client-3</td><td>10.244.0.34</td><td>hw11-api-b967f4df8-x2zsr</td><td>29</td><td>10.244.0.34</td><td>29</td><td>0</td></tr><tr><td>normal</td><td>uniform</td><td>3</td><td>hw11-client-0</td><td>10.244.0.31</td><td>hw11-api-b967f4df8-fw5rn</td><td>29</td><td>10.244.0.31</td><td>29</td><td>0</td></tr><tr><td>normal</td><td>uniform</td><td>3</td><td>hw11-client-2</td><td>10.244.0.33</td><td>hw11-api-b967f4df8-x2zsr</td><td>27</td><td>10.244.0.33</td><td>27</td><td>0</td></tr><tr><td>normal</td><td>uniform</td><td>3</td><td>hw11-client-1</td><td>10.244.0.32</td><td>hw11-api-b967f4df8-x2zsr</td><td>27</td><td>10.244.0.32</td><td>27</td><td>0</td></tr><tr><td>normal</td><td>uniform</td><td>3</td><td>hw11-client-3</td><td>10.244.0.34</td><td>hw11-api-b967f4df8-fw5rn</td><td>31</td><td>10.244.0.34</td><td>31</td><td>0</td></tr><tr><td>normal</td><td>skewed</td><td>3</td><td>hw11-client-0</td><td>10.244.0.31</td><td>hw11-api-b967f4df8-fw5rn</td><td>97</td><td>10.244.0.31</td><td>97</td><td>0</td></tr><tr><td>normal</td><td>skewed</td><td>3</td><td>hw11-client-0</td><td>10.244.0.31</td><td>hw11-api-b967f4df8-x2zsr</td><td>95</td><td>10.244.0.31</td><td>95</td><td>0</td></tr><tr><td>normal</td><td>skewed</td><td>3</td><td>hw11-client-1</td><td>10.244.0.32</td><td>hw11-api-b967f4df8-fw5rn</td><td>11</td><td>10.244.0.32</td><td>11</td><td>0</td></tr><tr><td>normal</td><td>skewed</td><td>3</td><td>hw11-client-2</td><td>10.244.0.33</td><td>hw11-api-b967f4df8-fw5rn</td><td>8</td><td>10.244.0.33</td><td>8</td><td>0</td></tr><tr><td>normal</td><td>skewed</td><td>3</td><td>hw11-client-2</td><td>10.244.0.33</td><td>hw11-api-b967f4df8-x2zsr</td><td>8</td><td>10.244.0.33</td><td>8</td><td>0</td></tr><tr><td>normal</td><td>skewed</td><td>3</td><td>hw11-client-3</td><td>10.244.0.34</td><td>hw11-api-b967f4df8-fw5rn</td><td>8</td><td>10.244.0.34</td><td>8</td><td>0</td></tr><tr><td>normal</td><td>skewed</td><td>3</td><td>hw11-client-3</td><td>10.244.0.34</td><td>hw11-api-b967f4df8-x2zsr</td><td>8</td><td>10.244.0.34</td><td>8</td><td>0</td></tr><tr><td>normal</td><td>skewed</td><td>3</td><td>hw11-client-1</td><td>10.244.0.32</td><td>hw11-api-b967f4df8-x2zsr</td><td>5</td><td>10.244.0.32</td><td>5</td><td>0</td></tr><tr><td>clientip</td><td>uniform</td><td>3</td><td>hw11-client-0</td><td>10.244.0.31</td><td>hw11-api-b967f4df8-x2zsr</td><td>60</td><td>10.244.0.31</td><td>60</td><td>0</td></tr><tr><td>clientip</td><td>uniform</td><td>3</td><td>hw11-client-1</td><td>10.244.0.32</td><td>hw11-api-b967f4df8-fw5rn</td><td>60</td><td>10.244.0.32</td><td>60</td><td>0</td></tr><tr><td>clientip</td><td>uniform</td><td>3</td><td>hw11-client-2</td><td>10.244.0.33</td><td>hw11-api-b967f4df8-x2zsr</td><td>60</td><td>10.244.0.33</td><td>60</td><td>0</td></tr><tr><td>clientip</td><td>uniform</td><td>3</td><td>hw11-client-3</td><td>10.244.0.34</td><td>hw11-api-b967f4df8-fw5rn</td><td>60</td><td>10.244.0.34</td><td>60</td><td>0</td></tr><tr><td>clientip</td><td>skewed</td><td>3</td><td>hw11-client-0</td><td>10.244.0.31</td><td>hw11-api-b967f4df8-x2zsr</td><td>192</td><td>10.244.0.31</td><td>192</td><td>0</td></tr><tr><td>clientip</td><td>skewed</td><td>3</td><td>hw11-client-1</td><td>10.244.0.32</td><td>hw11-api-b967f4df8-fw5rn</td><td>16</td><td>10.244.0.32</td><td>16</td><td>0</td></tr><tr><td>clientip</td><td>skewed</td><td>3</td><td>hw11-client-2</td><td>10.244.0.33</td><td>hw11-api-b967f4df8-x2zsr</td><td>16</td><td>10.244.0.33</td><td>16</td><td>0</td></tr><tr><td>clientip</td><td>skewed</td><td>3</td><td>hw11-client-3</td><td>10.244.0.34</td><td>hw11-api-b967f4df8-fw5rn</td><td>16</td><td>10.244.0.34</td><td>16</td><td>0</td></tr></tbody></table></div>
+<p>Прямые доказательства mapping: <a href="b/normal/uniform/run-3/requests.jsonl">b/normal/uniform/run-3 requests</a>; <a href="b/normal/uniform/run-3/hw11-api-b967f4df8-fw5rn.log">hw11-api-b967f4df8-fw5rn.log</a>; <a href="b/normal/uniform/run-3/hw11-api-b967f4df8-x2zsr.log">hw11-api-b967f4df8-x2zsr.log</a><br><a href="b/normal/skewed/run-3/requests.jsonl">b/normal/skewed/run-3 requests</a>; <a href="b/normal/skewed/run-3/hw11-api-b967f4df8-fw5rn.log">hw11-api-b967f4df8-fw5rn.log</a>; <a href="b/normal/skewed/run-3/hw11-api-b967f4df8-x2zsr.log">hw11-api-b967f4df8-x2zsr.log</a><br><a href="b/clientip/uniform/run-3/requests.jsonl">b/clientip/uniform/run-3 requests</a>; <a href="b/clientip/uniform/run-3/hw11-api-b967f4df8-fw5rn.log">hw11-api-b967f4df8-fw5rn.log</a>; <a href="b/clientip/uniform/run-3/hw11-api-b967f4df8-x2zsr.log">hw11-api-b967f4df8-x2zsr.log</a><br><a href="b/clientip/skewed/run-3/requests.jsonl">b/clientip/skewed/run-3 requests</a>; <a href="b/clientip/skewed/run-3/hw11-api-b967f4df8-fw5rn.log">hw11-api-b967f4df8-fw5rn.log</a>; <a href="b/clientip/skewed/run-3/hw11-api-b967f4df8-x2zsr.log">hw11-api-b967f4df8-x2zsr.log</a>.</p>
+<div class='table'><table><thead><tr><th>Трафик</th><th>Политика</th><th>Повторов</th><th>Run p95 TTFC, с: медиана [min…max]</th><th>Run p95 full, с: медиана [min…max]</th><th>Успех / sent</th><th>Отказы</th><th>Обрывы + ошибки</th><th>Timeout</th><th>Cache hits/misses; доля hit</th></tr></thead><tbody><tr><td>uniform</td><td>normal</td><td>3</td><td>2.721 [1.767 … 6.941]</td><td>3.342 [2.403 … 7.56]</td><td>720/720</td><td>0</td><td>0</td><td>0</td><td>696/24; hit rate=0.9667</td></tr><tr><td>uniform</td><td>clientip</td><td>3</td><td>0.2415 [0.2411 … 0.2419]</td><td>0.8735 [0.8734 … 0.8751]</td><td>720/720</td><td>0</td><td>0</td><td>0</td><td>708/12; hit rate=0.9833</td></tr><tr><td>skewed</td><td>normal</td><td>3</td><td>3.154 [3.047 … 3.175]</td><td>3.779 [3.667 … 3.806]</td><td>720/720</td><td>0</td><td>0</td><td>0</td><td>696/24; hit rate=0.9667</td></tr><tr><td>skewed</td><td>clientip</td><td>3</td><td>27.85 [27.81 … 27.86]</td><td>28.48 [28.44 … 28.49]</td><td>603/720</td><td>117</td><td>0</td><td>0</td><td>591/12; hit rate=0.9801</td></tr></tbody></table></div>
+<p>Отдельно сохраняем случай ClientIP + uniform: <a href="b/clientip/uniform/run-3/requests.jsonl">b/clientip/uniform/run-3</a>; запросы по Pod: {&quot;hw11-api-b967f4df8-fw5rn&quot;: 120, &quot;hw11-api-b967f4df8-x2zsr&quot;: 120}; p95 TTFC этого run = 0.2411 с, успешных = 240/240. При закреплении четырёх IP по схеме 2+2 равномерный профиль остаётся сбалансированным; локальность кеша и фазовое расписание arrivals могут уменьшить очередь и задержку относительно случайного выбора backend на новых соединениях. Это объяснение проверяется распределением и кеш-промахами; отдельно разделить влияние локальности и фаз без дополнительного опыта нельзя. Этот результат учитывается наравне с горячим профилем; обычный Service не объявляется лучшим при любой нагрузке.</p>
+<p><strong>Сохранённый результат без ожидаемого 80%-перекоса распределения:</strong> <a href="b/normal/skewed/run-1/requests.jsonl">b/normal/skewed/run-1</a>; фактические запросы по Pod: {&quot;hw11-api-b967f4df8-fw5rn&quot;: 119, &quot;hw11-api-b967f4df8-x2zsr&quot;: 121}. При том же 80%-клиенте отсутствие ClientIP и новые соединения допускают распределение на обе реплики; степень баланса оценивается этими числами, а не обещается сетевой реализацией.</p>
+<p><strong>Выбор по тяжёлому профилю:</strong> медиана p95 TTFC трёх runs: normal = 3.154 с, ClientIP = 27.85 с; доля неуспехов/sent: 0 и 0.1625. Промахи кеша среди completed: 24 и 12. Обычный Service подтверждён как исправление горячего профиля: задержка ниже без роста доли неуспехов. Три повтора описывают этот стенд, но не дают универсальной гарантии для других сетей и workloads.</p>
+<p>Диагностика <a href="b/no-skew">b/no-skew</a> использует ClientIP и низкую частоту: она проверяет отсутствие <em>очереди</em> ниже ёмкости; это не доказательство равномерного распределения. Калибровка <a href="b/calibration/calibration-decision.json">b/calibration/calibration-decision.json</a> требует одновременных waiting&gt;0 у одной реплики и running=0 у другой перед запуском 12 основных прогонов.</p>
+<p>Проверяемое исправление — обычный Service без постоянной привязки диалога к Pod. Его измеренный эффект оценивается отдельно для каждого профиля по таблице и трём repeats. В таблице hits/misses считаются по completed с известным cache_hit, hit rate = hits/(hits+misses); отказавшие запросы без lookup не включаются в этот знаменатель. Число дополнительных промахов при обычном Service сравнивается на том же расписании: оно показывает измеренную цену копирования префикса на другую реплику, но не размер реального KV-кеша. Цена решения — возможный пересчёт префикса на второй реплике; истории диалогов это не разрушает, потому что полный контекст находится в запросе. Числа относятся к искусственным hit/miss costs. На настоящем engine отдельно проверяются prefill/decode, batch admission, eviction, KV-память и cache-aware routing.</p>
+<figure><img src='figures/02-hot-replica.png' alt='Задержка, очередь, running и waiting по репликам'><figcaption>2. Успешные запросы по Pod и сохранённые gauges Prometheus; конкретный run указан в заголовке. Наличие очереди у горячей реплики проверяется вместе со свободной второй.</figcaption></figure>
+<figure><img src='figures/03-policy-comparison.png' alt='Сравнение политик в трёх повторах для двух профилей'><figcaption>3. Каждая точка — отдельный run. p95 считаются по успешным ответам; доля неуспехов имеет знаменатель sent. N рядом с точками — число успехов.</figcaption></figure>
+<h3>Сравнение classic histogram с тем же набором ответов</h3>
+<p>Для каждого B run сохранены cumulative buckets до arrivals и после завершения всех запросов, без смены Pod и чужого workload. Разность bucket-счётчиков суммируется по <code>le</code>; проверяются неизменность пары Pod, отсутствие counter reset, совпадение delta_count и N completed клиента. p50/p95 гистограммы используют линейную интерполяцию внутри bucket, точные серверные квантили — поля done, точные клиентские — monotonic durations. Разница сети и аппроксимации не скрывается.</p>
+<p>PromQL, sliding-window оговорка и alert expressions: <a href="../../deploy/hw11/monitoring/promql.md">../../deploy/hw11/monitoring/promql.md</a>; <a href="../../deploy/hw11/monitoring/alerts.yml">../../deploy/hw11/monitoring/alerts.yml</a>. Перцентиль рассчитывается после агрегации с сохранением <code>le</code>, например:</p>
+<pre>histogram_quantile(0.95,
+  sum by (le, pod) (rate(hw11_ttfc_seconds_bucket[1m])))</pre>
+<div class='table'><table><thead><tr><th>Run</th><th>Метрика</th><th>Cohort верен</th><th>Delta N</th><th>Client p50, с</th><th>Server p50, с</th><th>Histogram p50, с</th><th>Client p95, с</th><th>Server p95, с</th><th>Histogram p95, с</th><th>Prom cohort верен</th><th>Prom p95, с</th></tr></thead><tbody><tr><td>b/normal/uniform/run-1</td><td>ttfc</td><td>1</td><td>240</td><td>0.5975</td><td>0.5959</td><td>0.6494</td><td>1.767</td><td>1.765</td><td>2.357</td><td>1</td><td>2.357</td></tr><tr><td>b/normal/uniform/run-1</td><td>full</td><td>1</td><td>240</td><td>1.229</td><td>1.227</td><td>1.332</td><td>2.403</td><td>2.401</td><td>2.812</td><td>1</td><td>2.812</td></tr><tr><td>b/normal/uniform/run-2</td><td>ttfc</td><td>1</td><td>240</td><td>1.55</td><td>1.549</td><td>1.525</td><td>6.941</td><td>6.94</td><td>8.4</td><td>1</td><td>8.4</td></tr><tr><td>b/normal/uniform/run-2</td><td>full</td><td>1</td><td>240</td><td>2.175</td><td>2.173</td><td>2.25</td><td>7.56</td><td>7.558</td><td>9</td><td>1</td><td>9</td></tr><tr><td>b/normal/uniform/run-3</td><td>ttfc</td><td>1</td><td>240</td><td>0.9357</td><td>0.9337</td><td>0.9377</td><td>2.721</td><td>2.72</td><td>2.883</td><td>1</td><td>2.883</td></tr><tr><td>b/normal/uniform/run-3</td><td>full</td><td>1</td><td>240</td><td>1.565</td><td>1.562</td><td>1.643</td><td>3.342</td><td>3.34</td><td>4.56</td><td>1</td><td>4.56</td></tr><tr><td>b/normal/skewed/run-1</td><td>ttfc</td><td>1</td><td>240</td><td>0.9605</td><td>0.9588</td><td>1.016</td><td>3.154</td><td>3.152</td><td>3.231</td><td>1</td><td>3.231</td></tr><tr><td>b/normal/skewed/run-1</td><td>full</td><td>1</td><td>240</td><td>1.593</td><td>1.591</td><td>1.689</td><td>3.779</td><td>3.776</td><td>4.8</td><td>1</td><td>4.8</td></tr><tr><td>b/normal/skewed/run-2</td><td>ttfc</td><td>1</td><td>240</td><td>1.179</td><td>1.176</td><td>1.139</td><td>3.175</td><td>3.172</td><td>3.882</td><td>1</td><td>3.882</td></tr><tr><td>b/normal/skewed/run-2</td><td>full</td><td>1</td><td>240</td><td>1.811</td><td>1.808</td><td>1.848</td><td>3.806</td><td>3.803</td><td>4.941</td><td>1</td><td>4.941</td></tr><tr><td>b/normal/skewed/run-3</td><td>ttfc</td><td>1</td><td>240</td><td>0.9287</td><td>0.9276</td><td>0.9782</td><td>3.047</td><td>3.045</td><td>3.6</td><td>1</td><td>3.6</td></tr><tr><td>b/normal/skewed/run-3</td><td>full</td><td>1</td><td>240</td><td>1.561</td><td>1.559</td><td>1.629</td><td>3.667</td><td>3.664</td><td>4.971</td><td>1</td><td>4.971</td></tr><tr><td>b/clientip/uniform/run-1</td><td>ttfc</td><td>1</td><td>240</td><td>0.2303</td><td>0.2282</td><td>0.3</td><td>0.2415</td><td>0.2372</td><td>0.39</td><td>1</td><td>0.39</td></tr><tr><td>b/clientip/uniform/run-1</td><td>full</td><td>1</td><td>240</td><td>0.8625</td><td>0.8597</td><td>1.15</td><td>0.8735</td><td>0.8691</td><td>1.465</td><td>1</td><td>1.465</td></tr><tr><td>b/clientip/uniform/run-2</td><td>ttfc</td><td>1</td><td>240</td><td>0.2328</td><td>0.2307</td><td>0.3</td><td>0.2419</td><td>0.2375</td><td>0.39</td><td>1</td><td>0.39</td></tr><tr><td>b/clientip/uniform/run-2</td><td>full</td><td>1</td><td>240</td><td>0.8639</td><td>0.8615</td><td>1.15</td><td>0.8751</td><td>0.8714</td><td>1.465</td><td>1</td><td>1.465</td></tr><tr><td>b/clientip/uniform/run-3</td><td>ttfc</td><td>1</td><td>240</td><td>0.2298</td><td>0.2279</td><td>0.3</td><td>0.2411</td><td>0.2369</td><td>0.39</td><td>1</td><td>0.39</td></tr><tr><td>b/clientip/uniform/run-3</td><td>full</td><td>1</td><td>240</td><td>0.8615</td><td>0.8587</td><td>1.15</td><td>0.8734</td><td>0.8701</td><td>1.465</td><td>1</td><td>1.465</td></tr><tr><td>b/clientip/skewed/run-1</td><td>ttfc</td><td>1</td><td>201</td><td>20.78</td><td>20.78</td><td>20.43</td><td>27.86</td><td>27.85</td><td>45.26</td><td>1</td><td>45.26</td></tr><tr><td>b/clientip/skewed/run-1</td><td>full</td><td>1</td><td>201</td><td>21.41</td><td>21.41</td><td>21</td><td>28.49</td><td>28.49</td><td>45.32</td><td>1</td><td>45.32</td></tr><tr><td>b/clientip/skewed/run-2</td><td>ttfc</td><td>1</td><td>201</td><td>20.65</td><td>20.65</td><td>20.23</td><td>27.85</td><td>27.85</td><td>45.23</td><td>1</td><td>45.23</td></tr><tr><td>b/clientip/skewed/run-2</td><td>full</td><td>1</td><td>201</td><td>21.28</td><td>21.28</td><td>20.93</td><td>28.48</td><td>28.48</td><td>45.32</td><td>1</td><td>45.32</td></tr><tr><td>b/clientip/skewed/run-3</td><td>ttfc</td><td>1</td><td>201</td><td>20.72</td><td>20.72</td><td>20.23</td><td>27.81</td><td>27.81</td><td>45.23</td><td>1</td><td>45.23</td></tr><tr><td>b/clientip/skewed/run-3</td><td>full</td><td>1</td><td>201</td><td>21.35</td><td>21.35</td><td>21</td><td>28.44</td><td>28.44</td><td>45.32</td><td>1</td><td>45.32</td></tr></tbody></table></div>
+<p class='notice'><strong>Ограничение разрешения гистограммы:</strong> в ClientIP + skewed медиана run p95 по сырым клиентским длительностям = 27.85 с, по точным серверным длительностям = 27.85 с, а интерполяция classic histogram даёт 45.23 с. Широкий bucket 24…48 с распределяет наблюдения линейно внутри границ, хотя реальные значения сосредоточены в части интервала. Значение 45.23 с является оценкой гистограммы и не используется как фактически измеренный p95. Выбор политики опирается на сырые клиентские данные и долю отказов. В следующей версии следует добавить границы 26/28/30/32 с; текущие результаты и buckets сохранены без изменения. Численная погрешность аппроксимации не меняет подтверждённое совпадение набора ответов и delta_count.</p>
+<h2>5. Опыт C — HPA и два алерта</h2>
+<p><strong>Проверка: PASS.</strong> Гипотеза: вычислительная нагрузка увеличит среднюю CPU-утилизацию выше target, HPA добавит третью реплику, после снижения arrivals вернёт минимум с учётом stabilization window. Backend и стоимость вычислений те же, что в B; CPU pressure меняется частотой запросов и задержкой между частями, а не другой реализацией имитатора. HPA <code>autoscaling/v2</code>: минимум 2, максимум 3, target 70% относительно CPU requests, scale-down stabilization 30 с.</p>
+<p>Условия HPA и доступность resource metrics API: <a href="c/hpa-before.json">c/hpa-before.json</a>, <a href="c/metrics-api.json">c/metrics-api.json</a>; измеренный цикл, создание/готовность Pod и scale-down: <a href="c/hpa/timeline.jsonl">c/hpa/timeline.jsonl</a>, <a href="c/hpa/scale-down.json">c/hpa/scale-down.json</a>. Момент снижения arrivals берётся из абсолютного расписания, а окончание drain клиентов сохраняется отдельно.</p>
+<pre>{
+  &quot;transitions&quot;: [
+    {
+      &quot;utc&quot;: 1794770865.0867388,
+      &quot;replicas&quot;: 2,
+      &quot;ready&quot;: 2
+    },
+    {
+      &quot;utc&quot;: 1794770902.1969512,
+      &quot;replicas&quot;: 3,
+      &quot;ready&quot;: 2
+    },
+    {
+      &quot;utc&quot;: 1794771051.751232,
+      &quot;replicas&quot;: 2,
+      &quot;ready&quot;: 2
+    }
+  ],
+  &quot;pods&quot;: {
+    &quot;hw11-api-b967f4df8-5gqgp&quot;: {
+      &quot;created_utc&quot;: &quot;2026-11-15T19:27:22Z&quot;,
+      &quot;ready_utc&quot;: &quot;2026-11-15T19:27:43Z&quot;
+    },
+    &quot;hw11-api-b967f4df8-fw5rn&quot;: {
+      &quot;created_utc&quot;: &quot;2026-11-15T18:54:49Z&quot;,
+      &quot;ready_utc&quot;: &quot;2026-11-15T18:55:10Z&quot;
+    },
+    &quot;hw11-api-b967f4df8-l7f6l&quot;: {
+      &quot;created_utc&quot;: &quot;2026-11-15T19:28:07Z&quot;,
+      &quot;ready_utc&quot;: &quot;2026-11-15T19:28:28Z&quot;
+    }
+  },
+  &quot;scale_down&quot;: {
+    &quot;observed_three&quot;: true,
+    &quot;load_stopped_utc&quot;: 1794770993.678102,
+    &quot;minimum_observed_utc&quot;: 1794771052.688543,
+    &quot;scale_down_seconds&quot;: 59.010441064834595,
+    &quot;stabilization_seconds&quot;: 30,
+    &quot;hpa&quot;: {
+      &quot;apiVersion&quot;: &quot;autoscaling/v2&quot;,
+      &quot;kind&quot;: &quot;HorizontalPodAutoscaler&quot;,
+      &quot;metadata&quot;: {
+        &quot;annotations&quot;: {
+          &quot;meta.helm.sh/release-name&quot;: &quot;hw11&quot;,
+          &quot;meta.helm.sh/release-namespace&quot;: &quot;hw11&quot;
+        },
+        &quot;creationTimestamp&quot;: &quot;2026-11-15T19:27:07Z&quot;,
+        &quot;labels&quot;: {
+          &quot;app.kubernetes.io/managed-by&quot;: &quot;Helm&quot;
+        },
+        &quot;name&quot;: &quot;hw11-api&quot;,
+        &quot;namespace&quot;: &quot;hw11&quot;,
+        &quot;resourceVersion&quot;: &quot;8295&quot;,
+        &quot;uid&quot;: &quot;c344c844-0a2c-4d6f-aa71-854c026c7e4a&quot;
+      },
+      &quot;spec&quot;: {
+        &quot;behavior&quot;: {
+          &quot;scaleDown&quot;: {
+            &quot;policies&quot;: [
+              {
+                &quot;periodSeconds&quot;: 15,
+                &quot;type&quot;: &quot;Pods&quot;,
+                &quot;value&quot;: 1
+              }
+            ],
+            &quot;selectPolicy&quot;: &quot;Max&quot;,
+            &quot;stabilizationWindowSeconds&quot;: 30
+          },
+          &quot;scaleUp&quot;: {
+            &quot;policies&quot;: [
+              {
+                &quot;periodSeconds&quot;: 15,
+                &quot;type&quot;: &quot;Pods&quot;,
+                &quot;value&quot;: 1
+              }
+            ],
+            &quot;selectPolicy&quot;: &quot;Max&quot;,
+            &quot;stabilizationWindowSeconds&quot;: 0
+          }
+        },
+        &quot;maxReplicas&quot;: 3,
+        &quot;metrics&quot;: [
+          {
+            &quot;resource&quot;: {
+              &quot;name&quot;: &quot;cpu&quot;,
+              &quot;target&quot;: {
+                &quot;averageUtilization&quot;: 70,
+                &quot;type&quot;: &quot;Utilization&quot;
+              }
+            },
+            &quot;type&quot;: &quot;Resource&quot;
+          }
+        ],
+        &quot;minReplicas&quot;: 2,
+        &quot;scaleTargetRef&quot;: {
+          &quot;apiVersion&quot;: &quot;apps/v1&quot;,
+          &quot;kind&quot;: &quot;Deployment&quot;,
+          &quot;name&quot;: &quot;hw11-api&quot;
+        }
+      },
+      &quot;status&quot;: {
+        &quot;conditions&quot;: [
+          {
+            &quot;lastTransitionTime&quot;: &quot;2026-11-15T19:27:22Z&quot;,
+            &quot;message&quot;: &quot;recommended size matches current size&quot;,
+            &quot;reason&quot;: &quot;ReadyForNewScale&quot;,
+            &quot;status&quot;: &quot;True&quot;,
+            &quot;type&quot;: &quot;AbleToScale&quot;
+          },
+          {
+            &quot;lastTransitionTime&quot;: &quot;2026-11-15T19:27:37Z&quot;,
+            &quot;message&quot;: &quot;the HPA was able to successfully calculate a replica count from cpu resource utilization (percentage of request)&quot;,
+            &quot;reason&quot;: &quot;ValidMetricFound&quot;,
+            &quot;status&quot;: &quot;True&quot;,
+            &quot;type&quot;: &quot;ScalingActive&quot;
+          },
+          {
+            &quot;lastTransitionTime&quot;: &quot;2026-11-15T19:30:36Z&quot;,
+            &quot;message&quot;: &quot;the desired replica count is less than the minimum replica count&quot;,
+            &quot;reason&quot;: &quot;TooFewReplicas&quot;,
+            &quot;status&quot;: &quot;True&quot;,
+            &quot;type&quot;: &quot;ScalingLimited&quot;
+          }
+        ],
+        &quot;currentMetrics&quot;: [
+          {
+            &quot;resource&quot;: {
+              &quot;current&quot;: {
+                &quot;averageUtilization&quot;: 1,
+                &quot;averageValue&quot;: &quot;4m&quot;
+              },
+              &quot;name&quot;: &quot;cpu&quot;
+            },
+            &quot;type&quot;: &quot;Resource&quot;
+          }
+        ],
+        &quot;currentReplicas&quot;: 2,
+        &quot;desiredReplicas&quot;: 2,
+        &quot;lastScaleTime&quot;: &quot;2026-11-15T19:30:36Z&quot;
+      }
+    }
+  },
+  &quot;load_window&quot;: {
+    &quot;start_utc&quot;: 1794770873.678102,
+    &quot;stop_utc&quot;: 1794770993.678102,
+    &quot;clients_drained_utc&quot;: 1794770993.762105
+  }
+}</pre>
+<p>Горячий ClientIP-профиль повторён при HPA: <a href="c/hot-replica">c/hot-replica</a>. Средняя CPU может пересечь target, если работа горячего Pod достаточна относительно суммы requests; при низкой средней CPU новая реплика не появится. Даже после scale-out привязанный IP продолжает попадать на прежний Pod, поэтому третья реплика сама по себе не гарантирует снятие очереди; это проверяется traces и running/waiting.</p>
+<p>Фактическое распределение горячего прогона ниже строится по идентичности Pod в HTTP-ответах и всем API Pod, наблюдённым в timeline. Поэтому новая готовая реплика с нулём записанных попыток показана явно, а не пропущена. Время создания и первого Ready берётся из Kubernetes; интервал creation → Ready включает запуск и прогрев. Источник: <a href="c/hot-replica/requests.jsonl">c/hot-replica/requests.jsonl</a>, <a href="c/hot-replica/timeline.jsonl">c/hot-replica/timeline.jsonl</a>.</p>
+<p><strong>Наблюдение этого прогона:</strong> hw11-api-b967f4df8-ndpcw: Ready через 21 с после создания, 0 из 2250 записанных HTTP-попыток. Другие наблюдённые реплики получили hw11-api-b967f4df8-5gqgp — 150, hw11-api-b967f4df8-fw5rn — 2100. Это фактический случай, когда добавленная готовая ёмкость не разгрузила закреплённых клиентов.</p>
+<div class='table'><table><thead><tr><th>Pod</th><th>Новый в опыте</th><th>Попыток</th><th>Completed</th><th>Rejected</th><th>Created UTC</th><th>Ready UTC</th><th>Creation → Ready, с</th></tr></thead><tbody><tr><td>hw11-api-b967f4df8-5gqgp</td><td>0</td><td>150</td><td>150</td><td>0</td><td>2026-11-15T19:27:22Z</td><td>2026-11-15T19:27:43Z</td><td>21</td></tr><tr><td>hw11-api-b967f4df8-fw5rn</td><td>0</td><td>2100</td><td>1417</td><td>683</td><td>2026-11-15T18:54:49Z</td><td>2026-11-15T18:55:10Z</td><td>21</td></tr><tr><td>hw11-api-b967f4df8-ndpcw</td><td>1</td><td>0</td><td>0</td><td>0</td><td>2026-11-15T19:31:36Z</td><td>2026-11-15T19:31:57Z</td><td>21</td></tr></tbody></table></div>
+<pre>{
+  &quot;available&quot;: true,
+  &quot;service&quot;: &quot;hw11-affinity&quot;,
+  &quot;duration_seconds&quot;: 75,
+  &quot;sent&quot;: 2250,
+  &quot;attempts_without_response_pod&quot;: 0,
+  &quot;per_pod&quot;: [
+    {
+      &quot;pod&quot;: &quot;hw11-api-b967f4df8-5gqgp&quot;,
+      &quot;created_utc&quot;: &quot;2026-11-15T19:27:22Z&quot;,
+      &quot;ready_utc&quot;: &quot;2026-11-15T19:27:43Z&quot;,
+      &quot;new_during_observation&quot;: false,
+      &quot;attempts&quot;: 150,
+      &quot;successful&quot;: 150,
+      &quot;rejected&quot;: 0,
+      &quot;creation_to_ready_seconds&quot;: 21.0
+    },
+    {
+      &quot;pod&quot;: &quot;hw11-api-b967f4df8-fw5rn&quot;,
+      &quot;created_utc&quot;: &quot;2026-11-15T18:54:49Z&quot;,
+      &quot;ready_utc&quot;: &quot;2026-11-15T18:55:10Z&quot;,
+      &quot;new_during_observation&quot;: false,
+      &quot;attempts&quot;: 2100,
+      &quot;successful&quot;: 1417,
+      &quot;rejected&quot;: 683,
+      &quot;creation_to_ready_seconds&quot;: 21.0
+    },
+    {
+      &quot;pod&quot;: &quot;hw11-api-b967f4df8-ndpcw&quot;,
+      &quot;created_utc&quot;: &quot;2026-11-15T19:31:36Z&quot;,
+      &quot;ready_utc&quot;: &quot;2026-11-15T19:31:57Z&quot;,
+      &quot;new_during_observation&quot;: true,
+      &quot;attempts&quot;: 0,
+      &quot;successful&quot;: 0,
+      &quot;rejected&quot;: 0,
+      &quot;creation_to_ready_seconds&quot;: 21.0
+    }
+  ],
+  &quot;meaning&quot;: &quot;attempt counts use observed HTTP response Pod identities; zero is shown for API Pods present in the timeline but receiving no recorded attempts&quot;
+}</pre>
+<p>Алерты: p95 TTFC &gt;0,8 с при ≥10 успешных наблюдениях за 30 с; доля rejected &gt;5% при ≥20 terminal outcomes за 30 с. Оба имеют <code>for: 10s</code>, evaluation interval 5 с. Реальные inactive/pending/firing/normal состояния и правила: <a href="c/alerts/alert-states.json">c/alerts/alert-states.json</a>, <a href="c/alerts/rules.json">c/alerts/rules.json</a>. Наличие YAML правила само по себе не считается срабатыванием.</p>
+<figure><img src='figures/04-hpa.png' alt='HPA 2-3-2, CPU и поданная нагрузка'><figcaption>4. Фактические replicas/Ready, CPU в cores и отправки/с. Вертикальная линия — конец запланированных arrivals; Pod creation/ready timestamps сохранены рядом в JSON.</figcaption></figure>
+<h2>6. Собственные проверки и соответствие условиям</h2>
+<p>Обязательные live-проверки обращаются к Kubernetes-сервису: прогрев, фактическая загруженная A после отката, восстановление версии и диалога на заменённом Pod. Дополнительно проверяются реальные rejected/interrupted и изоляция двух диалогов с различимыми контрольными строками. Исходный сбой faulty probes сохранён отдельно от исправленного PASS. Unit tests дополняют эти доказательства, а не заменяют их.</p>
+<pre>{
+  &quot;passed&quot;: true,
+  &quot;checks&quot;: {
+    &quot;a&quot;: {
+      &quot;passed&quot;: true,
+      &quot;evidence&quot;: {
+        &quot;warmup_original_failure&quot;: true,
+        &quot;warmup_fixed_pass&quot;: true,
+        &quot;rollback_loaded_version&quot;: true,
+        &quot;replacement_and_dialog_recovery&quot;: true,
+        &quot;rejections_and_interrupted_stream&quot;: true,
+        &quot;dialog_isolation&quot;: true,
+        &quot;rollout_zero_errors&quot;: true,
+        &quot;active_stream_graceful_drain&quot;: {
+          &quot;long_streams_completed&quot;: 2,
+          &quot;background_completed&quot;: 60,
+          &quot;warmup_seconds&quot;: 10,
+          &quot;overlapping_streams&quot;: [
+            {
+              &quot;pod&quot;: &quot;hw11-api-9d8b574dc-mt9q5&quot;,
+              &quot;termination_started_utc&quot;: 1794772229.0,
+              &quot;first_observed_terminating_utc&quot;: 1794772229.980989,
+              &quot;deletion_deadline_utc&quot;: 1794772289.0,
+              &quot;stream_finished_utc&quot;: 1794772242.478137,
+              &quot;seconds_after_termination_start&quot;: 13.478137016296387
+            }
+          ]
+        }
+      }
+    },
+    &quot;b&quot;: {
+      &quot;passed&quot;: true,
+      &quot;evidence&quot;: {
+        &quot;full_runs&quot;: 12,
+        &quot;schedule_hashes&quot;: {
+          &quot;uniform&quot;: &quot;3552e1d87e7d7cb99529cf55467ec6ce126d9fba6f91b69e100f4d6d627b56c8&quot;,
+          &quot;skewed&quot;: &quot;cd91586eed1399f3a491e3ec0fc1dfe3c7396016871c4c4177e72f47487c04da&quot;
+        },
+        &quot;runs&quot;: [
+          {
+            &quot;policy&quot;: &quot;normal&quot;,
+            &quot;traffic&quot;: &quot;uniform&quot;,
+            &quot;repeat&quot;: 1,
+            &quot;planned&quot;: 240,
+            &quot;sent&quot;: 240,
+            &quot;successful&quot;: 240,
+            &quot;counts&quot;: {
+              &quot;completed&quot;: 240,
+              &quot;rejected&quot;: 0,
+              &quot;interrupted&quot;: 0,
+              &quot;timeout&quot;: 0,
+              &quot;connection_error&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;unsent&quot;: 0
+            },
+            &quot;ttfc_p50_seconds&quot;: 0.5975497164997705,
+            &quot;ttfc_p95_seconds&quot;: 1.766971615849979,
+            &quot;full_p50_seconds&quot;: 1.2289903089999825,
+            &quot;full_p95_seconds&quot;: 2.4029150537999606,
+            &quot;pods&quot;: {
+              &quot;hw11-api-b967f4df8-fw5rn&quot;: 120,
+              &quot;hw11-api-b967f4df8-x2zsr&quot;: 120
+            }
+          },
+          {
+            &quot;policy&quot;: &quot;normal&quot;,
+            &quot;traffic&quot;: &quot;uniform&quot;,
+            &quot;repeat&quot;: 2,
+            &quot;planned&quot;: 240,
+            &quot;sent&quot;: 240,
+            &quot;successful&quot;: 240,
+            &quot;counts&quot;: {
+              &quot;completed&quot;: 240,
+              &quot;rejected&quot;: 0,
+              &quot;interrupted&quot;: 0,
+              &quot;timeout&quot;: 0,
+              &quot;connection_error&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;unsent&quot;: 0
+            },
+            &quot;ttfc_p50_seconds&quot;: 1.5501736300000175,
+            &quot;ttfc_p95_seconds&quot;: 6.940821477000281,
+            &quot;full_p50_seconds&quot;: 2.175070720499889,
+            &quot;full_p95_seconds&quot;: 7.560072950400217,
+            &quot;pods&quot;: {
+              &quot;hw11-api-b967f4df8-fw5rn&quot;: 127,
+              &quot;hw11-api-b967f4df8-x2zsr&quot;: 113
+            }
+          },
+          {
+            &quot;policy&quot;: &quot;normal&quot;,
+            &quot;traffic&quot;: &quot;uniform&quot;,
+            &quot;repeat&quot;: 3,
+            &quot;planned&quot;: 240,
+            &quot;sent&quot;: 240,
+            &quot;successful&quot;: 240,
+            &quot;counts&quot;: {
+              &quot;completed&quot;: 240,
+              &quot;rejected&quot;: 0,
+              &quot;interrupted&quot;: 0,
+              &quot;timeout&quot;: 0,
+              &quot;connection_error&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;unsent&quot;: 0
+            },
+            &quot;ttfc_p50_seconds&quot;: 0.9357374030000756,
+            &quot;ttfc_p95_seconds&quot;: 2.721376458450003,
+            &quot;full_p50_seconds&quot;: 1.5649402124997778,
+            &quot;full_p95_seconds&quot;: 3.3415223697001686,
+            &quot;pods&quot;: {
+              &quot;hw11-api-b967f4df8-fw5rn&quot;: 126,
+              &quot;hw11-api-b967f4df8-x2zsr&quot;: 114
+            }
+          },
+          {
+            &quot;policy&quot;: &quot;normal&quot;,
+            &quot;traffic&quot;: &quot;skewed&quot;,
+            &quot;repeat&quot;: 1,
+            &quot;planned&quot;: 240,
+            &quot;sent&quot;: 240,
+            &quot;successful&quot;: 240,
+            &quot;counts&quot;: {
+              &quot;completed&quot;: 240,
+              &quot;rejected&quot;: 0,
+              &quot;interrupted&quot;: 0,
+              &quot;timeout&quot;: 0,
+              &quot;connection_error&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;unsent&quot;: 0
+            },
+            &quot;ttfc_p50_seconds&quot;: 0.9605082494999806,
+            &quot;ttfc_p95_seconds&quot;: 3.154149047649683,
+            &quot;full_p50_seconds&quot;: 1.5927777720000904,
+            &quot;full_p95_seconds&quot;: 3.7785586717500323,
+            &quot;pods&quot;: {
+              &quot;hw11-api-b967f4df8-fw5rn&quot;: 119,
+              &quot;hw11-api-b967f4df8-x2zsr&quot;: 121
+            }
+          },
+          {
+            &quot;policy&quot;: &quot;normal&quot;,
+            &quot;traffic&quot;: &quot;skewed&quot;,
+            &quot;repeat&quot;: 2,
+            &quot;planned&quot;: 240,
+            &quot;sent&quot;: 240,
+            &quot;successful&quot;: 240,
+            &quot;counts&quot;: {
+              &quot;completed&quot;: 240,
+              &quot;rejected&quot;: 0,
+              &quot;interrupted&quot;: 0,
+              &quot;timeout&quot;: 0,
+              &quot;connection_error&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;unsent&quot;: 0
+            },
+            &quot;ttfc_p50_seconds&quot;: 1.1787210355000752,
+            &quot;ttfc_p95_seconds&quot;: 3.174929388749908,
+            &quot;full_p50_seconds&quot;: 1.8112183690000165,
+            &quot;full_p95_seconds&quot;: 3.8063537728998855,
+            &quot;pods&quot;: {
+              &quot;hw11-api-b967f4df8-fw5rn&quot;: 115,
+              &quot;hw11-api-b967f4df8-x2zsr&quot;: 125
+            }
+          },
+          {
+            &quot;policy&quot;: &quot;normal&quot;,
+            &quot;traffic&quot;: &quot;skewed&quot;,
+            &quot;repeat&quot;: 3,
+            &quot;planned&quot;: 240,
+            &quot;sent&quot;: 240,
+            &quot;successful&quot;: 240,
+            &quot;counts&quot;: {
+              &quot;completed&quot;: 240,
+              &quot;rejected&quot;: 0,
+              &quot;interrupted&quot;: 0,
+              &quot;timeout&quot;: 0,
+              &quot;connection_error&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;unsent&quot;: 0
+            },
+            &quot;ttfc_p50_seconds&quot;: 0.9287168889998156,
+            &quot;ttfc_p95_seconds&quot;: 3.047445903300125,
+            &quot;full_p50_seconds&quot;: 1.5605242485000872,
+            &quot;full_p95_seconds&quot;: 3.6667316183003305,
+            &quot;pods&quot;: {
+              &quot;hw11-api-b967f4df8-fw5rn&quot;: 124,
+              &quot;hw11-api-b967f4df8-x2zsr&quot;: 116
+            }
+          },
+          {
+            &quot;policy&quot;: &quot;clientip&quot;,
+            &quot;traffic&quot;: &quot;uniform&quot;,
+            &quot;repeat&quot;: 1,
+            &quot;planned&quot;: 240,
+            &quot;sent&quot;: 240,
+            &quot;successful&quot;: 240,
+            &quot;counts&quot;: {
+              &quot;completed&quot;: 240,
+              &quot;rejected&quot;: 0,
+              &quot;interrupted&quot;: 0,
+              &quot;timeout&quot;: 0,
+              &quot;connection_error&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;unsent&quot;: 0
+            },
+            &quot;ttfc_p50_seconds&quot;: 0.2303203554999982,
+            &quot;ttfc_p95_seconds&quot;: 0.24152101064989892,
+            &quot;full_p50_seconds&quot;: 0.8625182455002687,
+            &quot;full_p95_seconds&quot;: 0.8735056795498849,
+            &quot;pods&quot;: {
+              &quot;hw11-api-b967f4df8-fw5rn&quot;: 120,
+              &quot;hw11-api-b967f4df8-x2zsr&quot;: 120
+            }
+          },
+          {
+            &quot;policy&quot;: &quot;clientip&quot;,
+            &quot;traffic&quot;: &quot;uniform&quot;,
+            &quot;repeat&quot;: 2,
+            &quot;planned&quot;: 240,
+            &quot;sent&quot;: 240,
+            &quot;successful&quot;: 240,
+            &quot;counts&quot;: {
+              &quot;completed&quot;: 240,
+              &quot;rejected&quot;: 0,
+              &quot;interrupted&quot;: 0,
+              &quot;timeout&quot;: 0,
+              &quot;connection_error&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;unsent&quot;: 0
+            },
+            &quot;ttfc_p50_seconds&quot;: 0.2327561934998812,
+            &quot;ttfc_p95_seconds&quot;: 0.24193267039968305,
+            &quot;full_p50_seconds&quot;: 0.8638574530000369,
+            &quot;full_p95_seconds&quot;: 0.8750998543000833,
+            &quot;pods&quot;: {
+              &quot;hw11-api-b967f4df8-fw5rn&quot;: 120,
+              &quot;hw11-api-b967f4df8-x2zsr&quot;: 120
+            }
+          },
+          {
+            &quot;policy&quot;: &quot;clientip&quot;,
+            &quot;traffic&quot;: &quot;uniform&quot;,
+            &quot;repeat&quot;: 3,
+            &quot;planned&quot;: 240,
+            &quot;sent&quot;: 240,
+            &quot;successful&quot;: 240,
+            &quot;counts&quot;: {
+              &quot;completed&quot;: 240,
+              &quot;rejected&quot;: 0,
+              &quot;interrupted&quot;: 0,
+              &quot;timeout&quot;: 0,
+              &quot;connection_error&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;unsent&quot;: 0
+            },
+            &quot;ttfc_p50_seconds&quot;: 0.22983969800020532,
+            &quot;ttfc_p95_seconds&quot;: 0.24110162719966866,
+            &quot;full_p50_seconds&quot;: 0.8615067810001165,
+            &quot;full_p95_seconds&quot;: 0.8733938592999039,
+            &quot;pods&quot;: {
+              &quot;hw11-api-b967f4df8-fw5rn&quot;: 120,
+              &quot;hw11-api-b967f4df8-x2zsr&quot;: 120
+            }
+          },
+          {
+            &quot;policy&quot;: &quot;clientip&quot;,
+            &quot;traffic&quot;: &quot;skewed&quot;,
+            &quot;repeat&quot;: 1,
+            &quot;planned&quot;: 240,
+            &quot;sent&quot;: 240,
+            &quot;successful&quot;: 201,
+            &quot;counts&quot;: {
+              &quot;completed&quot;: 201,
+              &quot;rejected&quot;: 39,
+              &quot;interrupted&quot;: 0,
+              &quot;timeout&quot;: 0,
+              &quot;connection_error&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;unsent&quot;: 0
+            },
+            &quot;ttfc_p50_seconds&quot;: 20.781730842999877,
+            &quot;ttfc_p95_seconds&quot;: 27.856028597000204,
+            &quot;full_p50_seconds&quot;: 21.407149769999705,
+            &quot;full_p95_seconds&quot;: 28.49224223200008,
+            &quot;pods&quot;: {
+              &quot;hw11-api-b967f4df8-fw5rn&quot;: 32,
+              &quot;hw11-api-b967f4df8-x2zsr&quot;: 208
+            }
+          },
+          {
+            &quot;policy&quot;: &quot;clientip&quot;,
+            &quot;traffic&quot;: &quot;skewed&quot;,
+            &quot;repeat&quot;: 2,
+            &quot;planned&quot;: 240,
+            &quot;sent&quot;: 240,
+            &quot;successful&quot;: 201,
+            &quot;counts&quot;: {
+              &quot;completed&quot;: 201,
+              &quot;rejected&quot;: 39,
+              &quot;interrupted&quot;: 0,
+              &quot;timeout&quot;: 0,
+              &quot;connection_error&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;unsent&quot;: 0
+            },
+            &quot;ttfc_p50_seconds&quot;: 20.64913113500006,
+            &quot;ttfc_p95_seconds&quot;: 27.850825929000166,
+            &quot;full_p50_seconds&quot;: 21.281037461000324,
+            &quot;full_p95_seconds&quot;: 28.48397932099988,
+            &quot;pods&quot;: {
+              &quot;hw11-api-b967f4df8-fw5rn&quot;: 32,
+              &quot;hw11-api-b967f4df8-x2zsr&quot;: 208
+            }
+          },
+          {
+            &quot;policy&quot;: &quot;clientip&quot;,
+            &quot;traffic&quot;: &quot;skewed&quot;,
+            &quot;repeat&quot;: 3,
+            &quot;planned&quot;: 240,
+            &quot;sent&quot;: 240,
+            &quot;successful&quot;: 201,
+            &quot;counts&quot;: {
+              &quot;completed&quot;: 201,
+              &quot;rejected&quot;: 39,
+              &quot;interrupted&quot;: 0,
+              &quot;timeout&quot;: 0,
+              &quot;connection_error&quot;: 0,
+              &quot;error&quot;: 0,
+              &quot;unsent&quot;: 0
+            },
+            &quot;ttfc_p50_seconds&quot;: 20.721524476000013,
+            &quot;ttfc_p95_seconds&quot;: 27.809495107999737,
+            &quot;full_p50_seconds&quot;: 21.35145442799967,
+            &quot;full_p95_seconds&quot;: 28.440518209999937,
+            &quot;pods&quot;: {
+              &quot;hw11-api-b967f4df8-fw5rn&quot;: 32,
+              &quot;hw11-api-b967f4df8-x2zsr&quot;: 208
+            }
+          }
+        ]
+      }
+    },
+    &quot;c&quot;: {
+      &quot;passed&quot;: true,
+      &quot;evidence&quot;: {
+        &quot;hpa_two_three_two&quot;: true,
+        &quot;maximum_ready_api_pods&quot;: 3,
+        &quot;cpu_request_cores&quot;: [
+          0.25
+        ],
+        &quot;resource_metrics_api_pods&quot;: 2,
+        &quot;scale_down_seconds&quot;: 59.010441064834595,
+        &quot;alerts&quot;: {
+          &quot;HW11HighLatency&quot;: [
+            &quot;firing&quot;,
+            &quot;inactive&quot;,
+            &quot;pending&quot;
+          ],
+          &quot;HW11RejectionRatio&quot;: [
+            &quot;firing&quot;,
+            &quot;inactive&quot;,
+            &quot;pending&quot;
+          ]
+        },
+        &quot;alert_cycles&quot;: {
+          &quot;HW11HighLatency&quot;: [
+            {
+              &quot;state&quot;: &quot;inactive&quot;,
+              &quot;utc&quot;: 1794771167.42015
+            },
+            {
+              &quot;state&quot;: &quot;pending&quot;,
+              &quot;utc&quot;: 1794771187.4619231
+            },
+            {
+              &quot;state&quot;: &quot;firing&quot;,
+              &quot;utc&quot;: 1794771197.5947661
+            },
+            {
+              &quot;state&quot;: &quot;inactive&quot;,
+              &quot;utc&quot;: 1794771331.962914
+            }
+          ],
+          &quot;HW11RejectionRatio&quot;: [
+            {
+              &quot;state&quot;: &quot;inactive&quot;,
+              &quot;utc&quot;: 1794771167.42015
+            },
+            {
+              &quot;state&quot;: &quot;pending&quot;,
+              &quot;utc&quot;: 1794771187.4619231
+            },
+            {
+              &quot;state&quot;: &quot;firing&quot;,
+              &quot;utc&quot;: 1794771197.5947661
+            },
+            {
+              &quot;state&quot;: &quot;inactive&quot;,
+              &quot;utc&quot;: 1794771331.962914
+            }
+          ]
+        }
+      }
+    }
+  }
+}</pre>
+<p>Регрессия текущего проекта: <a href="regression.json">regression.json</a>; всего проверок: 197; passed=True.</p>
+<pre>{
+  &quot;timestamp_utc&quot;: &quot;2026-11-15T18:48:55.197554+00:00&quot;,
+  &quot;suites&quot;: [
+    {
+      &quot;name&quot;: &quot;previous-1-7&quot;,
+      &quot;command&quot;: [
+        &quot;.venv/bin/python&quot;,
+        &quot;-B&quot;,
+        &quot;-m&quot;,
+        &quot;unittest&quot;,
+        &quot;discover&quot;,
+        &quot;-s&quot;,
+        &quot;tests&quot;,
+        &quot;-p&quot;,
+        &quot;test_*.py&quot;
+      ],
+      &quot;returncode&quot;: 0,
+      &quot;passed&quot;: true,
+      &quot;tests&quot;: 122,
+      &quot;log&quot;: &quot;regression/previous-1-7.log&quot;
+    },
+    {
+      &quot;name&quot;: &quot;previous-8-10&quot;,
+      &quot;command&quot;: [
+        &quot;.venv/bin/python&quot;,
+        &quot;-B&quot;,
+        &quot;-m&quot;,
+        &quot;unittest&quot;,
+        &quot;discover&quot;,
+        &quot;-s&quot;,
+        &quot;tests_hw8910&quot;,
+        &quot;-v&quot;
+      ],
+      &quot;returncode&quot;: 0,
+      &quot;passed&quot;: true,
+      &quot;tests&quot;: 46,
+      &quot;log&quot;: &quot;regression/previous-8-10.log&quot;
+    },
+    {
+      &quot;name&quot;: &quot;hw11&quot;,
+      &quot;command&quot;: [
+        &quot;.venv-hw11/bin/python&quot;,
+        &quot;-B&quot;,
+        &quot;-m&quot;,
+        &quot;unittest&quot;,
+        &quot;discover&quot;,
+        &quot;-s&quot;,
+        &quot;tests_hw11&quot;,
+        &quot;-v&quot;
+      ],
+      &quot;returncode&quot;: 0,
+      &quot;passed&quot;: true,
+      &quot;tests&quot;: 29,
+      &quot;log&quot;: &quot;regression/hw11.log&quot;
+    }
+  ],
+  &quot;total_tests&quot;: 197,
+  &quot;passed&quot;: true,
+  &quot;live_mlflow_rechecked&quot;: false
+}</pre>
+<div class='table'><table><thead><tr><th>Группа критериев</th><th>Статус</th><th>Что проверяется</th><th>Прямые доказательства</th></tr></thead><tbody><tr><td>Основа и ресурсы</td><td>PASS</td><td>CPU simulated, Docker/kind, pinned deps/images, диск до/после, limits/retention/cleanup</td><td><a href="environment-before.json">environment-before.json</a>; <a href="environment-after.json">environment-after.json</a>; <a href="setup.json">setup.json</a>; <a href="../../deploy/hw11">../../deploy/hw11</a>; <a href="../../README.md">../../README.md</a></td></tr><tr><td>Helm и probes</td><td>PASS</td><td>Deployment2, Service/ConfigMap, image/model/warmup/replicas values; startup/readiness/liveness раздельно</td><td><a href="../../deploy/hw11/chart">../../deploy/hw11/chart</a>; <a href="a/faulty">a/faulty</a>; <a href="a/fixed">a/fixed</a></td></tr><tr><td>Версия и диалог</td><td>PASS</td><td>Проверка hash A/B; request/Pod/version identity; stateless history; замена Pod</td><td><a href="a/rollback/requests.jsonl">a/rollback/requests.jsonl</a>; <a href="a/replacement">a/replacement</a></td></tr><tr><td>Наблюдаемость</td><td>PASS</td><td>Prometheus per-Pod discovery, Grafana export, CPU/RAM/Ready/running/waiting/errors/latency</td><td><a href="setup.json">setup.json</a>; <a href="../../deploy/hw11/monitoring/grafana-dashboard.json">../../deploy/hw11/monitoring/grafana-dashboard.json</a>; <a href="b">b</a>; <a href="c">c</a></td></tr><tr><td>A: исходный дефект</td><td>PASS</td><td>Ранний unready request, Ready/EndpointSlice, затем тот же опыт с исправленными probes</td><td><a href="a/faulty/warmup-assertion.json">a/faulty/warmup-assertion.json</a>; <a href="a/fixed/warmup-assertion.json">a/fixed/warmup-assertion.json</a></td></tr><tr><td>A: rollout/rollback</td><td>PASS</td><td>Активный поток пересекает rollout и удаление Pod после preStop; 0 5xx/unfinished; never-ready B исключена; rollback A по ответам</td><td><a href="a/rollout">a/rollout</a>; <a href="a/drain-proof/proof.json">a/drain-proof/proof.json</a>; <a href="a/bad-rollout">a/bad-rollout</a>; <a href="a/rollback">a/rollback</a></td></tr><tr><td>A: отказ</td><td>PASS</td><td>Реальный принудительный процессный отказ, обрыв и восстановление; отдельные attempt IDs</td><td><a href="a/forced-kill">a/forced-kill</a></td></tr><tr><td>B: контролируемое сравнение</td><td>PASS</td><td>Два Service, ≥4 Pod/IP, keep-alive учтён, uniform и80%, одинаковые inputs/schedules</td><td><a href="b/network.json">b/network.json</a>; <a href="b/normal">b/normal</a>; <a href="b/clientip">b/clientip</a></td></tr><tr><td>B: кеш и горячая реплика</td><td>PASS</td><td>Capacity/hit/miss/concurrency; waiting+idleother; результат без сильного skew с объяснением</td><td><a href="b/calibration">b/calibration</a>; <a href="b/no-skew">b/no-skew</a>; <a href="b/normal/skewed">b/normal/skewed</a>; <a href="figures/02-hot-replica.png">figures/02-hot-replica.png</a></td></tr><tr><td>B: повторяемость</td><td>PASS</td><td>2policy×2traffic×3repeats, ≥120s каждый; initialcache, planned/actualsend и lag</td><td><a href="b">b</a>; <a href="summary.json">summary.json</a>; <a href="checks.json">checks.json</a></td></tr><tr><td>C: HPA</td><td>PASS</td><td>metrics API, requests, actual CPU, HPA2..3, 2→3→2, creation/Ready и stabilization duration</td><td><a href="c/metrics-api.json">c/metrics-api.json</a>; <a href="c/hpa-before.json">c/hpa-before.json</a>; <a href="c/hpa">c/hpa</a></td></tr><tr><td>C: hot+alerts</td><td>PASS</td><td>ClientIP при HPA; два thresholds/minimumN/for, pending/firing/normal</td><td><a href="c/hot-replica">c/hot-replica</a>; <a href="c/alerts">c/alerts</a></td></tr><tr><td>Измерения</td><td>PASS</td><td>Монотонные интервалы, chunks, terminal split, N+p50/p95, ratios и bounded labels</td><td><a href="a">a</a>; <a href="b">b</a>; <a href="c">c</a>; <a href="summary.json">summary.json</a></td></tr><tr><td>Гистограммы</td><td>PASS</td><td>sum buckets с le, cohortdelta_count=N, client/server/Prometheus comparison</td><td><a href="b/normal">b/normal</a>; <a href="b/clientip">b/clientip</a>; <a href="../../deploy/hw11/monitoring/promql.md">../../deploy/hw11/monitoring/promql.md</a></td></tr><tr><td>Собственные проверки</td><td>PASS</td><td>≥5, триliveKubernetes + accounting + dialogueisolation; исходныйFAIL/исправленныйPASS</td><td><a href="checks.json">checks.json</a>; <a href="../../scripts/hw11_checks.py">../../scripts/hw11_checks.py</a>; <a href="../../tests_hw11">../../tests_hw11</a></td></tr><tr><td>Сдача и защита</td><td>FAIL</td><td>Четыре графика, HTML, raw journals, команды, PR review + подтверждённый кейс лекции/первоисточник</td><td><a href="figures">figures</a>; <a href="report.html">report.html</a>; lecture-case.json <em>(ещё нет)</em></td></tr></tbody></table></div>
+<h2>7. Ревью предложения закрепить диалог навсегда</h2>
+<p>При очереди на A в 3 секунды и пересчёте префикса на свободной B за 0,8 секунды новый запрос следует допустить на B, если остальные затраты и ограничения сопоставимы. Разница 2,2 секунды до начала полезной работы больше выигрыша от локального кеша на A. Постоянное закрепление диалога за Pod превращает полезную локальность в ограничение доступной ёмкости; кеш должен влиять на стоимость маршрута, а не быть единственным критерием.</p>
+<p>Перед production-решением нужны распределения queue/prefill/decode, точность прогноза cache hit, размер и eviction KV-кеша, стоимость передачи состояния, свободная GPU/CPU-память, batch admission и p95/p99 на одинаковом workload. Новый запрос допускается только при наличии capacity и укладывающемся в deadline прогнозе; иначе нужен ограниченный отказ или маршрут на другую допустимую реплику. Решение проверяется по задержкам, отказам и распределению работы, а не средней загрузке.</p>
+<p>История диалога должна жить у клиента или во внешнем хранилище. После потери A B восстанавливает её из полного контекста, а локальный префикс пересчитывает. Уже начатый поток остаётся на обслуживающем engine до завершения в grace period; перенос посередине ответа допускается только при явной поддержке engine и протокола. После аварийного обрыва новая попытка получает отдельный attempt ID; повторная генерация не выдаётся за бесшовное продолжение старого потока.</p>
+<div class='notice'><strong>Недостающий критерий:</strong> локальная лекция 11 отсутствует, а источник её кейса ещё не предоставлен. Поэтому это ревью пока не связано с подтверждённым кейсом компании из лекции. Произвольный внешний пример не выдан за такой кейс. Для закрытия нужен источник лекции и первичная публикация выбранной компании.</div>
+<p>Сохранённые предыдущие попытки (не смешиваются с основными измерениями): <a href="a-initial">a-initial</a>.</p>
+<p class='muted'>Сформировано из сохранённых данных: 2026-11-15T19:58:53.596704+00:00. Скринкаст и сценарий исключены из работы по поручению пользователя.</p></main></body></html>

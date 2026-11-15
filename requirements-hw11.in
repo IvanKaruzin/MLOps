@@ -1,0 +1,7 @@
+# Lightweight CPU simulator and in-cluster clients; real model dependencies are separate.
+fastapi==0.139.0
+uvicorn==0.54.0
+pydantic==2.13.5
+prometheus-client==0.26.0
+httpx==0.28.1
+PyYAML==6.0.3

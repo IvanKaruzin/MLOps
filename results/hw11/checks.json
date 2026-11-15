@@ -1,0 +1,406 @@
+{
+  "passed": true,
+  "checks": {
+    "a": {
+      "passed": true,
+      "evidence": {
+        "warmup_original_failure": true,
+        "warmup_fixed_pass": true,
+        "rollback_loaded_version": true,
+        "replacement_and_dialog_recovery": true,
+        "rejections_and_interrupted_stream": true,
+        "dialog_isolation": true,
+        "rollout_zero_errors": true,
+        "active_stream_graceful_drain": {
+          "long_streams_completed": 2,
+          "background_completed": 60,
+          "warmup_seconds": 10,
+          "overlapping_streams": [
+            {
+              "pod": "hw11-api-9d8b574dc-mt9q5",
+              "termination_started_utc": 1794772229.0,
+              "first_observed_terminating_utc": 1794772229.980989,
+              "deletion_deadline_utc": 1794772289.0,
+              "stream_finished_utc": 1794772242.478137,
+              "seconds_after_termination_start": 13.478137016296387
+            }
+          ]
+        }
+      }
+    },
+    "b": {
+      "passed": true,
+      "evidence": {
+        "full_runs": 12,
+        "schedule_hashes": {
+          "uniform": "3552e1d87e7d7cb99529cf55467ec6ce126d9fba6f91b69e100f4d6d627b56c8",
+          "skewed": "cd91586eed1399f3a491e3ec0fc1dfe3c7396016871c4c4177e72f47487c04da"
+        },
+        "runs": [
+          {
+            "policy": "normal",
+            "traffic": "uniform",
+            "repeat": 1,
+            "planned": 240,
+            "sent": 240,
+            "successful": 240,
+            "counts": {
+              "completed": 240,
+              "rejected": 0,
+              "interrupted": 0,
+              "timeout": 0,
+              "connection_error": 0,
+              "error": 0,
+              "unsent": 0
+            },
+            "ttfc_p50_seconds": 0.5975497164997705,
+            "ttfc_p95_seconds": 1.766971615849979,
+            "full_p50_seconds": 1.2289903089999825,
+            "full_p95_seconds": 2.4029150537999606,
+            "pods": {
+              "hw11-api-b967f4df8-fw5rn": 120,
+              "hw11-api-b967f4df8-x2zsr": 120
+            }
+          },
+          {
+            "policy": "normal",
+            "traffic": "uniform",
+            "repeat": 2,
+            "planned": 240,
+            "sent": 240,
+            "successful": 240,
+            "counts": {
+              "completed": 240,
+              "rejected": 0,
+              "interrupted": 0,
+              "timeout": 0,
+              "connection_error": 0,
+              "error": 0,
+              "unsent": 0
+            },
+            "ttfc_p50_seconds": 1.5501736300000175,
+            "ttfc_p95_seconds": 6.940821477000281,
+            "full_p50_seconds": 2.175070720499889,
+            "full_p95_seconds": 7.560072950400217,
+            "pods": {
+              "hw11-api-b967f4df8-fw5rn": 127,
+              "hw11-api-b967f4df8-x2zsr": 113
+            }
+          },
+          {
+            "policy": "normal",
+            "traffic": "uniform",
+            "repeat": 3,
+            "planned": 240,
+            "sent": 240,
+            "successful": 240,
+            "counts": {
+              "completed": 240,
+              "rejected": 0,
+              "interrupted": 0,
+              "timeout": 0,
+              "connection_error": 0,
+              "error": 0,
+              "unsent": 0
+            },
+            "ttfc_p50_seconds": 0.9357374030000756,
+            "ttfc_p95_seconds": 2.721376458450003,
+            "full_p50_seconds": 1.5649402124997778,
+            "full_p95_seconds": 3.3415223697001686,
+            "pods": {
+              "hw11-api-b967f4df8-fw5rn": 126,
+              "hw11-api-b967f4df8-x2zsr": 114
+            }
+          },
+          {
+            "policy": "normal",
+            "traffic": "skewed",
+            "repeat": 1,
+            "planned": 240,
+            "sent": 240,
+            "successful": 240,
+            "counts": {
+              "completed": 240,
+              "rejected": 0,
+              "interrupted": 0,
+              "timeout": 0,
+              "connection_error": 0,
+              "error": 0,
+              "unsent": 0
+            },
+            "ttfc_p50_seconds": 0.9605082494999806,
+            "ttfc_p95_seconds": 3.154149047649683,
+            "full_p50_seconds": 1.5927777720000904,
+            "full_p95_seconds": 3.7785586717500323,
+            "pods": {
+              "hw11-api-b967f4df8-fw5rn": 119,
+              "hw11-api-b967f4df8-x2zsr": 121
+            }
+          },
+          {
+            "policy": "normal",
+            "traffic": "skewed",
+            "repeat": 2,
+            "planned": 240,
+            "sent": 240,
+            "successful": 240,
+            "counts": {
+              "completed": 240,
+              "rejected": 0,
+              "interrupted": 0,
+              "timeout": 0,
+              "connection_error": 0,
+              "error": 0,
+              "unsent": 0
+            },
+            "ttfc_p50_seconds": 1.1787210355000752,
+            "ttfc_p95_seconds": 3.174929388749908,
+            "full_p50_seconds": 1.8112183690000165,
+            "full_p95_seconds": 3.8063537728998855,
+            "pods": {
+              "hw11-api-b967f4df8-fw5rn": 115,
+              "hw11-api-b967f4df8-x2zsr": 125
+            }
+          },
+          {
+            "policy": "normal",
+            "traffic": "skewed",
+            "repeat": 3,
+            "planned": 240,
+            "sent": 240,
+            "successful": 240,
+            "counts": {
+              "completed": 240,
+              "rejected": 0,
+              "interrupted": 0,
+              "timeout": 0,
+              "connection_error": 0,
+              "error": 0,
+              "unsent": 0
+            },
+            "ttfc_p50_seconds": 0.9287168889998156,
+            "ttfc_p95_seconds": 3.047445903300125,
+            "full_p50_seconds": 1.5605242485000872,
+            "full_p95_seconds": 3.6667316183003305,
+            "pods": {
+              "hw11-api-b967f4df8-fw5rn": 124,
+              "hw11-api-b967f4df8-x2zsr": 116
+            }
+          },
+          {
+            "policy": "clientip",
+            "traffic": "uniform",
+            "repeat": 1,
+            "planned": 240,
+            "sent": 240,
+            "successful": 240,
+            "counts": {
+              "completed": 240,
+              "rejected": 0,
+              "interrupted": 0,
+              "timeout": 0,
+              "connection_error": 0,
+              "error": 0,
+              "unsent": 0
+            },
+            "ttfc_p50_seconds": 0.2303203554999982,
+            "ttfc_p95_seconds": 0.24152101064989892,
+            "full_p50_seconds": 0.8625182455002687,
+            "full_p95_seconds": 0.8735056795498849,
+            "pods": {
+              "hw11-api-b967f4df8-fw5rn": 120,
+              "hw11-api-b967f4df8-x2zsr": 120
+            }
+          },
+          {
+            "policy": "clientip",
+            "traffic": "uniform",
+            "repeat": 2,
+            "planned": 240,
+            "sent": 240,
+            "successful": 240,
+            "counts": {
+              "completed": 240,
+              "rejected": 0,
+              "interrupted": 0,
+              "timeout": 0,
+              "connection_error": 0,
+              "error": 0,
+              "unsent": 0
+            },
+            "ttfc_p50_seconds": 0.2327561934998812,
+            "ttfc_p95_seconds": 0.24193267039968305,
+            "full_p50_seconds": 0.8638574530000369,
+            "full_p95_seconds": 0.8750998543000833,
+            "pods": {
+              "hw11-api-b967f4df8-fw5rn": 120,
+              "hw11-api-b967f4df8-x2zsr": 120
+            }
+          },
+          {
+            "policy": "clientip",
+            "traffic": "uniform",
+            "repeat": 3,
+            "planned": 240,
+            "sent": 240,
+            "successful": 240,
+            "counts": {
+              "completed": 240,
+              "rejected": 0,
+              "interrupted": 0,
+              "timeout": 0,
+              "connection_error": 0,
+              "error": 0,
+              "unsent": 0
+            },
+            "ttfc_p50_seconds": 0.22983969800020532,
+            "ttfc_p95_seconds": 0.24110162719966866,
+            "full_p50_seconds": 0.8615067810001165,
+            "full_p95_seconds": 0.8733938592999039,
+            "pods": {
+              "hw11-api-b967f4df8-fw5rn": 120,
+              "hw11-api-b967f4df8-x2zsr": 120
+            }
+          },
+          {
+            "policy": "clientip",
+            "traffic": "skewed",
+            "repeat": 1,
+            "planned": 240,
+            "sent": 240,
+            "successful": 201,
+            "counts": {
+              "completed": 201,
+              "rejected": 39,
+              "interrupted": 0,
+              "timeout": 0,
+              "connection_error": 0,
+              "error": 0,
+              "unsent": 0
+            },
+            "ttfc_p50_seconds": 20.781730842999877,
+            "ttfc_p95_seconds": 27.856028597000204,
+            "full_p50_seconds": 21.407149769999705,
+            "full_p95_seconds": 28.49224223200008,
+            "pods": {
+              "hw11-api-b967f4df8-fw5rn": 32,
+              "hw11-api-b967f4df8-x2zsr": 208
+            }
+          },
+          {
+            "policy": "clientip",
+            "traffic": "skewed",
+            "repeat": 2,
+            "planned": 240,
+            "sent": 240,
+            "successful": 201,
+            "counts": {
+              "completed": 201,
+              "rejected": 39,
+              "interrupted": 0,
+              "timeout": 0,
+              "connection_error": 0,
+              "error": 0,
+              "unsent": 0
+            },
+            "ttfc_p50_seconds": 20.64913113500006,
+            "ttfc_p95_seconds": 27.850825929000166,
+            "full_p50_seconds": 21.281037461000324,
+            "full_p95_seconds": 28.48397932099988,
+            "pods": {
+              "hw11-api-b967f4df8-fw5rn": 32,
+              "hw11-api-b967f4df8-x2zsr": 208
+            }
+          },
+          {
+            "policy": "clientip",
+            "traffic": "skewed",
+            "repeat": 3,
+            "planned": 240,
+            "sent": 240,
+            "successful": 201,
+            "counts": {
+              "completed": 201,
+              "rejected": 39,
+              "interrupted": 0,
+              "timeout": 0,
+              "connection_error": 0,
+              "error": 0,
+              "unsent": 0
+            },
+            "ttfc_p50_seconds": 20.721524476000013,
+            "ttfc_p95_seconds": 27.809495107999737,
+            "full_p50_seconds": 21.35145442799967,
+            "full_p95_seconds": 28.440518209999937,
+            "pods": {
+              "hw11-api-b967f4df8-fw5rn": 32,
+              "hw11-api-b967f4df8-x2zsr": 208
+            }
+          }
+        ]
+      }
+    },
+    "c": {
+      "passed": true,
+      "evidence": {
+        "hpa_two_three_two": true,
+        "maximum_ready_api_pods": 3,
+        "cpu_request_cores": [
+          0.25
+        ],
+        "resource_metrics_api_pods": 2,
+        "scale_down_seconds": 59.010441064834595,
+        "alerts": {
+          "HW11HighLatency": [
+            "firing",
+            "inactive",
+            "pending"
+          ],
+          "HW11RejectionRatio": [
+            "firing",
+            "inactive",
+            "pending"
+          ]
+        },
+        "alert_cycles": {
+          "HW11HighLatency": [
+            {
+              "state": "inactive",
+              "utc": 1794771167.42015
+            },
+            {
+              "state": "pending",
+              "utc": 1794771187.4619231
+            },
+            {
+              "state": "firing",
+              "utc": 1794771197.5947661
+            },
+            {
+              "state": "inactive",
+              "utc": 1794771331.962914
+            }
+          ],
+          "HW11RejectionRatio": [
+            {
+              "state": "inactive",
+              "utc": 1794771167.42015
+            },
+            {
+              "state": "pending",
+              "utc": 1794771187.4619231
+            },
+            {
+              "state": "firing",
+              "utc": 1794771197.5947661
+            },
+            {
+              "state": "inactive",
+              "utc": 1794771331.962914
+            }
+          ]
+        }
+      }
+    }
+  }
+}

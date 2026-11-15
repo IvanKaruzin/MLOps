@@ -1,0 +1,19 @@
+{
+  "run_id": "results/hw11/a/rollback",
+  "service": "hw11-api",
+  "epoch_utc": 1794768836.447865,
+  "duration_seconds": 5,
+  "schedule_sha256": "e7c267481bdc46a7f6922aeb1988595e32cf01030bd2b12ef0c143d5c9f36ac1",
+  "clients": {
+    "hw11-client-0": "10.244.0.31",
+    "hw11-client-1": "10.244.0.32",
+    "hw11-client-2": "10.244.0.33",
+    "hw11-client-3": "10.244.0.34"
+  },
+  "keep_alive": false,
+  "max_outstanding": 128,
+  "timeout_seconds": 45,
+  "measurement_started_utc": 1794768836.447865,
+  "measurement_ended_utc": 1794768841.4534621,
+  "actual_phase_seconds": 5.005597114562988
+}

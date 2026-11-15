@@ -1,0 +1,16 @@
+{
+  "states_seen": {
+    "HW11HighLatency": [
+      "firing",
+      "inactive",
+      "pending"
+    ],
+    "HW11RejectionRatio": [
+      "firing",
+      "inactive",
+      "pending"
+    ]
+  },
+  "all_inactive": true,
+  "passed": true
+}

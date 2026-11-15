@@ -1,0 +1,24 @@
+{
+  "planned": 60,
+  "sent": 60,
+  "successful": 60,
+  "counts": {
+    "completed": 60,
+    "rejected": 0,
+    "interrupted": 0,
+    "timeout": 0,
+    "connection_error": 0,
+    "error": 0,
+    "unsent": 0
+  },
+  "ttfc_p50_seconds": 0.08551174749993606,
+  "ttfc_p95_seconds": 15.437093273450145,
+  "full_p50_seconds": 0.14354021549991103,
+  "full_p95_seconds": 15.493180255400146,
+  "pods": {
+    "hw11-api-57958b94b7-6bmdw": 25,
+    "hw11-api-57958b94b7-j44zh": 10,
+    "hw11-api-7d8cf8c48b-4lcqv": 8,
+    "hw11-api-7d8cf8c48b-98xfh": 17
+  }
+}

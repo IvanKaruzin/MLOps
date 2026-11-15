@@ -172,3 +172,35 @@ flow-hw8910:
 
 serve-hw8910:
 	HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv/bin/python -B service.py --workspace data/hw8910 --backend transformers --port 8091 --warmup-seconds 1
+
+# ДЗ11 — отдельный CPU-стенд; прежние окружения и MLflow не изменяются.
+HW11_PYTHON ?= .venv-hw11/bin/python
+.PHONY: install-hw11 up-hw11 check-hw11 check-live-hw11 experiments-hw11 report-hw11 size-hw11 down-hw11
+install-hw11:
+	uv venv --python 3.12 .venv-hw11
+	uv pip sync --python .venv-hw11/bin/python --require-hashes requirements-hw11.lock
+
+up-hw11:
+	$(HW11_PYTHON) -B scripts/hw11.py bootstrap
+	$(HW11_PYTHON) -B scripts/hw11.py up
+
+check-hw11:
+	PYTHONDONTWRITEBYTECODE=1 $(HW11_PYTHON) -B -m unittest discover -s tests_hw11 -v
+
+check-live-hw11:
+	$(HW11_PYTHON) -B scripts/hw11.py check
+	$(HW11_PYTHON) -B scripts/hw11_checks.py --all --results results/hw11
+
+experiments-hw11:
+	$(HW11_PYTHON) -B scripts/hw11_experiments.py a
+	$(HW11_PYTHON) -B scripts/hw11_experiments.py b --duration 120 --repeats 3
+	$(HW11_PYTHON) -B scripts/hw11_experiments.py c
+
+report-hw11:
+	.venv/bin/python -B scripts/hw11_report.py --results results/hw11
+
+size-hw11:
+	$(HW11_PYTHON) -B scripts/hw11.py size
+
+down-hw11:
+	$(HW11_PYTHON) -B scripts/hw11.py down --delete-vm

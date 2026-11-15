@@ -1,0 +1,198 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: hw11-prometheus}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata: {name: hw11-prometheus}
+rules:
+  - apiGroups: [""]
+    resources: [nodes, nodes/proxy, pods, services, endpoints]
+    verbs: [get, list, watch]
+  - nonResourceURLs: [/metrics]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata: {name: hw11-prometheus}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: hw11-prometheus}
+subjects: [{kind: ServiceAccount, name: hw11-prometheus, namespace: {{ .Release.Namespace }}}]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: {name: hw11-prometheus}
+data:
+  prometheus.yml: |
+{{ .Files.Get "files/prometheus.yml" | indent 4 }}
+  alerts.yml: |
+{{ .Files.Get "files/alerts.yml" | indent 4 }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: hw11-prometheus}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: hw11-prometheus}}
+  template:
+    metadata:
+      labels: {app: hw11-prometheus}
+      annotations:
+        checksum/config: {{ list (.Files.Get "files/prometheus.yml") (.Files.Get "files/alerts.yml") | toJson | sha256sum }}
+    spec:
+      serviceAccountName: hw11-prometheus
+      securityContext: {runAsUser: 65534, runAsGroup: 65534, fsGroup: 65534}
+      containers:
+        - name: prometheus
+          image: {{ .Values.monitoring.prometheusImage | quote }}
+          args:
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.path=/prometheus
+            - --storage.tsdb.retention.time=2h
+            - --storage.tsdb.retention.size=256MB
+            - --web.enable-lifecycle
+          ports: [{name: http, containerPort: 9090}]
+          resources:
+            requests: {cpu: 100m, memory: 192Mi}
+            limits: {cpu: 500m, memory: 512Mi}
+          readinessProbe: {httpGet: {path: /-/ready, port: http}, periodSeconds: 2}
+          volumeMounts:
+            - {name: config, mountPath: /etc/prometheus, readOnly: true}
+            - {name: data, mountPath: /prometheus}
+      volumes:
+        - name: config
+          configMap: {name: hw11-prometheus}
+        - name: data
+          emptyDir: {sizeLimit: 512Mi}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: hw11-prometheus}
+spec:
+  selector: {app: hw11-prometheus}
+  ports: [{name: http, port: 9090, targetPort: http}]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: {name: hw11-grafana}
+data:
+  datasource.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        uid: prometheus
+        type: prometheus
+        access: proxy
+        url: http://hw11-prometheus:9090
+        isDefault: true
+        editable: false
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: hw11
+        type: file
+        options: {path: /var/lib/grafana/dashboards}
+  hw11.json: |
+{{ .Files.Get "files/grafana-dashboard.json" | indent 4 }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: hw11-grafana}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: hw11-grafana}}
+  template:
+    metadata:
+      labels: {app: hw11-grafana}
+      annotations:
+        checksum/dashboard: {{ .Files.Get "files/grafana-dashboard.json" | sha256sum }}
+    spec:
+      automountServiceAccountToken: false
+      securityContext: {runAsUser: 472, runAsGroup: 472, fsGroup: 472}
+      containers:
+        - name: grafana
+          image: {{ .Values.monitoring.grafanaImage | quote }}
+          env:
+            - {name: GF_AUTH_ANONYMOUS_ENABLED, value: "true"}
+            - {name: GF_AUTH_ANONYMOUS_ORG_ROLE, value: Viewer}
+            - {name: GF_AUTH_DISABLE_LOGIN_FORM, value: "true"}
+            - {name: GF_AUTH_BASIC_ENABLED, value: "false"}
+            - {name: GF_ANALYTICS_REPORTING_ENABLED, value: "false"}
+            - {name: GF_ANALYTICS_CHECK_FOR_UPDATES, value: "false"}
+            - {name: GF_LOG_MODE, value: console}
+          ports: [{name: http, containerPort: 3000}]
+          resources:
+            requests: {cpu: 50m, memory: 128Mi}
+            limits: {cpu: 300m, memory: 384Mi}
+          readinessProbe: {httpGet: {path: /api/health, port: http}, periodSeconds: 3}
+          volumeMounts:
+            - {name: data, mountPath: /var/lib/grafana}
+            - {name: config, mountPath: /etc/grafana/provisioning/datasources/datasource.yaml, subPath: datasource.yaml, readOnly: true}
+            - {name: config, mountPath: /etc/grafana/provisioning/dashboards/dashboards.yaml, subPath: dashboards.yaml, readOnly: true}
+            - {name: config, mountPath: /var/lib/grafana/dashboards/hw11.json, subPath: hw11.json, readOnly: true}
+      volumes:
+        - name: config
+          configMap: {name: hw11-grafana}
+        - name: data
+          emptyDir: {sizeLimit: 128Mi}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: hw11-grafana}
+spec:
+  selector: {app: hw11-grafana}
+  ports: [{name: http, port: 3000, targetPort: http}]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: hw11-kube-state-metrics}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata: {name: hw11-kube-state-metrics}
+rules:
+  - apiGroups: [""]
+    resources: [pods, nodes, namespaces]
+    verbs: [get, list, watch]
+  - apiGroups: [apps]
+    resources: [deployments, replicasets]
+    verbs: [get, list, watch]
+  - apiGroups: [autoscaling]
+    resources: [horizontalpodautoscalers]
+    verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata: {name: hw11-kube-state-metrics}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: hw11-kube-state-metrics}
+subjects: [{kind: ServiceAccount, name: hw11-kube-state-metrics, namespace: {{ .Release.Namespace }}}]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: hw11-kube-state-metrics}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: hw11-kube-state-metrics}}
+  template:
+    metadata: {labels: {app: hw11-kube-state-metrics}}
+    spec:
+      serviceAccountName: hw11-kube-state-metrics
+      containers:
+        - name: kube-state-metrics
+          image: {{ .Values.monitoring.kubeStateMetricsImage | quote }}
+          args:
+            - --resources=pods,nodes,namespaces,deployments,replicasets,horizontalpodautoscalers
+            - --namespaces={{ .Release.Namespace }}
+          ports: [{name: http, containerPort: 8080}]
+          resources:
+            requests: {cpu: 30m, memory: 32Mi}
+            limits: {cpu: 200m, memory: 128Mi}
+          readinessProbe: {httpGet: {path: /healthz, port: 8080}, periodSeconds: 3}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: hw11-kube-state-metrics}
+spec:
+  selector: {app: hw11-kube-state-metrics}
+  ports: [{name: http, port: 8080, targetPort: http}]
+{{- end }}

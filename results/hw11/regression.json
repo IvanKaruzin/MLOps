@@ -1,0 +1,60 @@
+{
+  "timestamp_utc": "2026-11-15T18:48:55.197554+00:00",
+  "suites": [
+    {
+      "name": "previous-1-7",
+      "command": [
+        ".venv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-p",
+        "test_*.py"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "tests": 122,
+      "log": "regression/previous-1-7.log"
+    },
+    {
+      "name": "previous-8-10",
+      "command": [
+        ".venv/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests_hw8910",
+        "-v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "tests": 46,
+      "log": "regression/previous-8-10.log"
+    },
+    {
+      "name": "hw11",
+      "command": [
+        ".venv-hw11/bin/python",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests_hw11",
+        "-v"
+      ],
+      "returncode": 0,
+      "passed": true,
+      "tests": 29,
+      "log": "regression/hw11.log"
+    }
+  ],
+  "total_tests": 197,
+  "passed": true,
+  "live_mlflow_rechecked": false
+}

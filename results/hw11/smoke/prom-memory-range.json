@@ -1,0 +1,417 @@
+{
+  "status": 200,
+  "query": "container_memory_working_set_bytes{namespace=\"hw11\",container=\"api\"}",
+  "start": 1794768015.820257,
+  "end": 1794768028.57888,
+  "step": 1,
+  "data": {
+    "status": "success",
+    "data": {
+      "resultType": "matrix",
+      "result": [
+        {
+          "metric": {
+            "__name__": "container_memory_working_set_bytes",
+            "container": "api",
+            "id": "/kubelet.slice/kubelet-kubepods.slice/kubelet-kubepods-burstable.slice/kubelet-kubepods-burstable-pod0830f93e_a7df_42ec_9e55_a0c27260d39a.slice/cri-containerd-17cd99e2989e82837b1f5fcb345856f3779a678d2279d3c93b31ee074087cfb1.scope",
+            "image": "docker.io/library/mlops-hw11:v1",
+            "instance": "mlops-hw11-control-plane",
+            "job": "kubelet-cadvisor",
+            "name": "17cd99e2989e82837b1f5fcb345856f3779a678d2279d3c93b31ee074087cfb1",
+            "namespace": "hw11",
+            "pod": "hw11-api-7598db8968-zhknj"
+          },
+          "values": [
+            [
+              1794768015.82,
+              "39272448"
+            ],
+            [
+              1794768016.82,
+              "39272448"
+            ],
+            [
+              1794768017.82,
+              "39272448"
+            ],
+            [
+              1794768018.82,
+              "39272448"
+            ],
+            [
+              1794768019.82,
+              "39272448"
+            ],
+            [
+              1794768020.82,
+              "39272448"
+            ],
+            [
+              1794768021.82,
+              "39272448"
+            ],
+            [
+              1794768022.82,
+              "39272448"
+            ],
+            [
+              1794768023.82,
+              "39272448"
+            ],
+            [
+              1794768024.82,
+              "39272448"
+            ],
+            [
+              1794768025.82,
+              "39272448"
+            ],
+            [
+              1794768026.82,
+              "39272448"
+            ],
+            [
+              1794768027.82,
+              "39272448"
+            ]
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "container_memory_working_set_bytes",
+            "container": "api",
+            "id": "/kubelet.slice/kubelet-kubepods.slice/kubelet-kubepods-burstable.slice/kubelet-kubepods-burstable-pod23b82ee4_8dbb_41b2_83c3_552ff0934828.slice/cri-containerd-59c407b48933b77f1f48f9196686a04866383bf2983f20d7210307d1438e62a9.scope",
+            "image": "docker.io/library/mlops-hw11:v1",
+            "instance": "mlops-hw11-control-plane",
+            "job": "kubelet-cadvisor",
+            "name": "59c407b48933b77f1f48f9196686a04866383bf2983f20d7210307d1438e62a9",
+            "namespace": "hw11",
+            "pod": "hw11-api-86c95ddff8-7mrvh"
+          },
+          "values": [
+            [
+              1794768015.82,
+              "39358464"
+            ],
+            [
+              1794768016.82,
+              "39358464"
+            ],
+            [
+              1794768017.82,
+              "39358464"
+            ],
+            [
+              1794768018.82,
+              "39358464"
+            ],
+            [
+              1794768019.82,
+              "39358464"
+            ],
+            [
+              1794768020.82,
+              "39358464"
+            ],
+            [
+              1794768021.82,
+              "39358464"
+            ],
+            [
+              1794768022.82,
+              "39358464"
+            ],
+            [
+              1794768023.82,
+              "39358464"
+            ],
+            [
+              1794768024.82,
+              "39358464"
+            ],
+            [
+              1794768025.82,
+              "39358464"
+            ],
+            [
+              1794768026.82,
+              "39358464"
+            ],
+            [
+              1794768027.82,
+              "39358464"
+            ]
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "container_memory_working_set_bytes",
+            "container": "api",
+            "id": "/kubelet.slice/kubelet-kubepods.slice/kubelet-kubepods-burstable.slice/kubelet-kubepods-burstable-pod296e419d_0745_4ea6_8f11_0e101aa0fc10.slice/cri-containerd-77f914d637a11d987e9707b48ed10de9ee848230201eff1ceba5360fa503ccac.scope",
+            "image": "docker.io/library/mlops-hw11:v1",
+            "instance": "mlops-hw11-control-plane",
+            "job": "kubelet-cadvisor",
+            "name": "77f914d637a11d987e9707b48ed10de9ee848230201eff1ceba5360fa503ccac",
+            "namespace": "hw11",
+            "pod": "hw11-api-86c95ddff8-qq7bv"
+          },
+          "values": [
+            [
+              1794768015.82,
+              "39317504"
+            ],
+            [
+              1794768016.82,
+              "39317504"
+            ],
+            [
+              1794768017.82,
+              "39317504"
+            ],
+            [
+              1794768018.82,
+              "39317504"
+            ],
+            [
+              1794768019.82,
+              "39317504"
+            ],
+            [
+              1794768020.82,
+              "39317504"
+            ],
+            [
+              1794768021.82,
+              "39317504"
+            ],
+            [
+              1794768022.82,
+              "39317504"
+            ],
+            [
+              1794768023.82,
+              "39317504"
+            ],
+            [
+              1794768024.82,
+              "39317504"
+            ],
+            [
+              1794768025.82,
+              "39317504"
+            ],
+            [
+              1794768026.82,
+              "39317504"
+            ],
+            [
+              1794768027.82,
+              "39317504"
+            ]
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "container_memory_working_set_bytes",
+            "container": "api",
+            "id": "/kubelet.slice/kubelet-kubepods.slice/kubelet-kubepods-burstable.slice/kubelet-kubepods-burstable-pod2f440889_c190_4bb8_82b5_6e3b43fef68d.slice/cri-containerd-1dd3e679beb83821df613a154a27ce010de4f4983b638709192a5daae79e43d1.scope",
+            "image": "docker.io/library/mlops-hw11:v1",
+            "instance": "mlops-hw11-control-plane",
+            "job": "kubelet-cadvisor",
+            "name": "1dd3e679beb83821df613a154a27ce010de4f4983b638709192a5daae79e43d1",
+            "namespace": "hw11",
+            "pod": "hw11-api-7598db8968-qg6hr"
+          },
+          "values": [
+            [
+              1794768015.82,
+              "52703232"
+            ],
+            [
+              1794768016.82,
+              "52703232"
+            ],
+            [
+              1794768017.82,
+              "52703232"
+            ],
+            [
+              1794768018.82,
+              "52703232"
+            ],
+            [
+              1794768019.82,
+              "52703232"
+            ],
+            [
+              1794768020.82,
+              "52703232"
+            ],
+            [
+              1794768021.82,
+              "52703232"
+            ],
+            [
+              1794768022.82,
+              "52703232"
+            ],
+            [
+              1794768023.82,
+              "52703232"
+            ],
+            [
+              1794768024.82,
+              "52703232"
+            ],
+            [
+              1794768025.82,
+              "52703232"
+            ],
+            [
+              1794768026.82,
+              "52703232"
+            ],
+            [
+              1794768027.82,
+              "52703232"
+            ]
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "container_memory_working_set_bytes",
+            "container": "api",
+            "id": "/kubelet.slice/kubelet-kubepods.slice/kubelet-kubepods-burstable.slice/kubelet-kubepods-burstable-pod3646073a_a071_42ea_a0b5_48eb6975c6ff.slice/cri-containerd-27cf14946042b67c17a0defb20096d4a3a68a54c7a160d1016504de046c5bee5.scope",
+            "image": "docker.io/library/mlops-hw11:v1",
+            "instance": "mlops-hw11-control-plane",
+            "job": "kubelet-cadvisor",
+            "name": "27cf14946042b67c17a0defb20096d4a3a68a54c7a160d1016504de046c5bee5",
+            "namespace": "hw11",
+            "pod": "hw11-api-7d8cf8c48b-bpc4h"
+          },
+          "values": [
+            [
+              1794768015.82,
+              "39321600"
+            ],
+            [
+              1794768016.82,
+              "39321600"
+            ],
+            [
+              1794768017.82,
+              "39321600"
+            ],
+            [
+              1794768018.82,
+              "39321600"
+            ],
+            [
+              1794768019.82,
+              "39321600"
+            ],
+            [
+              1794768020.82,
+              "39321600"
+            ],
+            [
+              1794768021.82,
+              "39321600"
+            ],
+            [
+              1794768022.82,
+              "39321600"
+            ],
+            [
+              1794768023.82,
+              "39321600"
+            ],
+            [
+              1794768024.82,
+              "39321600"
+            ],
+            [
+              1794768025.82,
+              "39321600"
+            ],
+            [
+              1794768026.82,
+              "39321600"
+            ],
+            [
+              1794768027.82,
+              "39321600"
+            ]
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "container_memory_working_set_bytes",
+            "container": "api",
+            "id": "/kubelet.slice/kubelet-kubepods.slice/kubelet-kubepods-burstable.slice/kubelet-kubepods-burstable-podc942a494_b53a_4234_a05c_d68af204e452.slice/cri-containerd-3951bb4218004695f6fca9c3333cb197d30243b3e852215969a6415c46233323.scope",
+            "image": "docker.io/library/mlops-hw11:v1",
+            "instance": "mlops-hw11-control-plane",
+            "job": "kubelet-cadvisor",
+            "name": "3951bb4218004695f6fca9c3333cb197d30243b3e852215969a6415c46233323",
+            "namespace": "hw11",
+            "pod": "hw11-api-7d8cf8c48b-dncvn"
+          },
+          "values": [
+            [
+              1794768015.82,
+              "39415808"
+            ],
+            [
+              1794768016.82,
+              "39415808"
+            ],
+            [
+              1794768017.82,
+              "39415808"
+            ],
+            [
+              1794768018.82,
+              "39415808"
+            ],
+            [
+              1794768019.82,
+              "39415808"
+            ],
+            [
+              1794768020.82,
+              "39415808"
+            ],
+            [
+              1794768021.82,
+              "39415808"
+            ],
+            [
+              1794768022.82,
+              "39415808"
+            ],
+            [
+              1794768023.82,
+              "39415808"
+            ],
+            [
+              1794768024.82,
+              "39415808"
+            ],
+            [
+              1794768025.82,
+              "39415808"
+            ],
+            [
+              1794768026.82,
+              "39415808"
+            ],
+            [
+              1794768027.82,
+              "39415808"
+            ]
+          ]
+        }
+      ]
+    }
+  }
+}

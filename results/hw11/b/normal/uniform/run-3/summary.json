@@ -1,0 +1,22 @@
+{
+  "planned": 240,
+  "sent": 240,
+  "successful": 240,
+  "counts": {
+    "completed": 240,
+    "rejected": 0,
+    "interrupted": 0,
+    "timeout": 0,
+    "connection_error": 0,
+    "error": 0,
+    "unsent": 0
+  },
+  "ttfc_p50_seconds": 0.9357374030000756,
+  "ttfc_p95_seconds": 2.721376458450003,
+  "full_p50_seconds": 1.5649402124997778,
+  "full_p95_seconds": 3.3415223697001686,
+  "pods": {
+    "hw11-api-b967f4df8-fw5rn": 126,
+    "hw11-api-b967f4df8-x2zsr": 114
+  }
+}

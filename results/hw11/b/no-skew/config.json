@@ -1,0 +1,19 @@
+{
+  "run_id": "results/hw11/b/no-skew",
+  "service": "hw11-affinity",
+  "epoch_utc": 1794769026.899286,
+  "duration_seconds": 20,
+  "schedule_sha256": "ca3bb9364510e883e44d076242e8f7c6cb6171bffb102c6168e6547a8b2eb81f",
+  "clients": {
+    "hw11-client-0": "10.244.0.31",
+    "hw11-client-1": "10.244.0.32",
+    "hw11-client-2": "10.244.0.33",
+    "hw11-client-3": "10.244.0.34"
+  },
+  "keep_alive": false,
+  "max_outstanding": 128,
+  "timeout_seconds": 45,
+  "measurement_started_utc": 1794769026.899286,
+  "measurement_ended_utc": 1794769046.902934,
+  "actual_phase_seconds": 20.00364899635315
+}

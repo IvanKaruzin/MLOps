@@ -1,0 +1,44 @@
+[
+  {
+    "id": "before-0",
+    "offset_seconds": 0.0,
+    "client": 0,
+    "payload": {
+      "prompt": "continue",
+      "messages": [
+        {
+          "role": "user",
+          "content": "ISOLATED_DIALOG_1"
+        },
+        {
+          "role": "assistant",
+          "content": "ACK_1"
+        }
+      ],
+      "session_id": "isolation-1",
+      "max_chunks": 2,
+      "chunk_delay_seconds": 0.02
+    }
+  },
+  {
+    "id": "before-1",
+    "offset_seconds": 0.2,
+    "client": 1,
+    "payload": {
+      "prompt": "continue",
+      "messages": [
+        {
+          "role": "user",
+          "content": "ISOLATED_DIALOG_2"
+        },
+        {
+          "role": "assistant",
+          "content": "ACK_2"
+        }
+      ],
+      "session_id": "isolation-2",
+      "max_chunks": 2,
+      "chunk_delay_seconds": 0.02
+    }
+  }
+]

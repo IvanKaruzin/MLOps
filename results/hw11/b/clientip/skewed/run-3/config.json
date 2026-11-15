@@ -1,0 +1,19 @@
+{
+  "run_id": "results/hw11/b/clientip/skewed/run-3",
+  "service": "hw11-affinity",
+  "epoch_utc": 1794770590.169344,
+  "duration_seconds": 120.0,
+  "schedule_sha256": "cd91586eed1399f3a491e3ec0fc1dfe3c7396016871c4c4177e72f47487c04da",
+  "clients": {
+    "hw11-client-0": "10.244.0.31",
+    "hw11-client-1": "10.244.0.32",
+    "hw11-client-2": "10.244.0.33",
+    "hw11-client-3": "10.244.0.34"
+  },
+  "keep_alive": false,
+  "max_outstanding": 128,
+  "timeout_seconds": 45,
+  "measurement_started_utc": 1794770590.169344,
+  "measurement_ended_utc": 1794770733.95907,
+  "actual_phase_seconds": 143.78972601890564
+}

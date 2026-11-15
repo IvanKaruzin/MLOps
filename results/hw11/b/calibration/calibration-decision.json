@@ -1,0 +1,189 @@
+{
+  "passed": true,
+  "rate": 2.0,
+  "criterion": "one current Pod waiting>0 while another current Pod running=0",
+  "examples": [
+    {
+      "utc": 1794769058.85745,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 2.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769059.8640509,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 2.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769062.875861,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 5.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769063.8815,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 5.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769064.882953,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 6.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769065.875133,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 6.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769068.903326,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 9.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769069.908413,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 9.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769072.906971,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 7.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769073.904321,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 7.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769074.923637,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 5.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769075.931813,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 5.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769076.925371,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 3.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    },
+    {
+      "utc": 1794769077.9355829,
+      "gauges": {
+        "hw11-api-b967f4df8-x2zsr": {
+          "hw11_running": 1.0,
+          "hw11_waiting": 3.0
+        },
+        "hw11-api-b967f4df8-fw5rn": {
+          "hw11_running": 0.0,
+          "hw11_waiting": 0.0
+        }
+      }
+    }
+  ]
+}

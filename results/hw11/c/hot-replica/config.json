@@ -1,0 +1,19 @@
+{
+  "run_id": "results/hw11/c/hot-replica",
+  "service": "hw11-affinity",
+  "epoch_utc": 1794771061.740871,
+  "duration_seconds": 75,
+  "schedule_sha256": "f2715cb11ec31bf36c6d291d0ee74f12f6b633b0b8a3d6e2c5c3d557330fa209",
+  "clients": {
+    "hw11-client-0": "10.244.0.31",
+    "hw11-client-1": "10.244.0.32",
+    "hw11-client-2": "10.244.0.33",
+    "hw11-client-3": "10.244.0.34"
+  },
+  "keep_alive": false,
+  "max_outstanding": 128,
+  "timeout_seconds": 45,
+  "measurement_started_utc": 1794771061.740871,
+  "measurement_ended_utc": 1794771138.280735,
+  "actual_phase_seconds": 76.53986406326294
+}

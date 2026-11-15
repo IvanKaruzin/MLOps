@@ -1,0 +1,6 @@
+{
+  "name": "working_traffic_excludes_unready_backend",
+  "passed": true,
+  "expected_failure": false,
+  "unready_attempts": 0
+}

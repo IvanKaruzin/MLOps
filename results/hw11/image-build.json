@@ -1,0 +1,15 @@
+{
+  "timestamp_utc": "2026-11-15T18:45:44.659931+00:00",
+  "image_index_sha256": "072e40c1b4949bf1ca82472f10bad7c5505754b179c3e94c18438268bbdb2832",
+  "image_config_sha256": "3be73d7a6ca821e9f24b7a997d01daae7ce2e77c31c4c38dcc58384753fe0c28",
+  "source_sha256": {
+    "service.py": "c07958d648e5eeb41f417d54df5f4b765ba5ec9425403dc2b7abf87f42e8d5b7",
+    "hw11/__init__.py": "18dea951d6d59dcee6262159871e0864671b77c71a6c88e1763abe414de390c5",
+    "hw11/app.py": "3e63ad48d37caed57f97b291def29f058e248584abc59edba7020b0264f38227",
+    "hw11/backend.py": "d31aaa51378a870ed651816f88cc7e977071855bae38e380cf75a8b851c0f52a",
+    "hw11/client.py": "9a3039dfc24bf9a6e4753e1c9a7fc944cea1123e87f451dc2d28be4844810fb7",
+    "hw11/metrics.py": "5ba37fb1c8d0ca73a821457f4c3a99969f627b5fa80edafa4a7d467c50f1b35e",
+    "requirements-hw11.lock": "b907340c50c4a7792cc776852cc3a3e256590446b7fb688dc51db2484a1f53c1"
+  },
+  "note": "Built and loaded; running Pods were deliberately not restarted during initial A evidence"
+}

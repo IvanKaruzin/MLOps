@@ -1,10 +1,11 @@
-# MLOps: накопительный проект ДЗ-1 — ДЗ-10
+# MLOps: накопительный проект ДЗ-1 — ДЗ-11
 
 Репозиторий объединяет домашние работы курса: воспроизводимый инференс Qwen3,
 анализ устройства модели, DVC-пайплайн датасета для многометочной классификации
 жанров фильма по текстовому описанию и препроцессинг этого датасета для
 обучения, LoRA-адаптеры для классификации жанров, MLflow-эксперименты, проверку
-качества ответов, процесс выпуска модели и HTTP API. Тема датасета согласована с преподавателем.
+качества ответов, процесс выпуска модели, HTTP API и проверяемый Kubernetes-стенд
+под нагрузкой. Тема датасета согласована с преподавателем.
 
 ## ДЗ 1 — Окружение, первый инференс Qwen3, бенчмарк машины
 
@@ -430,3 +431,57 @@ curl -H 'Content-Type: application/json' -d '{"prompt":"A spaceship crew discove
 запускает и останавливает реальный API для проверки перезапуска.
 Все рабочие каталоги, веса и кеши исключены из Git. Скринкаст и сценарий
 исключены по указанию пользователя; удалённый CI не настраивался.
+
+## ДЗ 11 — Kubernetes под нагрузкой
+
+Условия: [ДЗ11](course_tasks/hw11/homework11.html). Обязательная часть использует
+`backend_mode=simulated`: тот же API проекта, CPU-вычисления, ограниченные
+очередь и локальный prefix cache, потоковые JSONL-ответы. Реальная модель,
+новое обучение и назначение champion не нужны. Старые `stub`/`transformers`
+и окружения ДЗ1–10 сохраняются. [Отчёт и сырые результаты](results/hw11/report.html).
+
+Связь итогового ревью с кейсом компании из лекции пока не подтверждена:
+лекции 11 нет в предоставленных материалах, а ссылка из задания ведёт
+на отсутствующий файл. Этот пробел отдельно отмечен в отчёте.
+
+Стенд: отдельный Colima profile `mlops-hw11` (4 CPU, 6 GiB RAM, системный диск
+минимум 20 GiB и отдельный диск Docker 12 GiB), kind 0.30.0 / Kubernetes 1.34.0,
+kubectl 1.34.1, Helm 3.19.0.
+Python 3.12; lightweight-зависимости закреплены с хешами в
+`requirements-hw11.lock`. Отдельный [Dockerfile](deploy/hw11/Dockerfile) не меняет
+MLflow-образ. [Helm values](deploy/hw11/chart/values.yaml) задают образ,
+версию артефакта, прогрев, реплики, ресурсы и параметры имитатора.
+
+```bash
+make install-hw11
+make up-hw11
+make check-hw11
+make experiments-hw11      # B: 12 × 120 с = 24 мин только измерений; A/C дополнительно
+make check-live-hw11
+make report-hw11
+make size-hw11
+```
+
+Основное сравнение — четыре in-cluster клиента с разными Pod IP, одинаковые
+расписания запросов и отключённый HTTP keep-alive. HPA выключен на A/B;
+опыт C включает 2..3 реплики по CPU. Имитатор измеряет TTFC и inter-chunk latency,
+а не токенные метрики реального engine. Prometheus собирает каждый Pod
+через discovery, kube-state-metrics и cAdvisor; retention 2h / 256MB, том 512Mi.
+Grafana ограничена томом 128Mi. [Экспорт dashboard](deploy/hw11/monitoring/grafana-dashboard.json),
+[PromQL и метод сравнения](deploy/hw11/monitoring/promql.md).
+
+Для просмотра доступны только локальные port-forward; сервисы — ClusterIP.
+Kubeconfig стенда не публикуется и не меняет пользовательский default context.
+
+```bash
+/private/tmp/mlops-hw11-tools/kubectl --kubeconfig /private/tmp/mlops-hw11-tools/kubeconfig -n hw11 port-forward service/hw11-grafana 3000:3000
+# http://127.0.0.1:3000/d/hw11
+```
+
+Удаление затрагивает только собственный kind-кластер и отдельную VM ДЗ11;
+MLflow volumes и другие профили Colima не удаляются. `docker system prune`
+не используется. Сырые результаты и отчёт остаются в Git.
+
+```bash
+make down-hw11
+```

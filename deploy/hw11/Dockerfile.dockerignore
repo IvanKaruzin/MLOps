@@ -1,0 +1,7 @@
+**
+!requirements-hw11.lock
+!service.py
+!hw11/
+!hw11/**
+hw11/**/__pycache__/
+hw11/**/*.pyc

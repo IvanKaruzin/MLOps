@@ -1,0 +1,19 @@
+{
+  "run_id": "results/hw11/a/replacement/before",
+  "service": "hw11-api",
+  "epoch_utc": 1794768888.5000231,
+  "duration_seconds": 1,
+  "schedule_sha256": "e8909b408c86e3a4e8a3200c0a87b3ed9baef79258c877559980f453c953077e",
+  "clients": {
+    "hw11-client-0": "10.244.0.31",
+    "hw11-client-1": "10.244.0.32",
+    "hw11-client-2": "10.244.0.33",
+    "hw11-client-3": "10.244.0.34"
+  },
+  "keep_alive": false,
+  "max_outstanding": 128,
+  "timeout_seconds": 45,
+  "measurement_started_utc": 1794768888.5000231,
+  "measurement_ended_utc": 1794768889.506305,
+  "actual_phase_seconds": 1.006281852722168
+}
