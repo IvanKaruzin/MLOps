@@ -440,9 +440,11 @@ curl -H 'Content-Type: application/json' -d '{"prompt":"A spaceship crew discove
 новое обучение и назначение champion не нужны. Старые `stub`/`transformers`
 и окружения ДЗ1–10 сохраняются. [Отчёт и сырые результаты](results/hw11/report.html).
 
-Связь итогового ревью с кейсом компании из лекции пока не подтверждена:
-лекции 11 нет в предоставленных материалах, а ссылка из задания ведёт
-на отсутствующий файл. Этот пробел отдельно отмечен в отчёте.
+Кейс Google Cloud / Vertex AI подтверждён по слайдам 69–70 предоставленного
+видео (07:52–08:36) и [первичной публикации Google](https://cloud.google.com/blog/products/containers-kubernetes/how-gke-inference-gateway-improved-latency-for-vertex-ai).
+[Кадры, таймкоды и SHA-256 исходного видео](results/hw11/lecture-case.json)
+связывают кейс с итоговым ревью. Показатели Google относятся к их production
+и отделены от измерений нашего CPU-имитатора.
 
 Стенд: отдельный Colima profile `mlops-hw11` (4 CPU, 6 GiB RAM, системный диск
 минимум 20 GiB и отдельный диск Docker 12 GiB), kind 0.30.0 / Kubernetes 1.34.0,

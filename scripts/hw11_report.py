@@ -4,6 +4,7 @@ import argparse
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 import html
+import hashlib
 import json
 import math
 import os
@@ -612,6 +613,34 @@ def hot_hpa_summary(base):
                 meaning="attempt counts use observed HTTP response Pod identities; zero is shown for API Pods present in the timeline but receiving no recorded attempts")
 
 
+def verified_lecture_source(base, lecture):
+    """Keep video citations bound to the saved frames and chapter timestamps."""
+    if not all(lecture.get(key) for key in ("lecture_url", "primary_url", "company", "case_text")):
+        return False
+    if lecture.get("source_type") != "video":
+        return True
+    verification = lecture.get("verification", {})
+    if not all(verification.get(key) is True for key in
+               ("video_frames_inspected", "official_primary_read", "frame_and_primary_agree",
+                "metrics_separated_from_local_cpu_benchmark")):
+        return False
+    if lecture.get("primary_source", {}).get("url") != lecture["primary_url"]:
+        return False
+    frames = lecture.get("frames", [])
+    if not frames or lecture["lecture_url"] not in {frame.get("path") for frame in frames}:
+        return False
+    for frame in frames:
+        try:
+            path = (base / frame["path"]).resolve()
+            if (not path.is_relative_to(base.resolve()) or not path.is_file()
+                    or hashlib.sha256(path.read_bytes()).hexdigest() != frame["sha256"]
+                    or not frame["chapter_start_seconds"] <= frame["frame_time_seconds"] < frame["chapter_end_seconds"]):
+                return False
+        except (KeyError, TypeError, OSError):
+            return False
+    return True
+
+
 def generate(base, render_figures=True):
     DATA_ERRORS.clear()
     base = base.resolve()
@@ -633,7 +662,7 @@ def generate(base, render_figures=True):
     b_checks = checks.get("checks", {}).get("b", {})
     c_checks = checks.get("checks", {}).get("c", {})
     lecture = read(base / "lecture-case.json")
-    lecture_complete = all(lecture.get(key) for key in ("lecture_url", "primary_url", "company", "case_text"))
+    lecture_complete = verified_lecture_source(base, lecture)
     invariants = [f"{path}: {message}" for path, summary in requests.items() for message in summary["violations"]]
     cohort_errors = [run["path"] for run in b_runs
                      if not run["cohort"].get("available") or
@@ -1066,8 +1095,14 @@ def write_html(base, summary, a_checks, b_checks, c_checks, lecture):
                      + f'<a href="{html.escape(lecture["lecture_url"], quote=True)}">Лекция</a>; '
                      + f'<a href="{html.escape(lecture["primary_url"], quote=True)}">первичный источник</a>. '
                      + raw("lecture-case.json", "Сохранённая привязка источника") + ".</p>")
+        if lecture.get("source_type") == "video":
+            parts.append("<p>Исходное видео: <code>" + html.escape(lecture["video"]["filename"]) + "</code>; "
+                         "его SHA-256 и параметры извлечения сохранены в JSON. Кадры лекции: " + "; ".join(
+                             raw(frame["path"], f'слайд {frame["slide"]}, {frame["frame_timecode"]}')
+                             for frame in lecture["frames"]) + ". "
+                         "Проверены указанные слайды и первичная публикация; полная расшифровка аудио не выполнялась.</p>")
     else:
-        parts.append("<div class='notice'><strong>Недостающий критерий:</strong> локальная лекция 11 отсутствует, а источник её кейса ещё не предоставлен. "
+        parts.append("<div class='notice'><strong>Недостающий критерий:</strong> источник кейса из лекции 11 пока не подтверждён. "
                      "Поэтому это ревью пока не связано с подтверждённым кейсом компании из лекции. Произвольный внешний пример не выдан за такой кейс. "
                      "Для закрытия нужен источник лекции и первичная публикация выбранной компании.</div>")
     if summary["invariant_violations"] or summary["histogram_cohort_errors"] or summary["data_errors"] or summary["missing_required_files"]:

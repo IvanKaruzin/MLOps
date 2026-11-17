@@ -1,0 +1,120 @@
+{
+  "company": "Google Cloud / Vertex AI",
+  "source_type": "video",
+  "lecture_url": "lecture-evidence/slide-070-0825.600.png",
+  "primary_url": "https://cloud.google.com/blog/products/containers-kubernetes/how-gke-inference-gateway-improved-latency-for-vertex-ai",
+  "case_text": "Кейс Google Cloud / Vertex AI подтверждён слайдами 69–70 видео (07:52.250–08:36.730). В первичной статье Google от 7 февраля 2026 года маршрутизация сочетает локальность префикса, очередь и KV-utilization; веса scorer изменили с 3:3:2 на 3:5:2, чтобы обходить горячие узлы даже при cache hit, а admission control ограничивает перегрузку. Отдельные результаты статьи: cache hit вырос с 35% до 70%; p95 TTFT для DeepSeek V3.1 снизился на 52%; снижение TTFT более чем на 35% относится к Qwen3-Coder. Это поддерживает выбор свободной B в учебном примере 3 с против 0,8 с при сопоставимых остальных условиях. Веса Google не универсальны, обычный Service нашего стенда не реализует этот scorer, а production-метрики Google не являются результатами нашего CPU-имитатора с TTFC.",
+  "video": {
+    "filename": "lecture11-extended.mp4",
+    "sha256": "81f4b06b3ddc2f1858e1019d9e749077765c590125a5636b3c5a9c99ed335031",
+    "size_bytes": 87883266,
+    "duration_seconds": 2734.5,
+    "title": "Лекция 11 · Kubernetes, GPU и инженерные кейсы",
+    "provided_by_user": true,
+    "frame_size": [
+      1280,
+      720
+    ]
+  },
+  "frames": [
+    {
+      "slide": 69,
+      "title": "069 · Горячий префикс и влияние очереди",
+      "chapter_start_seconds": 472.25,
+      "chapter_end_seconds": 494.47,
+      "frame_time_seconds": 483.36,
+      "frame_timecode": "08:03.360",
+      "path": "lecture-evidence/slide-069-0803.360.png",
+      "sha256": "762a6d650c570b09c69c783790ff30a710199a3605bcde17761cb50ef14f6b5c",
+      "extraction_command": [
+        "ffmpeg",
+        "-ss",
+        "483.360",
+        "-i",
+        "lecture11-extended.mp4",
+        "-frames:v",
+        "1",
+        "slide-069-0803.360.png"
+      ]
+    },
+    {
+      "slide": 70,
+      "title": "070 · Результаты нагрузки Google",
+      "chapter_start_seconds": 494.47,
+      "chapter_end_seconds": 516.73,
+      "frame_time_seconds": 505.6,
+      "frame_timecode": "08:25.600",
+      "path": "lecture-evidence/slide-070-0825.600.png",
+      "sha256": "6afff7caadb236b43050bebfc84016bb89a5752f22bc25cc6ddf4af57ec504be",
+      "extraction_command": [
+        "ffmpeg",
+        "-ss",
+        "505.600",
+        "-i",
+        "lecture11-extended.mp4",
+        "-frames:v",
+        "1",
+        "slide-070-0825.600.png"
+      ]
+    }
+  ],
+  "primary_source": {
+    "url": "https://cloud.google.com/blog/products/containers-kubernetes/how-gke-inference-gateway-improved-latency-for-vertex-ai",
+    "title": "How we cut Vertex AI latency by 35% with GKE Inference Gateway",
+    "published_date": "2026-02-07",
+    "authors": [
+      "Fisayo Feyisetan",
+      "Yao Yuan"
+    ],
+    "retrieved_at_utc": "2026-11-17T10:50:48.827182+00:00",
+    "html_sha256": "56d7f49c953779e26e17f477aa1261b5bb37e678ab803ab989f0590c0a53ab23",
+    "short_excerpt": "By shifting the ratio from a default 3:3:2 to 3:5:2 (prioritizing queue depth slightly higher), we forced the scheduler to bypass \"hot\" nodes even if they had a cache hit.",
+    "verified_facts": [
+      {
+        "metric": "prefix cache hit rate",
+        "before_percent": 35,
+        "after_percent": 70,
+        "model_attribution": "Модель в соответствующем абзаце первоисточника не названа."
+      },
+      {
+        "metric": "p95 TTFT reduction",
+        "percent": 52,
+        "model": "DeepSeek V3.1",
+        "traffic": "bursty chat"
+      },
+      {
+        "metric": "TTFT reduction",
+        "more_than_percent": 35,
+        "model": "Qwen3-Coder"
+      },
+      {
+        "routing_scorer_components": [
+          "prefix",
+          "queue",
+          "kv-utilization"
+        ],
+        "weights_before": [
+          3,
+          3,
+          2
+        ],
+        "weights_after": [
+          3,
+          5,
+          2
+        ]
+      },
+      {
+        "admission_control": "На ingress; ограничивает перегрузку model servers."
+      }
+    ]
+  },
+  "verification": {
+    "video_frames_inspected": true,
+    "official_primary_read": true,
+    "frame_and_primary_agree": true,
+    "metrics_separated_from_local_cpu_benchmark": true,
+    "audio_transcribed": false,
+    "scope": "Проверены указанные слайды и соответствие первоисточнику; полная расшифровка видео не выполнялась."
+  }
+}

@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-11-15T19:58:53.596704+00:00",
-  "complete": false,
+  "generated_at_utc": "2026-11-17T10:52:26.402665+00:00",
+  "complete": true,
   "routing_decision": {
     "ready": true,
     "supported_fix": "normal",
@@ -7129,7 +7129,7 @@
       }
     }
   },
-  "lecture_source_confirmed": false,
+  "lecture_source_confirmed": true,
   "missing_required_files": [],
   "data_errors": [],
   "invariant_violations": [],
