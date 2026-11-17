@@ -111,6 +111,44 @@ def preflight(output):
     print(json.dumps(value, ensure_ascii=False, indent=2))
 
 
+def ensure_cluster():
+    clusters = run([binary("kind"), "get", "clusters"], capture=True).stdout.splitlines()
+    if CLUSTER not in clusters:
+        run([binary("kind"), "create", "cluster", "--name", CLUSTER, "--image", "kindest/node:v1.34.0",
+             "--kubeconfig", KUBECONFIG, "--wait", "120s"], timeout=600)
+    else:
+        # kind lists stopped nodes too. Resume them without deleting workloads.
+        nodes = run([binary("kind"), "get", "nodes", "--name", CLUSTER], capture=True).stdout.splitlines()
+        if not nodes:
+            raise RuntimeError(f"Cluster {CLUSTER} has no nodes")
+        for node in nodes:
+            state = json.loads(run(["docker", "--context", CONTEXT, "inspect", "--format",
+                                    "{{json .State}}", node], capture=True).stdout)
+            if not state["Running"]:
+                started = run(["docker", "--context", CONTEXT, "start", node], capture=True,
+                              check=False, timeout=120)
+                if started.returncode:
+                    raise RuntimeError(
+                        f"Cannot restart HW11 node {node}: {started.stderr.strip()}. "
+                        "Its data was not deleted. To recreate this disposable stand, run "
+                        f"DOCKER_CONTEXT={CONTEXT} {binary('kind')} delete cluster --name {CLUSTER}, "
+                        "then make up-hw11.")
+        # Temporary kubeconfig may have been cleaned up while the VM survived.
+        run([binary("kind"), "export", "kubeconfig", "--name", CLUSTER, "--kubeconfig", KUBECONFIG])
+    deadline = time.monotonic() + 120
+    while True:
+        try:
+            if kube("get", "--raw", "/readyz", "--request-timeout=5s", capture=True,
+                    check=False, timeout=10).returncode == 0:
+                break
+        except subprocess.TimeoutExpired:
+            pass
+        if time.monotonic() >= deadline:
+            raise RuntimeError(f"Kubernetes API for {CLUSTER} did not become ready within 120s")
+        time.sleep(2)
+    kube("wait", "--for=condition=Ready", "nodes", "--all", "--timeout=120s", timeout=135)
+
+
 def up(build=True):
     TOOLS.mkdir(parents=True, exist_ok=True)
     if platform.system() == "Darwin":
@@ -125,10 +163,7 @@ def up(build=True):
             finally:
                 if previous:
                     subprocess.run(["docker", "context", "use", previous], check=True)
-    clusters = run([binary("kind"), "get", "clusters"], capture=True).stdout.splitlines()
-    if CLUSTER not in clusters:
-        run([binary("kind"), "create", "cluster", "--name", CLUSTER, "--image", "kindest/node:v1.34.0",
-             "--kubeconfig", KUBECONFIG, "--wait", "120s"], timeout=600)
+    ensure_cluster()
     if build:
         run(["docker", "--context", CONTEXT, "build", "-f", "deploy/hw11/Dockerfile", "-t", IMAGE, "."],
             timeout=900)
